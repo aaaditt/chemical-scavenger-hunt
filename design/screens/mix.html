@@ -2,148 +2,115 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Secret Catalyst · Mix bench (build / fail / success)</title>
+<title>Secret Catalyst · Mix bench (build / running / fail / success)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../tokens.css">
-<!-- Browsers skip Tailwind's @theme block, so the token values are mirrored below as short vars. -->
+<link rel="stylesheet" href="kit.css">
+<script src="kit.js"></script>
 <style>
-:root{--ink:#071312;--bench:#0b1a19;--wall:#12302c;--seam:#0d2521;--tile:#1e4640;--moss:#2a5c54;--fog:#8fb0a8;--clinic:#dce7ee;--clinic-shade:#a9bcc8;--parch:#eadf9e;--parch-shade:#c9b96a;--holo:#43e6c6;--holo-deep:#1fa88e;--led:#8df25f;--candle:#ffb547;--candle-deep:#d9851c;--alarm:#ff4b3e;--hazard:#f7c61b;--pressure:#a57bff;
---pxb:0 -4px 0 0 var(--ink),0 4px 0 0 var(--ink),-4px 0 0 0 var(--ink),4px 0 0 0 var(--ink)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#040c0b;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;padding:48px;display:flex;gap:56px;align-items:flex-start;flex-wrap:wrap}
-.frame-label{font:700 16px 'Pixelify Sans';color:#8fb0a8;margin-bottom:16px}
+body{padding:48px;display:flex;gap:56px;align-items:flex-start;flex-wrap:wrap;width:1868px}
 .phone{width:390px;height:844px;position:relative;overflow:hidden;color:var(--clinic);background-color:var(--wall);
   background-image:linear-gradient(var(--seam) 0 4px,transparent 4px),linear-gradient(90deg,var(--seam) 0 4px,transparent 4px);background-size:96px 64px}
-.sprite{display:block;image-rendering:pixelated}
-.abs{position:absolute}
 .hud{position:absolute;top:0;left:0;right:0;height:76px;display:flex;align-items:center;gap:12px;padding:12px 16px 0}
-.led{background:var(--bench);color:var(--led);font:700 24px/1 'Pixelify Sans';padding:10px 12px;box-shadow:var(--pxb)}
+.led{background:var(--bench);color:var(--led);font:400 24px/24px 'Silkscreen';padding:10px 12px;box-shadow:var(--pxb)}
 .spacer{flex:1}
-.strikes{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.strikes .k{font:700 14px/16px 'Pixelify Sans';color:var(--fog)}
+.strikes{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.strikes .k{font:400 16px/16px 'Silkscreen';color:var(--fog)}
 .strikes .s{display:flex;gap:8px}
 .strikes i{width:28px;height:28px;background:var(--bench);box-shadow:var(--pxb);display:block}
 .strikes i.x{background:var(--alarm)}
 .strikes i svg{display:block}
 .rig{position:absolute;left:19px;top:84px}
-/* Tube tags: 28x24 on the 4px grid, sitting on the tube bodies (art y 11-17). Pipes start at art y 21. */
-.rig .tag{position:absolute;width:28px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--clinic);color:var(--ink);font:700 16px/1 'Pixelify Sans';box-shadow:var(--pxb)}
+.rig .tag{position:absolute;width:28px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--clinic);color:var(--ink);font-size:16px;line-height:1;box-shadow:var(--pxb)}
 .list{position:absolute;left:16px;right:16px;top:320px;display:flex;flex-direction:column;gap:12px}
 .rg{display:flex;align-items:center;gap:12px;background:var(--clinic);color:var(--ink);padding:8px;box-shadow:var(--pxb)}
-.chip{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--bench);color:var(--clinic);font:700 24px 'Pixelify Sans'}
+.chip{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--bench);color:var(--clinic);font-size:24px}
 .rg .nm{flex:1;display:flex;flex-direction:column}
 .rg .nm b{font:700 18px/22px 'Atkinson Hyperlegible'}
-.rg .nm span{font:400 15px/18px 'Atkinson Hyperlegible';color:#34505a}
-.step{display:flex;align-items:center;gap:0}
-.step button{width:44px;height:48px;border:0;background:var(--bench);color:var(--clinic);font:700 24px 'Pixelify Sans'}
-.step output{width:40px;text-align:center;font:700 24px 'Pixelify Sans'}
-.owned{display:flex;gap:12px;padding:4px 4px}
-.owned span{min-width:44px;height:44px;padding:0 6px;display:flex;align-items:center;justify-content:center;background:var(--bench);color:var(--clinic);font:700 18px 'Pixelify Sans';box-shadow:var(--pxb)}
-.owned .add{background:transparent;color:var(--fog);box-shadow:0 -4px 0 0 var(--moss),0 4px 0 0 var(--moss),-4px 0 0 0 var(--moss),4px 0 0 0 var(--moss)}
+.rg .nm span{font:700 16px/20px 'Atkinson Hyperlegible';color:#34505a}
+.step{display:flex;align-items:center}
+.step button{width:44px;height:48px;border:0;background:var(--bench);color:var(--clinic);font:400 24px/24px 'Silkscreen'}
+.step output{width:40px;text-align:center;font:400 24px/24px 'Silkscreen'}
+.owned{display:flex;gap:12px;padding:4px}
+.owned span{min-width:44px;height:44px;padding:0 6px;display:flex;align-items:center;justify-content:center;background:var(--bench);color:var(--clinic);font-size:18px;box-shadow:var(--pxb)}
+.owned .add{background:transparent;color:var(--fog);font:400 16px/16px 'Silkscreen';box-shadow:0 -4px 0 0 var(--moss),0 4px 0 0 var(--moss),-4px 0 0 0 var(--moss),4px 0 0 0 var(--moss)}
 .cat{display:flex;align-items:center;gap:12px;background:var(--holo);color:var(--ink);padding:8px 12px;box-shadow:var(--pxb),inset 0 -4px 0 0 var(--holo-deep)}
 .cat .t{flex:1}
-.cat .t b{display:block;font:700 20px/22px 'Pixelify Sans'}
-.cat .t span{font:700 15px/18px 'Atkinson Hyperlegible'}
-.note{font:700 15px/20px 'Atkinson Hyperlegible';color:var(--fog);text-align:center}
-.btn{display:flex;align-items:center;justify-content:center;height:64px;font:700 24px 'Pixelify Sans';color:var(--ink);background:var(--candle);box-shadow:var(--pxb),inset 0 -8px 0 0 var(--candle-deep);letter-spacing:.04em}
+.cat .t b{display:block;font:400 24px/24px 'Silkscreen';margin-bottom:4px}
+.cat .t span{font:700 16px/20px 'Atkinson Hyperlegible'}
+.note{font:700 16px/20px 'Atkinson Hyperlegible';color:var(--fog);text-align:center}
+.btn{display:flex;align-items:center;justify-content:center;height:64px;font:400 24px/24px 'Silkscreen';color:var(--ink);background:var(--candle);box-shadow:var(--pxb),inset 0 -8px 0 0 var(--candle-deep)}
 .btn.alt{background:var(--clinic);box-shadow:var(--pxb),inset 0 -8px 0 0 var(--clinic-shade)}
-.btn.sm{font-size:20px}
+
+/* running */
+.run{position:absolute;left:16px;right:16px;top:316px;background:var(--holo);color:var(--ink);padding:12px 16px;box-shadow:var(--pxb),inset 0 -4px 0 0 var(--holo-deep)}
+.run b{display:block;font:400 32px/32px 'Silkscreen';margin-bottom:8px}
+.run .bar{display:flex;gap:4px;margin:4px 0 8px}
+.run .bar i{width:24px;height:16px;background:var(--ink)}
+.run .bar i.left{background:transparent;box-shadow:inset 0 0 0 4px var(--ink)}
+.run p{font:700 16px/21px 'Atkinson Hyperlegible'}
+.locked{position:absolute;left:20px;right:20px;bottom:28px;height:64px;display:flex;align-items:center;justify-content:center;background:var(--bench);color:var(--fog);font:400 24px/24px 'Silkscreen';box-shadow:var(--pxb)}
 
 /* fail */
 .shake{animation:shake 320ms steps(1,end) 1 both}
 .banner{position:absolute;left:16px;right:16px;top:316px;background:var(--alarm);color:var(--ink);padding:12px 16px;box-shadow:var(--pxb)}
-.banner b{display:block;font:700 32px/32px 'Pixelify Sans';margin-bottom:8px}
+.banner b{display:block;font:400 32px/32px 'Silkscreen';margin-bottom:8px}
 .banner p{font:700 17px/22px 'Atkinson Hyperlegible'}
 .log{position:absolute;left:16px;right:16px;top:476px;background:var(--parch);color:var(--ink);padding:12px 16px;box-shadow:var(--pxb),inset -4px -4px 0 0 var(--parch-shade)}
-.log h4{font:700 16px 'Pixelify Sans';margin-bottom:6px}
+.log h4{font:400 16px/16px 'Silkscreen';margin-bottom:8px}
 .log p{font:700 16px/21px 'Atkinson Hyperlegible'}
 
 /* success */
-.spot{position:absolute;inset:0;background:radial-gradient(circle at 50% 36%,transparent 0 30%,rgba(4,12,11,.45) 30% 48%,rgba(4,12,11,.75) 48%)}
-.stamp{position:absolute;z-index:3;left:50%;top:20px;transform:translateX(-50%);background:var(--bench);color:var(--led);font:700 40px/1 'Pixelify Sans';padding:12px 16px;box-shadow:var(--pxb);white-space:nowrap;animation:stamp 240ms steps(3,end) both}
+.stamp{position:absolute;z-index:3;left:0;right:0;margin:0 auto;width:max-content;top:20px;background:var(--bench);color:var(--led);font:400 40px/40px 'Silkscreen';padding:12px 16px;box-shadow:var(--pxb);white-space:nowrap;animation:stamp 240ms steps(3,end) both}
+.plank{position:absolute;left:99px;top:336px;width:192px;height:12px;background:var(--bench);box-shadow:inset 0 4px 0 0 var(--tile),0 4px 0 0 var(--ink)}
 .big{position:absolute;left:0;right:0;text-align:center}
-.cname{top:392px;font:700 64px/64px 'Pixelify Sans';color:#fff;letter-spacing:.02em}
-.crow{top:472px;display:flex;justify-content:center;align-items:center;gap:16px}
-.formula{font:700 32px 'Pixelify Sans';color:var(--clinic)}
+.cname{top:372px;font:400 64px/64px 'Silkscreen';color:#fff}
+.crow{top:452px;display:flex;justify-content:center;align-items:center;gap:16px}
+.formula{font-size:32px;line-height:32px;color:var(--clinic)}
 .formula sub{font-size:20px;vertical-align:-6px}
-.pts{background:var(--holo);color:var(--ink);font:700 32px/1 'Pixelify Sans';padding:6px 10px;box-shadow:var(--pxb),inset 0 -4px 0 0 var(--holo-deep)}
-.ctag{display:flex;align-items:center;gap:8px;background:var(--pressure);color:var(--ink);font:700 16px 'Pixelify Sans';padding:4px 8px 4px 4px;box-shadow:var(--pxb)}
-.first{position:absolute;left:24px;right:24px;top:544px;background:var(--parch);color:var(--ink);padding:12px 16px;box-shadow:var(--pxb),inset -4px -4px 0 0 var(--parch-shade)}
-.first b{display:block;font:700 24px 'Pixelify Sans'}
-.first p{font:700 16px/21px 'Atkinson Hyperlegible';margin-top:4px}
+.pts{background:var(--holo);color:var(--ink);font:400 32px/32px 'Silkscreen';padding:4px 12px;box-shadow:var(--pxb),inset 0 -4px 0 0 var(--holo-deep)}
+.ctag{display:flex;align-items:center;gap:8px;background:var(--pressure);color:var(--ink);font:400 16px/16px 'Silkscreen';padding:4px 8px 4px 4px;box-shadow:var(--pxb)}
+.first{position:absolute;left:24px;right:24px;top:524px;background:var(--parch);color:var(--ink);padding:12px 16px;box-shadow:var(--pxb),inset -4px -4px 0 0 var(--parch-shade)}
+.first b{display:block;font:400 24px/24px 'Silkscreen'}
+.first p{font:700 16px/21px 'Atkinson Hyperlegible';margin-top:8px}
+.first p.lend{border-top:4px solid var(--parch-shade);padding-top:8px}
 .first:before{content:"";position:absolute;right:28px;top:-10px;width:12px;height:12px;background:var(--alarm);box-shadow:0 0 0 4px var(--ink)}
-.lend{position:absolute;left:24px;right:24px;top:660px;font:700 16px/20px 'Atkinson Hyperlegible';color:var(--clinic);text-align:center}
-.lend em{font-style:normal;color:var(--pressure)}
+.privacy{position:absolute;left:24px;right:24px;bottom:108px;text-align:center;font:700 16px/20px 'Atkinson Hyperlegible';color:var(--fog)}
 .actions{position:absolute;left:20px;right:20px;bottom:28px;display:flex;gap:16px}
 .actions .btn{flex:1}
-
-.bub{animation:bubble 1200ms steps(6,end) infinite}
-.flow{animation:flow 800ms steps(4,end) infinite}
-.f1,.f2,.f3{animation:frame3 450ms steps(1,end) infinite}.f2{animation-delay:-150ms}.f3{animation-delay:-300ms}
 .puff{animation:puff 900ms steps(3,end) infinite}
-@keyframes frame3{0%{opacity:1}33.333%{opacity:0}100%{opacity:0}}
-@keyframes bubble{0%{transform:translateY(0);opacity:1}83%{opacity:1}100%{transform:translateY(-6px);opacity:0}}
+.flow{animation:flow 800ms steps(4,end) infinite}
 @keyframes flow{to{stroke-dashoffset:-4}}
-@keyframes stamp{from{transform:translateX(-50%) scale(1.75);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
 @keyframes puff{from{transform:translateY(0)}to{transform:translateY(-3px)}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 <script>
-/* ===== Secret Catalyst pixel sprite kit (identical in every mockup). ===== */
-const P={k:'#071312',K:'#071312',g:'#183b36',G:'#2c5a52',w:'#e9fff9',l:'#dce7ee',m:'#a9bcc8',R:'#8a3b32',r:'#5a231e',c:'#9a7048',C:'#5e4026',Y:'#f7c61b',o:'#ff5a36',y:'#ffb547',W:'#fff4c2',A:'#c98a2a',a:'#ffb547',S:'#ffe14a',Z:'#d9a400',f:'#dce7ee',P:'#a57bff',E:'#4db2ff',N:'#4bf08b',n:'#b9ffd2',Q:'#ff5fae',q:'#b8306e',T:'#ffffff',t:'#9daec6',x:'#e9e2d0',z:'#071312',v:'#5e676b',V:'#8a9599',s:'#8a9a96'};
-const LIQ={common:{L:'#9fc2b8',D:'#6f9388',H:'#cfe6de'},uncommon:{L:'#3ff0e6',D:'#16b3b5',H:'#b5fff8'},rare:{L:'#e4ecf7',D:'#9daec6',H:'#ffffff'},isotope:{L:'#d4ff2a',D:'#8dc20a',H:'#f3ffb0'},legendary:{L:'#ffcb3d',D:'#d9851c',H:'#fff0b0',c:'#ffcb3d'},
- heat:{L:'#ff5a36',D:'#b8321c',H:'#ffb09a'},pressure:{L:'#a57bff',D:'#6c46c9',H:'#d9c7ff'},light:{L:'#ffe14a',D:'#c9a400',H:'#fff4b0'},electricity:{L:'#4db2ff',D:'#1f6fc2',H:'#b8e0ff'},enzyme:{L:'#4bf08b',D:'#1fa85a',H:'#b9ffd2'},acid:{L:'#ff5fae',D:'#b8306e',H:'#ffc2e0'},
- sludge:{L:'#6b5a2e',D:'#463a1c',H:'#8c7a44'},frozen:{L:'#bdf4ff',D:'#6cc9e6',H:'#ffffff'},empty:{L:'#183b36',D:'#183b36',H:'#2c5a52'}};
-const SPR={
-jar:["................","................","................","....kkkkkkkk....","....kRRRRRRk....","....krrrrrrk....","...kkkkkkkkkk...","..kwggggggggGk..","..kwggggggggGk..","..kHHHHHHHHHHk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","..kDLLLLLLLLDk..","..kDDDDDDDDDDk..","...kkkkkkkkkk..."],
-flask:["................","......kkkk......","......kcck......","......kCCk......",".....kkkkkk.....","......kwgk......","......kwgk......",".....kkwgkk.....","....kgwgggGk....","...kHHHHHHHHk...","..kLllllllllLk..","..kLllllllllLk..",".kLLllllllllLLk.",".kLLllllllllLLk.",".kwLmmmmmmmmLLk.",".kwLLLLLLLLLLLk.",".kLLLLLLLLLLLDk.","..kDLLLLLLLLDk..","...kDDDDDDDDk...","....kkkkkkkk...."],
-decanter:[".......kk.......","......kTTk......",".....kTttTk.....","......kttk......",".....kkkkkk.....","......kwgk......",".....kkwgkk.....","...kkgwgggGkk...","..kHHHHHHHHHHk..","..kwLLLLLLLLLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","..kDDDDDDDDDDk..","...kkkkkkkkkk..."],
-ampoule:[".......kk.......","......kwgk......","......kwgk......",".....kkwgkk.....","....kYKYKYKk....","....kKYKYKYk....","....kwggggGk....","...kkHHHHHHkk...","..kwLLLLLLLLLk..","..kwLLLLLLLLLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","...kDLLLLLLDk...","....kDDDDDDk....",".....kkkkkk....."],
-erlen:["................",".....kkkkkk.....",".....kcccck.....","......kkkk......","......kwgk......","......kwgk......","......kwgk......",".....kwgggk.....",".....kwgggk.....","....kHHHHHHk....","....kwLLLLLk....","...kwLLLLLLLk...","...kLLLLLLLLk...","..kLLLLLLLLLLk..","..kLLLLLLLLLLk..",".kLLLLLLLLLLLLk.",".kLLLLLLLLLLLLk.","kDLLLLLLLLLLLLDk","kDDDDDDDDDDDDDDk","kkkkkkkkkkkkkkkk"],
-tube:["kkkkkk",".kkkk.",".kwgk.",".kwgk.",".kHHk.",".kwLk.",".kwLk.",".kLLk.",".kLLk.",".kLLk.",".kLLk.",".kLLk.",".kLLk.",".kDLk.",".kDDk.","..kk.."],
-lampBase:[".....kk.....","...kkkkkk...","..kAaaaaAk..",".kAaaaaaaAk.",".kAaaaaaaAk.","..kkkkkkkk.."],
-fA:["......o.....",".....oy.....",".....oyo....","....oyWyo...","....oyWyo...",".....oyo...."],
-fB:[".....o......",".....oyo....","....oyyo....","....oyWyo...","....oyWyo...",".....oyo...."],
-fC:["......o.....","......yo....",".....oyyo...","....oyWyo...","....oyWyo...",".....oyo...."],
-i_heat:["....kk....","...kok....","...kook...","..kooyok..","..koyyok..",".kooyWyok.",".koyWWyok.",".koyWWyok.","..koyyok..","...kkkk..."],
-i_pressure:["...kkkk...",".kkPPPPkk.",".kPffffPk.","kPffffkfPk","kPfffkffPk","kPffkkffPk","kPffffffPk",".kPffffPk.",".kkPPPPkk.","...kkkk..."],
-i_light:["....ZZ....",".Z.kkkk.Z.","..kSSSSk..",".kSWWSSSk.","ZkSWSSSSkZ","ZkSSSSSSkZ",".kSSSSSSk.","..kSSSSk..",".Z.kkkk.Z.","....ZZ...."],
-i_electricity:[".....kkkk.","....kEEk..","...kEEk...","..kEEkkkk.",".kEEEEEEk.",".kkkkEEk..","....kEk...","...kEk....","..kEk.....","..kk......"],
-i_enzyme:[".kk....kk.",".kNk..knk.","..kNkknk..","...kNnk...","...knNk...","..knkkNk..",".knk..kNk.",".knk..kNk.","..knkkNk..","...kNnk..."],
-i_acid:["....kk....","....kk....","...kQQk...","...kQQk...","..kQWQQk..",".kQWQQQQk.",".kQQQQQQk.",".kQQQQqQk.","..kQqqQk..","...kkkk..."],
-smoke:["...kkk....","..ksssk...",".ksssssk..","ksssssssk.",".ksssssssk","..kssssk..","...kkkk..."],
-qr:["kkk.k.kkk","k.k...k.k","kkk.k.kkk","....k....","k.kk.kk.k","....k....","kkk..k.k.","k.k.kk..k","kkk.k.kk."]
-};
-const TSPR={common:'jar',uncommon:'flask',rare:'decanter',isotope:'ampoule'};
-function rects(rows,pal={},ox=0,oy=0){let s='';rows.forEach((row,y)=>{let x=0;while(x<row.length){const ch=row[x];if(ch==='.'){x++;continue}let e=x;while(e<row.length&&row[e]===ch)e++;const col=pal[ch]||P[ch];if(col)s+=`<rect x="${x+ox}" y="${y+oy}" width="${e-x}" height="1" fill="${col}" class="c-${ch}"/>`;x=e}});return s}
-function wrap(w,h,sc,inner,cls=''){return `<svg class="sprite ${cls}" width="${w*sc}" height="${h*sc}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`}
-function bubbles(list,ox=0,oy=0){return list.map(([x,y],i)=>`<rect class="bub" x="${x+ox}" y="${y+oy}" width="1" height="1" fill="#ffffff" style="animation-delay:${-i*400}ms"/>`).join('')}
-function halo(r,color,sc){let s='';const d=r*2;for(let y=0;y<d;y++){let x=0;while(x<d){const al=a=>{const t=Math.hypot(a+.5-r,y+.5-r);return t<r*.55?.38:t<r?.16:0};const v=al(x);let e=x;while(e<d&&al(e)===v)e++;if(v)s+=`<rect x="${x}" y="${y}" width="${e-x}" height="1" fill="${color}" fill-opacity="${v}"/>`;x=e}}return wrap(d,d,sc,s,'halo')}
-function flask(liq,sc,o={}){let s=rects(SPR.erlen,LIQ[liq]);if(!o.still)s+=bubbles([[5,16],[8,14],[10,17]]);return wrap(16,20,sc,s,liq==='legendary'?'prism':'')}
-function mount(root=document){root.querySelectorAll('[data-s]').forEach(el=>{if(el.dataset.done)return;el.dataset.done=1;const d=el.dataset,x=+d.x||4;let h='';
- if(d.s==='flask')h=flask(d.t,x,{still:'still' in d});else if(d.s==='icon')h=wrap(10,10,x,rects(SPR['i_'+d.t]));else if(d.s==='halo')h=halo(+d.r,d.c,x);else{const r=SPR[d.s];h=wrap(r[0].length,r.length,x,rects(r))}
- el.insertAdjacentHTML('afterbegin',h)})}
-
-/* ref-4 apparatus rack, 88x56 art px. Pipes are orthogonal glass tubes; liquid "marches" as a 2-on/2-off dash (ref-4). */
-function route(pts){let ink='',glass='';for(let i=0;i<pts.length-1;i++){const[x1,y1]=pts[i],[x2,y2]=pts[i+1];const x=Math.min(x1,x2),y=Math.min(y1,y2),w=Math.abs(x2-x1)+1,h=Math.abs(y2-y1)+1;ink+=`<rect x="${x-1}" y="${y-1}" width="${w+2}" height="${h+2}" fill="#071312"/>`;glass+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#2c5a52"/>`}return{ink,glass,pts}}
-function flow(pts,col,on){return `<polyline points="${pts.map(([x,y])=>`${x+.5},${y+.5}`).join(' ')}" fill="none" stroke="${col}" stroke-width="1" stroke-dasharray="2 2" class="${on?'flow':''}"/>`}
+/* ref-4 apparatus rack, 88x56 art px. Glass pipes are FILLED with the reagent's own liquid; the dash marches only while running. */
+function route(pts){let ink='',glass=[];for(let i=0;i<pts.length-1;i++){const[x1,y1]=pts[i],[x2,y2]=pts[i+1];const x=Math.min(x1,x2),y=Math.min(y1,y2),w=Math.abs(x2-x1)+1,h=Math.abs(y2-y1)+1;ink+=`<rect x="${x-1}" y="${y-1}" width="${w+2}" height="${h+2}" fill="#071312"/>`;glass.push([x,y,w,h])}return{ink,glass,pts}}
+const fill=(r,col)=>r.glass.map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${col}"/>`).join('');
+function dash(pts,col,on){return `<polyline points="${pts.map(([x,y])=>`${x+.5},${y+.5}`).join(' ')}" fill="none" stroke="${col}" stroke-width="1" stroke-dasharray="2 2" class="${on?'flow':''}"/>`}
 function rig(state){
   const metal=(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#5e676b"/><rect x="${x}" y="${y}" width="${w>h?w:1}" height="${w>h?1:h}" fill="#8a9599"/>`;
   let s=metal(2,2,2,53)+metal(84,2,2,53)+metal(2,2,84,2)+metal(0,54,88,2)+metal(4,9,24,2);
+  /* ref-2 alarm lamp hangs from the rack. Lit + stepped red halo only on a failed mix. */
+  s+=rects(SPR.alarmOff,{},40,4);
+  if(state==='fail')s+=`<g class="blinkA">${haloRects(6,'#ff4b3e',2,38,0)}${rects(SPR.alarmOn,{},40,4)}</g>`;
   s+=rects(SPR.tube,LIQ.common,8,6)+rects(SPR.tube,LIQ.common,18,6);
   const pre=route([[10,22],[10,28],[20,28]]), pre2=route([[20,22],[20,28],[30,28],[30,36],[34,36],[34,28],[38,28],[38,36],[42,36],[42,28],[46,28],[46,36],[51,36]]);
-  /* post-catalyst pipe ends ON the stopper (art y 22), it never enters the glass. */
   const post=route([[58,36],[60,36],[60,18],[69,18],[69,21]]);
-  const liq= state==='fail'?'sludge':'empty';
-  s+=rects(SPR.erlen,LIQ[liq],62,22);
+  if(state==='run'){s+=rects(SPR.erlen.slice(0,15),LIQ.empty,62,22)+rects(SPR.erlen.slice(15),LIQ.pressure,62,37)+bubbles([[67,38],[72,39]])}
+  else s+=rects(SPR.erlen,LIQ[state==='fail'?'sludge':'empty'],62,22);
   if(state==='fail')s+=bubbles([[67,38],[71,36]]);
   s+=rects(SPR.lampBase,{},64,48)+`<g class="f1">${rects(SPR.fA,{},64,42)}</g><g class="f2">${rects(SPR.fB,{},64,42)}</g><g class="f3">${rects(SPR.fC,{},64,42)}</g>`;
-  s+=pre.ink+pre2.ink+post.ink+pre.glass+pre2.glass+post.glass;
-  const on=state!=='fail';
-  s+=flow(pre.pts,'#9fc2b8',on)+flow(pre2.pts,'#9fc2b8',on);
-  if(state!=='nocat')s+=flow(post.pts,state==='fail'?'#6b5a2e':'#a57bff',on);
+  s+=pre.ink+pre2.ink+post.ink;
+  /* feed pipes carry each element's tier liquid (both sage here: N and H are common) */
+  s+=fill(pre,'#9fc2b8')+fill(pre2,'#9fc2b8');
+  const postCol=state==='fail'?'#6b5a2e':state==='build'?'#2c5a52':'#a57bff';
+  s+=fill(post,postCol);
+  const on=state==='run';
+  s+=dash(pre.pts,'#cfe6de',on)+dash(pre2.pts,'#cfe6de',on);
+  if(state!=='build')s+=dash(post.pts,state==='fail'?'#8c7a44':'#d9c7ff',on);
   s+= state==='fail'? `<rect x="49" y="30" width="12" height="12" fill="#071312"/><rect x="50" y="31" width="10" height="10" fill="#1e4640"/>` : rects(SPR.i_pressure,{},50,31);
   if(state==='fail')s+=`<g class="puff">${rects(SPR.smoke,{},70,8)}</g>`;
   return wrap(88,56,4,s);
@@ -157,49 +124,63 @@ function rig(state){
 <div class="phone">
   <header class="hud"><div class="led">MIX BENCH</div><div class="spacer"></div>
     <div class="strikes" aria-label="1 of 3 bad mixes"><span class="k">BAD MIXES</span><div class="s"><i class="x"></i><i></i><i></i></div></div></header>
-  <div class="rig" id="rig1"><span class="tag" style="left:30px;top:44px">N</span><span class="tag" style="left:70px;top:44px">H</span></div>
+  <div class="rig" id="rig1"><span class="tag sym" style="left:30px;top:44px">N</span><span class="tag sym" style="left:70px;top:44px">H</span></div>
   <div class="list">
-    <div class="rg"><span class="chip">N</span><span class="nm"><b>Nitrogen</b><span>the air</span></span>
-      <span class="step"><button>−</button><output>1</output><button>+</button></span></div>
-    <div class="rg"><span class="chip">H</span><span class="nm"><b>Hydrogen</b><span>the tiny one</span></span>
-      <span class="step"><button>−</button><output>3</output><button>+</button></span></div>
-    <div class="owned"><span class="add">+ ADD</span><span>O</span><span>C</span><span>Na</span><span>Cl</span><span>Fe</span></div>
+    <div class="rg"><span class="chip sym">N</span><span class="nm"><b>Nitrogen</b><span>the air</span></span>
+      <span class="step"><button>-</button><output>1</output><button>+</button></span></div>
+    <div class="rg"><span class="chip sym">H</span><span class="nm"><b>Hydrogen</b><span>the tiny one</span></span>
+      <span class="step"><button>-</button><output>3</output><button>+</button></span></div>
+    <div class="owned"><span class="add">+ ADD</span><span class="sym">O</span><span class="sym">C</span><span class="sym">Na</span><span class="sym">Cl</span><span class="sym">Fe</span></div>
     <div class="cat"><i data-s="icon" data-t="pressure" data-x="4"></i><span class="t"><b>PRESSURE</b><span>Lent by Kabir. Code burns in 08:41.</span></span></div>
     <p class="note">1 of 3 bad mixes. A good mix resets it.</p>
     <div class="btn">SYNTHESIZE</div>
   </div>
 </div></div>
 
-<!-- 02 FAIL -->
-<div><p class="frame-label">02 · MIX BENCH · failed mix (strike 2 of 3)</p>
+<!-- 02 RUNNING (ref-4: the hypnotic part) -->
+<div><p class="frame-label">02 · MIX BENCH · running (1.6 s, input locked)</p>
+<div class="phone">
+  <header class="hud"><div class="led">MIX BENCH</div><div class="spacer"></div>
+    <div class="strikes" aria-label="1 of 3 bad mixes"><span class="k">BAD MIXES</span><div class="s"><i class="x"></i><i></i><i></i></div></div></header>
+  <div class="rig" id="rigR"><span class="tag sym" style="left:30px;top:44px">N</span><span class="tag sym" style="left:70px;top:44px">H</span></div>
+  <div class="run"><b>RUNNING</b>
+    <div class="bar" aria-label="step 3 of 5"><i></i><i></i><i></i><i class="left"></i><i class="left"></i></div>
+    <p>Air and three tinies, through Kabir's Pressure. Don't touch the glass.</p></div>
+  <div class="locked">HOLD STILL</div>
+</div></div>
+
+<!-- 03 FAIL -->
+<div><p class="frame-label">03 · MIX BENCH · failed mix (strike 2 of 3)</p>
 <div class="phone">
   <header class="hud"><div class="led">MIX BENCH</div><div class="spacer"></div>
     <div class="strikes" aria-label="2 of 3 bad mixes"><span class="k">BAD MIXES</span><div class="s"><i class="x"></i><i class="x"></i><i></i></div></div></header>
   <div class="rig shake" id="rig2"></div>
   <div class="banner"><b>NOTHING.</b><p>Brown sludge and a bad smell. That's 2 of 3. One more bad mix and your lab freezes for 12 minutes.</p></div>
-  <div class="log"><h4>LAB LOG 15:39</h4><p>N ×1 + H ×3, no catalyst. They won't hold hands. Maybe somebody has to squeeze.</p></div>
-  <div class="actions" style="bottom:104px"><div class="btn alt sm">HINT BOOK</div><div class="btn sm">TRY AGAIN</div></div>
+  <div class="log"><h4>LAB LOG <span class="n">15:39</span></h4><p>N ×1 + H ×3, no catalyst. They won't hold hands. Maybe somebody has to squeeze.</p></div>
+  <div class="actions" style="bottom:104px"><div class="btn alt">HINT BOOK</div><div class="btn">TRY AGAIN</div></div>
 </div></div>
 
-<!-- 03 SUCCESS -->
-<div><p class="frame-label">03 · SYNTHESIZED · first discovery (the screenshot)</p>
+<!-- 04 SUCCESS (private: this is YOUR phone, so it shows the catalyst and formula) -->
+<div><p class="frame-label">04 · SYNTHESIZED · first discovery (private)</p>
 <div class="phone">
-  <div class="spot"></div>
   <div class="stamp">SYNTHESIZED</div>
-  <i class="abs" data-s="halo" data-r="20" data-c="#a57bff" data-x="8" style="left:35px;top:96px"></i>
+  <i class="abs" data-s="halo" data-r="14" data-c="#a57bff" data-x="8" style="left:83px;top:128px"></i>
+  <div class="plank"></div>
   <i class="abs" data-s="flask" data-t="pressure" data-x="8" style="left:131px;top:176px"></i>
   <div class="big cname">AMMONIA</div>
-  <div class="big crow"><span class="formula">NH<sub>3</sub></span><span class="ctag"><i data-s="icon" data-t="pressure" data-x="4" style="display:inline-block"></i>PRESSURE</span><span class="pts">+20</span></div>
-  <div class="first"><b>FIRST IN THE LAB</b><p>Nobody on campus had made Ammonia until 15:42. Your name is in the book now.</p></div>
-  <p class="lend">+6 to Kabir for the <em>Pressure</em>. Be nice to Kabir.</p>
-  <div class="actions"><div class="btn alt sm">BENCH</div><div class="btn">POST IT</div></div>
+  <div class="big crow"><span class="formula sym">NH<sub>3</sub></span><span class="ctag"><i data-s="icon" data-t="pressure" data-x="4" style="display:inline-block"></i>PRESSURE</span><span class="pts">+20</span></div>
+  <div class="first"><b>FIRST IN THE LAB</b><p>Nobody on campus had made Ammonia until 15:42. Your name is in the book now.</p>
+    <p class="lend">+6 to Kabir for the Pressure. Be nice to Kabir.</p></div>
+  <p class="privacy">Your post shows the name and the time. The catalyst stays sealed.</p>
+  <div class="actions"><div class="btn alt" style="flex:0 0 132px">BENCH</div><div class="btn">POST IT</div></div>
 </div></div>
 
 <script>
 /* Strike marks: a 5x5 pixel X glyph (art px = 4) stamped in ink on the alarm square. Empty slots stay dark. */
 const XG=["k...k",".k.k.","..k..",".k.k.","k...k"];
 document.querySelectorAll('.strikes i.x').forEach(el=>el.innerHTML=wrap(7,7,4,rects(XG,{},1,1)));
-document.getElementById('rig1').insertAdjacentHTML('afterbegin',rig('ok'));
+document.getElementById('rig1').insertAdjacentHTML('afterbegin',rig('build'));
+document.getElementById('rigR').insertAdjacentHTML('afterbegin',rig('run'));
 document.getElementById('rig2').insertAdjacentHTML('afterbegin',rig('fail'));
 mount();
 </script>

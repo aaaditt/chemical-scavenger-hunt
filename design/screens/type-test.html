@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Secret Catalyst · Type confusables + tier silhouette test (round 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- Silkscreen = chosen pixel face. Atkinson = game-state glyphs. Press Start 2P = runner-up. Pixelify Sans = round-1 face, shown only as the rejected baseline. -->
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Atkinson+Hyperlegible:wght@400;700&family=Press+Start+2P&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="kit.css">
+<script src="kit.js"></script>
+<style>
+body{padding:48px;width:1400px;color:var(--clinic)}
+h1{font:400 32px/32px 'Silkscreen';color:var(--led);margin-bottom:8px}
+h2{font:400 24px/24px 'Silkscreen';color:var(--clinic);margin:48px 0 8px}
+.lede{font:700 16px/24px 'Atkinson Hyperlegible';color:var(--fog);max-width:1100px;margin-bottom:16px}
+.stock{display:flex;gap:24px;align-items:stretch}
+.panel{flex:1;padding:16px 24px;box-shadow:var(--pxb)}
+.panel.night{background:var(--clinic);color:var(--ink)}
+.panel.dark{background:var(--bench);color:var(--clinic)}
+.panel.day{background:#f4f8fa;color:var(--ink)}
+.row{display:flex;align-items:baseline;gap:24px;padding:8px 0;border-bottom:4px solid rgba(7,19,18,.12)}
+.panel.dark .row{border-bottom-color:rgba(220,231,238,.12)}
+.row:last-child{border-bottom:0}
+.sz{flex:0 0 120px;font:700 14px/16px 'Atkinson Hyperlegible';opacity:.75}
+.s{white-space:normal;word-break:normal}
+.silk{font-family:'Silkscreen';font-weight:400}
+.atk{font-family:'Atkinson Hyperlegible';font-weight:700}
+.ps2p{font-family:'Press Start 2P'}
+.pxf{font-family:'Pixelify Sans';font-weight:700}
+.verdict{display:inline-block;margin-left:8px;padding:4px 8px;font:400 16px/16px 'Silkscreen';box-shadow:var(--pxb)}
+.verdict.ok{background:var(--led);color:var(--ink)}.verdict.no{background:var(--alarm);color:var(--ink)}.verdict.alt{background:var(--clinic-shade);color:var(--ink)}
+.demo{display:flex;flex-wrap:wrap;gap:32px;align-items:center;padding:16px 0}
+.ledbox{background:var(--bench);color:var(--led);font:400 24px/24px 'Silkscreen';padding:12px;box-shadow:var(--pxb)}
+.stampbox{background:var(--bench);color:var(--led);font:400 40px/40px 'Silkscreen';padding:12px 16px;box-shadow:var(--pxb)}
+/* tiers */
+.tiers{display:flex;gap:24px;align-items:flex-end}
+.tcell{display:flex;flex-direction:column;align-items:center;gap:12px;width:112px}
+.tcell b{font:400 16px/16px 'Silkscreen'}
+.tcell .pips{display:flex;gap:4px;height:8px}.tcell .pips i{width:8px;height:8px;background:currentColor}
+.btl{position:relative}
+.btl .sym{position:absolute;z-index:2;left:16px;top:40px;width:32px;height:16px;display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;color:var(--ink)}
+.gray{filter:grayscale(1)}
+.tierwall{background-color:var(--wall);background-image:linear-gradient(var(--seam) 0 4px,transparent 4px),linear-gradient(90deg,var(--seam) 0 4px,transparent 4px);background-size:96px 64px;padding:24px;box-shadow:var(--pxb)}
+.tierday{background:#c9d8e2;padding:24px;box-shadow:var(--pxb);color:var(--ink)}
+.cap{font:700 16px/24px 'Atkinson Hyperlegible';color:var(--fog);margin-top:8px}
+</style>
+</head>
+<body>
+<h1>TYPE TEST · ROUND 2</h1>
+<p class="lede">Every pair must be distinguishable at 100% zoom. Silkscreen is a bitmap face on an 8px em, so it is only set at multiples of 8 (16, 24, 32, 40, 48, 64, 96), weight 400, letter-spacing 0. Its lowercase is drawn as small caps, which is one reason element symbols are never set in it. Row labels: GO = shipping face for that job, ALT = runner-up, NO = rejected.</p>
+
+<h2>1 · SILKSCREEN (display, stamps, names, tags, pure-number tokens 24px+) <span class="verdict ok">GO</span></h2>
+<div class="stock">
+  <div class="panel night" id="silkN"></div>
+  <div class="panel dark" id="silkD"></div>
+</div>
+<div class="stock" style="margin-top:24px"><div class="panel day" id="silkDay"></div></div>
+
+<h2>2 · ATKINSON HYPERLEGIBLE 700 (symbols, formulas, digits in mixed or sub-40px strings) <span class="verdict ok">GO</span></h2>
+<div class="stock">
+  <div class="panel night" id="atkN"></div>
+  <div class="panel dark" id="atkD"></div>
+</div>
+
+<h2>3 · PRESS START 2P <span class="verdict alt">ALT</span> &nbsp; PIXELIFY SANS (round 1) <span class="verdict no">NO</span></h2>
+<div class="stock">
+  <div class="panel night" id="ps"></div>
+  <div class="panel night" id="pxf"></div>
+</div>
+
+<h2>4 · THE RULE IN PRACTICE</h2>
+<div class="demo">
+  <div class="ledbox">LAB <span class="n">1137</span></div>
+  <div class="stampbox">COLLECTED</div>
+  <div class="stampbox">SYNTHESIZED</div>
+  <div class="stampbox" style="background:var(--frost);color:var(--ink)">LAB FROZEN</div>
+  <div class="ledbox" style="color:var(--holo)">BAD MIXES</div>
+  <div class="ledbox" style="color:var(--candle)">BITS DUBAI</div>
+  <div class="ledbox" style="font-size:48px;line-height:48px;color:var(--frost)">11:42</div>
+  <div class="ledbox" style="font-size:32px;line-height:32px;color:var(--holo)">+50 +25 588 551 455</div>
+  <div class="ledbox" style="color:var(--clinic)">BOTTLE <span class="n">3</span> OF <span class="n">5</span></div>
+  <div class="ledbox" style="color:#fff;font-size:48px;line-height:48px">URANIUM <span class="n" style="font-size:32px">235</span></div>
+  <div class="ledbox" style="color:var(--clinic)"><span class="n" style="font-size:24px">CH<sub>4</sub>N<sub>2</sub>O · NaCl · CuSO<sub>4</sub> · ZnO · SiO<sub>2</sub></span></div>
+</div>
+
+<h2>5 · TIER VESSELS · COLOR, GRAYSCALE, SOLID SILHOUETTE (1x = 4 CSS px per art px)</h2>
+<p class="lede">Common jar · Uncommon round flask · Rare diamond decanter (gem stopper 6 rows, neck 2 wide, shoulders 16 wide, stem and foot) · Isotope banded ampoule · Legendary Erlenmeyer (gold, 5 pips). The first sparkle on Rare is static, so it shows on a still frame. If the solid row reads, shape alone carries rarity.</p>
+<div class="stock">
+  <div class="tierwall"><div class="tiers" id="tColor"></div><p class="cap">Night, color</p></div>
+  <div class="tierwall gray"><div class="tiers" id="tGray"></div><p class="cap">Night, grayscale</p></div>
+</div>
+<div class="stock" style="margin-top:24px">
+  <div class="tierday"><div class="tiers" id="tSolid"></div><p class="cap" style="color:#34505a">Solid ink silhouette, Day stock</p></div>
+  <div class="tierday gray"><div class="tiers" id="tDay"></div><p class="cap" style="color:#34505a">Day Shift, grayscale</p></div>
+</div>
+
+<h2>6 · COMPOUNDS · PRIVATE (your phone) vs PUBLIC (projector, story card, feed)</h2>
+<p class="lede">Your own SYNTHESIZED screen shows the catalyst's liquid color. Anything other people can see uses the sealed flask: parchment wrap, red wax, a "?" and the CATALYZED ? chip, until the finale.</p>
+<div class="tierwall" style="display:inline-block"><div class="tiers" id="tCmp"></div></div>
+
+<script>
+const STR='C O 0 Q D · S 5 · B 8 · Z 2 · I l 1 · G 6 · Cu Co Ca Cl Zn Si S';
+const rowsFor=(cls,sizes)=>sizes.map(z=>`<div class="row"><span class="sz">${z}px</span><span class="s ${cls}" style="font-size:${z}px;line-height:${z}px">${STR}</span></div>`).join('');
+document.getElementById('silkN').innerHTML=rowsFor('silk',[16,24,32,40]);
+document.getElementById('silkD').innerHTML=rowsFor('silk',[16,24,32,40]);
+document.getElementById('silkDay').innerHTML=rowsFor('silk',[48,64,96]);
+document.getElementById('atkN').innerHTML=rowsFor('atk',[14,16,18,24]);
+document.getElementById('atkD').innerHTML=rowsFor('atk',[14,16,24,40]);
+document.getElementById('ps').innerHTML=rowsFor('ps2p',[16,24]);
+document.getElementById('pxf').innerHTML=rowsFor('pxf',[16,24,40]);
+
+const T=[['common','H','COMMON'],['uncommon','K','UNCOMMON'],['rare','Ag','RARE'],['isotope','U','ISOTOPE'],['legendary','','LEGEND']];
+function vessel([t,sym,lab],opt={}){
+  let svg;
+  if(t==='legendary'){svg=opt.solid?wrap(16,20,4,rects(SPR.erlen.map(r=>r.replace(/[^.]/g,'k')))):flask('legendary',4,{still:true})}
+  else if(opt.solid){svg=wrap(16,20,4,rects(SPR[TSPR[t]].map(r=>r.replace(/[^.]/g,'k'))))}
+  else svg=bottle(t,4);
+  const symEl=(!opt.solid&&sym)?`<span class="sym">${sym}</span>`:'';
+  return `<div class="tcell"><div class="btl">${svg}${symEl}</div><span class="pips">${'<i></i>'.repeat(PIPN[t])}</span><b>${lab}</b></div>`}
+document.getElementById('tColor').innerHTML=T.map(v=>vessel(v)).join('');
+document.getElementById('tGray').innerHTML=T.map(v=>vessel(v)).join('');
+document.getElementById('tSolid').innerHTML=T.map(v=>vessel(v,{solid:true})).join('');
+document.getElementById('tDay').innerHTML=T.map(v=>vessel(v)).join('');
+const C=['heat','pressure','light','electricity','enzyme','acid'];
+document.getElementById('tCmp').innerHTML=C.map(c=>`<div class="tcell"><div class="btl">${flask(c,4,{still:true})}</div><b style="font-size:16px">${c.slice(0,5).toUpperCase()}</b></div>`).join('')+
+  `<div class="tcell"><div class="btl">${flask('',4,{sealed:true})}</div><b>PUBLIC</b></div>`;
+</script>
+</body>
+</html>

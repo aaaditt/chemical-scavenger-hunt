@@ -2,83 +2,77 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Secret Catalyst · Story card 1080x1920 · compound synthesized</title>
+<title>Secret Catalyst · Story card 1080x1920 · compound synthesized (public, during play)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../tokens.css">
-<!-- Browsers skip Tailwind's @theme block, so the token values are mirrored below as short vars.
-     STORY SCALE: 1 art px = 12 CSS px (phone 4 x 3, the card is ~3x a phone). Hero close-up = 24.
-     IG safe area: nothing that matters above y=240 or below y=1680. The dashed guides are mockup-only. -->
+<link rel="stylesheet" href="kit.css">
+<script src="kit.js"></script>
+<!-- STORY SCALE: 1 art px = 12 CSS px (phone 4 x 3). Hero close-up = 24.
+     IG safe area: everything that matters sits inside y 240-1680.
+     PUBLIC SURFACE: no formula, no catalyst name or color, no lender. Sealed flask + CATALYZED ? chip until the finale recap.
+     The safe-area guides only render with #guides in the URL, so the next/og template can never ship them. -->
 <style>
-:root{--ink:#071312;--bench:#0b1a19;--wall:#12302c;--seam:#0d2521;--tile:#1e4640;--clinic:#dce7ee;--clinic-shade:#a9bcc8;--parch:#eadf9e;--parch-shade:#c9b96a;--holo:#43e6c6;--holo-deep:#1fa88e;--led:#8df25f;--candle:#ffb547;--alarm:#ff4b3e;--pressure:#a57bff;
---pxb:0 -12px 0 0 var(--ink),0 12px 0 0 var(--ink),-12px 0 0 0 var(--ink),12px 0 0 0 var(--ink)}
-*{box-sizing:border-box;margin:0;padding:0}
+:root{--pxb:0 -12px 0 0 var(--ink),0 12px 0 0 var(--ink),-12px 0 0 0 var(--ink),12px 0 0 0 var(--ink)}
 body{background:#000}
-.card{width:1080px;height:1920px;position:relative;overflow:hidden;color:var(--clinic);font-family:'Atkinson Hyperlegible',sans-serif;background-color:var(--wall);
+.card{width:1080px;height:1920px;position:relative;overflow:hidden;color:var(--clinic);background-color:var(--wall);
   background-image:linear-gradient(var(--seam) 0 12px,transparent 12px),linear-gradient(90deg,var(--seam) 0 12px,transparent 12px);background-size:288px 192px}
-.sprite{display:block;image-rendering:pixelated}
-.abs{position:absolute}
-.safe{position:absolute;left:0;right:0;height:0;border-top:4px dashed rgba(255,75,62,.5);z-index:9}
-.safe span{position:absolute;right:12px;top:4px;font:700 20px 'Pixelify Sans';color:rgba(255,75,62,.8)}
-/* quantised spotlight */
-.spot{position:absolute;inset:0;background:radial-gradient(circle at 50% 44%,transparent 0 30%,rgba(4,12,11,.4) 30% 46%,rgba(4,12,11,.72) 46%)}
-.brand{position:absolute;left:72px;right:72px;top:252px;display:flex;align-items:center;justify-content:space-between}
-.brand .lg{font:700 64px/72px 'Pixelify Sans';letter-spacing:.02em}
+.safe{display:none;position:absolute;left:0;right:0;height:0;border-top:4px dashed rgba(255,75,62,.5);z-index:9}
+.safe span{position:absolute;right:12px;top:4px;font:400 24px 'Silkscreen';color:rgba(255,75,62,.8)}
+.guides .safe{display:block}
+.brand{position:absolute;left:72px;right:72px;top:248px;display:flex;align-items:center;justify-content:space-between}
+.brand .lg{font:400 64px/64px 'Silkscreen'}
 .brand .lg .a{color:var(--clinic)}.brand .lg .b{color:var(--candle)}
-.brand .tag{background:var(--ink);color:var(--led);font:700 32px/1 'Pixelify Sans';padding:12px 16px;box-shadow:var(--pxb)}
-.stamp{position:absolute;z-index:3;left:50%;top:360px;transform:translateX(-50%);background:var(--bench);color:var(--led);font:700 96px/96px 'Pixelify Sans';padding:24px 36px;box-shadow:var(--pxb);white-space:nowrap}
-.plank{position:absolute;left:300px;top:1104px;width:480px;height:36px;background:var(--bench);box-shadow:inset 0 12px 0 0 var(--tile),0 12px 0 0 var(--ink)}
+.brand .tag{background:var(--ink);color:var(--led);font:400 32px/32px 'Silkscreen';padding:12px 16px;box-shadow:var(--pxb)}
+.stamp{position:absolute;z-index:3;left:0;right:0;margin:0 auto;width:max-content;top:348px;background:var(--bench);color:var(--led);font:400 96px/96px 'Silkscreen';padding:24px 36px;box-shadow:var(--pxb);white-space:nowrap}
+/* owner plate on label stock, under the stamp */
+.owner{position:absolute;z-index:3;left:0;right:0;margin:0 auto;width:max-content;top:528px;background:var(--clinic);color:var(--ink);font:400 32px/32px 'Silkscreen';padding:12px 24px;box-shadow:var(--pxb)}
+.owner .n{font-size:32px}
+/* stepped halo (r11, 2x2-block octagon at 24px) ends at y1116; hero name starts at y1140 on plain wall */
+.hl{position:absolute;left:276px;top:588px}
+.fl{position:absolute;left:348px;top:612px}
+.plank{position:absolute;left:300px;top:1092px;width:480px;height:36px;background:var(--bench);box-shadow:inset 0 12px 0 0 var(--tile),0 12px 0 0 var(--ink)}
 .big{position:absolute;left:0;right:0;text-align:center}
-.nm{top:1164px;font:700 144px/144px 'Pixelify Sans';color:#fff;letter-spacing:.02em}
-.row{top:1332px;display:flex;justify-content:center;align-items:center;gap:36px}
-.fm{font:700 72px/1 'Pixelify Sans';color:var(--clinic)}
-.fm sub{font-size:44px;vertical-align:-12px}
-.ctag{display:flex;align-items:center;gap:12px;height:84px;background:var(--pressure);color:var(--ink);font:700 40px 'Pixelify Sans';padding:0 20px 0 12px;box-shadow:var(--pxb)}
-.pts{height:84px;display:flex;align-items:center;background:var(--holo);color:var(--ink);font:700 64px/1 'Pixelify Sans';padding:0 20px;box-shadow:var(--pxb),inset 0 -12px 0 0 var(--holo-deep)}
-.note{position:absolute;left:96px;right:96px;top:1452px;background:var(--parch);color:var(--ink);padding:24px 36px;box-shadow:var(--pxb),inset -12px -12px 0 0 var(--parch-shade)}
+.nm{top:1140px;font:400 144px/144px 'Silkscreen';color:#fff}
+.row{top:1300px;display:flex;justify-content:center;align-items:center;gap:36px}
+.pts{height:96px;display:flex;align-items:center;background:var(--holo);color:var(--ink);font:400 64px/64px 'Silkscreen';padding:0 24px;box-shadow:var(--pxb),inset 0 -12px 0 0 var(--holo-deep)}
+.cz{height:96px;display:flex;align-items:center;gap:16px;background:var(--parch);color:var(--ink);font:400 40px/40px 'Silkscreen';padding:0 24px 0 6px;box-shadow:var(--pxb),inset 0 -12px 0 0 var(--parch-shade)}
+.note{position:absolute;left:96px;right:96px;top:1420px;background:var(--parch);color:var(--ink);padding:16px 36px;box-shadow:var(--pxb),inset -12px -12px 0 0 var(--parch-shade)}
 .note:before{content:"";position:absolute;right:72px;top:-24px;width:36px;height:36px;background:var(--alarm);box-shadow:0 0 0 12px var(--ink)}
-.note b{display:block;font:700 56px/60px 'Pixelify Sans'}
-.note p{font:700 40px/48px 'Atkinson Hyperlegible';margin-top:4px}
-.cta{top:1636px;font:700 36px/40px 'Atkinson Hyperlegible';color:var(--clinic)}
-.cta b{color:var(--candle)}
+.note b{display:block;font:400 48px/48px 'Silkscreen'}
+.note p{font:700 40px/48px 'Atkinson Hyperlegible';margin-top:8px}
+.cta{position:absolute;left:96px;right:96px;top:1572px;display:flex;align-items:center;gap:36px}
+.cta .qr{background:var(--clinic);padding:0;box-shadow:var(--pxb)}
+.cta p{font:700 36px/44px 'Atkinson Hyperlegible';color:var(--clinic)}
+.cta p b{color:var(--candle)}
 </style>
-<script>
-/* ===== Secret Catalyst pixel sprite kit (subset). 1 char = 1 art pixel. ===== */
-const P={k:'#071312',g:'#183b36',G:'#2c5a52',w:'#e9fff9',c:'#9a7048',C:'#5e4026',Y:'#f7c61b',f:'#dce7ee',P:'#a57bff'};
-const SPR={
-erlen:["................",".....kkkkkk.....",".....kcccck.....","......kkkk......","......kwgk......","......kwgk......","......kwgk......",".....kwgggk.....",".....kwgggk.....","....kHHHHHHk....","....kwLLLLLk....","...kwLLLLLLLk...","...kLLLLLLLLk...","..kLLLLLLLLLLk..","..kLLLLLLLLLLk..",".kLLLLLLLLLLLLk.",".kLLLLLLLLLLLLk.","kDLLLLLLLLLLLLDk","kDDDDDDDDDDDDDDk","kkkkkkkkkkkkkkkk"],
-gauge7:[".kkkkk.","kPPPPPk","kPffkPk","kPfkfPk","kPkffPk","kPPPPPk",".kkkkk."]
-};
-function rects(rows,pal={},ox=0,oy=0){let s='';rows.forEach((row,y)=>{let x=0;while(x<row.length){const ch=row[x];if(ch==='.'){x++;continue}let e=x;while(e<row.length&&row[e]===ch)e++;const col=pal[ch]||P[ch];if(col)s+=`<rect x="${x+ox}" y="${y+oy}" width="${e-x}" height="1" fill="${col}"/>`;x=e}});return s}
-function wrap(w,h,sc,inner){return `<svg class="sprite" width="${w*sc}" height="${h*sc}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`}
-function halo(r,color,sc){let s='';const d=r*2;for(let y=0;y<d;y++){let x=0;while(x<d){const al=a=>{const t=Math.hypot(a+.5-r,y+.5-r);return t<r*.55?.38:t<r?.16:0};const v=al(x);let e=x;while(e<d&&al(e)===v)e++;if(v)s+=`<rect x="${x}" y="${y}" width="${e-x}" height="1" fill="${color}" fill-opacity="${v}"/>`;x=e}}return wrap(d,d,sc,s)}
-function hazard(w,h,sc,band=4){let s='';for(let y=0;y<h;y++){let x=0;const v0=a=>Math.floor((a+y)/band)%2;while(x<w){const v=v0(x);let e=x;while(e<w&&v0(e)===v)e++;s+=`<rect x="${x}" y="${y}" width="${e-x}" height="1" fill="${v?'#071312':'#f7c61b'}"/>`;x=e}}return wrap(w,h,sc,s)}
-</script>
 </head>
 <body>
-<div class="card">
-  <div class="spot"></div>
+<div class="card" id="card">
   <i class="abs" id="hzT" style="left:0;top:0"></i>
   <div class="brand"><span class="lg"><span class="a">SECRET</span> <span class="b">CATALYST</span></span><span class="tag">BITS DUBAI</span></div>
   <div class="stamp">SYNTHESIZED</div>
-  <i class="abs" id="halo" style="left:204px;top:528px"></i>
-  <i class="abs" id="flask" style="left:348px;top:624px"></i>
+  <div class="owner">MEERA K · LAB <span class="n">1137</span></div>
+  <i class="hl" id="halo"></i>
+  <i class="fl" id="flask"></i>
   <div class="plank"></div>
   <div class="big nm">AMMONIA</div>
-  <div class="big row"><span class="fm">NH<sub>3</sub></span><span class="ctag"><i id="gi"></i>PRESSURE</span><span class="pts">+20</span></div>
+  <div class="big row"><span class="pts">+20</span><span class="cz"><i id="qi"></i>CATALYZED ?</span></div>
   <div class="note"><b>FIRST ON CAMPUS</b><p>Nobody made Ammonia before 15:42.</p></div>
-  <p class="big cta">Hunt the QRs. Borrow a catalyst. <b>Beat this.</b></p>
+  <div class="cta"><i class="qr" id="qr"></i><p>Hunt the QRs. Borrow a catalyst.<br><b>Beat this.</b></p></div>
   <i class="abs" id="hzB" style="left:0;top:1872px"></i>
 
   <div class="safe" style="top:240px"><span>IG SAFE TOP</span></div>
   <div class="safe" style="top:1680px"><span>IG SAFE BOTTOM</span></div>
 </div>
 <script>
+if(location.hash==='#guides')document.getElementById('card').classList.add('guides');
 document.getElementById('hzT').innerHTML=hazard(90,4,12);
 document.getElementById('hzB').innerHTML=hazard(90,4,12);
-document.getElementById('halo').innerHTML=halo(14,'#a57bff',24);   /* hero close-up: exactly 2x story scale */
-document.getElementById('flask').innerHTML=wrap(16,20,24,rects(SPR.erlen,{L:'#a57bff',D:'#6c46c9',H:'#d9c7ff'}));
-document.getElementById('gi').innerHTML=wrap(7,7,12,rects(SPR.gauge7));
+document.getElementById('halo').innerHTML=halo(11,'#ffb547',24,2);   /* candle, never the catalyst's color */
+document.getElementById('flask').innerHTML=flask('',24,{sealed:true}); /* hero close-up: exactly 2x story scale */
+document.getElementById('qi').innerHTML=spr('q7',12);
+document.getElementById('qr').innerHTML=spr('qr',12);                /* placeholder: the real join QR is generated at render time */
 </script>
 </body>
 </html>

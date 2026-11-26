@@ -1,0 +1,36 @@
+/* Shared mockup base. Browsers skip Tailwind's @theme block in tokens.css, so token values are mirrored here as short vars.
+ * TYPE (round 2): Silkscreen (8px bitmap em) is the only pixel face, used ONLY at 16/24/32/40/48/64/80/96 (multiples of 8),
+ * letter-spacing 0, weight 400, no synthesized bold. Element symbols, formulas and any digit inside a mixed or sub-24px
+ * string are Atkinson Hyperlegible 700 (.n / .sym), because those glyphs are game state. */
+:root{--ink:#071312;--bench:#0b1a19;--wall:#12302c;--seam:#0d2521;--tile:#1e4640;--moss:#2a5c54;--fog:#8fb0a8;
+--clinic:#dce7ee;--clinic-shade:#a9bcc8;--parch:#eadf9e;--parch-shade:#c9b96a;--holo:#43e6c6;--holo-deep:#1fa88e;--led:#8df25f;
+--candle:#ffb547;--candle-deep:#d9851c;--alarm:#ff4b3e;--hazard:#f7c61b;--frost:#bdf4ff;--frost-deep:#6cc9e6;
+--t-common:#9fc2b8;--t-uncommon:#3ff0e6;--t-rare:#e4ecf7;--t-iso:#d4ff2a;--t-legend:#ffcb3d;
+--heat:#ff5a36;--pressure:#a57bff;--light:#ffe14a;--electricity:#4db2ff;--enzyme:#4bf08b;--acid:#ff5fae;
+--pxb:0 -4px 0 0 var(--ink),0 4px 0 0 var(--ink),-4px 0 0 0 var(--ink),4px 0 0 0 var(--ink)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-synthesis:none;-webkit-font-smoothing:none;-moz-osx-font-smoothing:unset}
+body{background:#040c0b;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-synthesis:none}
+.px{font-family:'Silkscreen',monospace;font-weight:400;letter-spacing:0;text-rendering:optimizeSpeed}
+/* Game-state glyphs: digits in mixed strings, element symbols, formulas. Slashed zero, tailed l, flagged 1. */
+.n,.sym{font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:0}
+.sprite{display:block;image-rendering:pixelated}
+.abs{position:absolute}
+.frame-label{font:400 16px/16px 'Silkscreen',monospace;color:#8fb0a8;margin-bottom:16px}
+
+.bub{animation:bubble 1200ms steps(6,end) infinite}
+.spk{animation:sparkle 1600ms steps(1,end) infinite}
+.iso .c-L{animation:iso-flicker 1400ms steps(1,end) infinite}
+/* Legendary: gold liquid; only the 1-px meniscus steps through the 6 catalyst colors (restraint, not a rainbow). */
+.prism .c-H{animation:prism 3000ms steps(1,end) infinite}
+.f1,.f2,.f3{animation:frame3 450ms steps(1,end) infinite}.f2{animation-delay:-150ms}.f3{animation-delay:-300ms}
+.blinkA{animation:blink 700ms steps(1,end) infinite}
+@keyframes frame3{0%{opacity:1}33.333%{opacity:0}100%{opacity:0}}
+@keyframes bubble{0%{transform:translateY(0);opacity:1}83%{opacity:1}100%{transform:translateY(-6px);opacity:0}}
+@keyframes sparkle{0%,100%{opacity:0}20%{opacity:1}40%{opacity:0}70%{opacity:1}80%{opacity:0}}
+@keyframes iso-flicker{0%{fill:#d4ff2a}40%{fill:#f3ffb0}46%{fill:#d4ff2a}72%{fill:#f3ffb0}76%{fill:#d4ff2a}}
+@keyframes prism{0%{fill:#ff5a36}16.66%{fill:#ffe14a}33.33%{fill:#4bf08b}50%{fill:#4db2ff}66.66%{fill:#a57bff}83.33%{fill:#ff5fae}100%{fill:#ff5a36}}
+@keyframes stamp{from{transform:scale(1.75);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes drop-in{from{transform:translateY(-64px)}to{transform:translateY(0)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}

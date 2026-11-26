@@ -2,10 +2,12 @@
  * Secret Catalyst: "NIGHT SHIFT" tokens (design/direction.md is the spec).
  * Drop-in replacement for the @theme block + keyframes in src/app/globals.css (Tailwind v4).
  *
- * Fonts: load in src/app/layout.tsx with next/font/google and expose the CSS variables:
- *   Pixelify_Sans({ subsets:["latin"], weight:["500","700"], variable:"--font-pixelify" })
+ * Fonts (round 2): load in src/app/layout.tsx with next/font/google and expose the CSS variables:
+ *   Silkscreen({ subsets:["latin"], weight:["400"], variable:"--font-silkscreen" })
  *   Atkinson_Hyperlegible({ subsets:["latin"], weight:["400","700"], variable:"--font-atkinson" })
- * Story cards (next/og) load the TTFs directly; both families ship TTF on Google Fonts.
+ * Story cards (next/og) load Silkscreen-Regular.ttf and AtkinsonHyperlegible-Bold.ttf directly (both OFL, TTF in google/fonts).
+ * Silkscreen is an 8px bitmap em: ONLY 16/24/32/40/48/64/80/96 px, weight 400, letter-spacing 0, font-synthesis none.
+ * Element symbols, formulas and digits inside mixed or sub-40px strings use .font-num (Atkinson 700, tabular).
  *
  * ONE PIXEL SCALE: 1 art pixel = 4 CSS px on phone (--px). Every border, offset, gap and
  * sprite dimension in the player app is a multiple of 4. Hero moments use 8 (2 x --px).
@@ -83,10 +85,11 @@
   --color-legend: #ffcb3d;
 
   /* --- Type -------------------------------------------------------------------------------- */
-  --font-pixel: var(--font-pixelify), "Pixelify Sans", ui-monospace, monospace;
+  --font-pixel: var(--font-silkscreen), "Silkscreen", ui-monospace, monospace;
   --font-sans: var(--font-atkinson), "Atkinson Hyperlegible", system-ui, sans-serif;
-  /* Pixel face sizes: multiples of 8 only. Body: 16 min, 14 only for captions. */
-  --text-tag: 14px;      --text-tag--line-height: 16px;
+  --font-num: var(--font-atkinson), "Atkinson Hyperlegible", system-ui, sans-serif; /* weight 700 */
+  /* Pixel face sizes: multiples of 8 only (Silkscreen's native em). Body: 16 min, 14 only for plate captions. */
+  --text-tag: 16px;      --text-tag--line-height: 16px;
   --text-hud: 24px;      --text-hud--line-height: 24px;
   --text-title: 32px;    --text-title--line-height: 32px;
   --text-big: 48px;      --text-big--line-height: 48px;
@@ -171,7 +174,9 @@ body {
   background-size: 96px 64px;
 }
 svg.sprite, img.sprite { image-rendering: pixelated; shape-rendering: crispEdges; display: block; }
-.font-pixel { font-family: var(--font-pixel); letter-spacing: 0.02em; }
+html { font-synthesis: none; }
+.font-pixel { font-family: var(--font-pixel); font-weight: 400; letter-spacing: 0; }
+.font-num { font-family: var(--font-num); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0; }
 :focus-visible { outline: 4px solid var(--color-candle); outline-offset: 4px; }
 
 @media (prefers-reduced-motion: reduce) {

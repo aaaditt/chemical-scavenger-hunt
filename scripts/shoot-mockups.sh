@@ -11,6 +11,8 @@ for f in design/screens/*.html; do
   case "$name" in
     screen) size=1920,1080 ;;
     story-card) size=1080,1920 ;;
+    mix) size=1900,1000 ;;
+    type-test) size=1600,${TYPE_TEST_H:-4000} ;;
     *) size=${MOCK_SIZE:-1400,1000} ;;
   esac
   abs=$(cd "$(dirname "$f")" && pwd -W 2>/dev/null || pwd)/$(basename "$f")

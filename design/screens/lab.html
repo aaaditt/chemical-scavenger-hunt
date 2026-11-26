@@ -4,61 +4,60 @@
 <meta charset="utf-8">
 <title>Secret Catalyst · Lab shelf (Night / Day Shift)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../tokens.css">
-<!-- Browsers skip Tailwind's @theme block, so the token values are mirrored below as short vars. -->
+<link rel="stylesheet" href="kit.css">
+<script src="kit.js"></script>
 <style>
-:root{--ink:#071312;--bench:#0b1a19;--wall:#12302c;--seam:#0d2521;--tile:#1e4640;--moss:#2a5c54;--fog:#8fb0a8;--clinic:#dce7ee;--clinic-shade:#a9bcc8;--parch:#eadf9e;--parch-shade:#c9b96a;--holo:#43e6c6;--holo-deep:#1fa88e;--led:#8df25f;--candle:#ffb547;--candle-deep:#d9851c;--hazard:#f7c61b;
---pxb:0 -4px 0 0 var(--ink),0 4px 0 0 var(--ink),-4px 0 0 0 var(--ink),4px 0 0 0 var(--ink)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#040c0b;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;padding:48px;display:flex;gap:56px;align-items:flex-start;flex-wrap:wrap}
-.frame-label{font:700 16px 'Pixelify Sans';color:#8fb0a8;margin-bottom:16px}
+body{padding:48px;display:flex;gap:56px;align-items:flex-start;flex-wrap:wrap}
 .phone{--bg:var(--wall);--line:var(--seam);--text:var(--clinic);--muted:var(--fog);--plank:var(--bench);--plank-top:var(--tile);
   width:390px;height:844px;position:relative;overflow:hidden;color:var(--text);background-color:var(--bg);
   background-image:linear-gradient(var(--line) 0 4px,transparent 4px),linear-gradient(90deg,var(--line) 0 4px,transparent 4px);background-size:96px 64px}
 .phone.day{--bg:#c9d8e2;--line:#b0c3d0;--text:var(--ink);--muted:#34505a;--plank:#5d7380;--plank-top:#8fa5b4}
 .phone.day .halo-slot,.phone.day .lamp-halo{display:none}
-.sprite{display:block;image-rendering:pixelated}
-.px{font-family:'Pixelify Sans',monospace}
 
 /* HUD */
 .hud{position:absolute;top:0;left:0;right:0;height:76px;display:flex;align-items:center;gap:12px;padding:12px 16px 0}
-.led{background:var(--bench);color:var(--led);font:700 24px/1 'Pixelify Sans';padding:10px 12px;box-shadow:var(--pxb)}
-.meter{background:var(--holo);color:var(--ink);box-shadow:var(--pxb),inset 0 -4px 0 0 var(--holo-deep);padding:4px 10px 6px;display:flex;flex-direction:column;align-items:flex-start}
-.meter .k{font:700 14px/16px 'Pixelify Sans'}
-.meter b{font:700 24px/24px 'Pixelify Sans'}
+.led{background:var(--bench);color:var(--led);font:400 24px/24px 'Silkscreen';padding:10px 12px;box-shadow:var(--pxb)}
+.led .n{font-size:24px}
+.meter{background:var(--holo);color:var(--ink);box-shadow:var(--pxb),inset 0 -4px 0 0 var(--holo-deep);padding:4px 10px 8px;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.meter .k{font:400 16px/16px 'Silkscreen'}
+.meter b{font:400 24px/24px 'Silkscreen'}
 .spacer{flex:1}
 
-/* scene */
+/* scene (ref-1 corner of the room) */
 .scene{position:absolute;top:76px;left:0;right:0;height:172px}
 .table{position:absolute;left:0;right:0;top:148px;height:24px;background:var(--plank);box-shadow:inset 0 4px 0 0 var(--plank-top),0 4px 0 0 var(--ink)}
-.note{position:absolute;left:20px;top:16px;width:184px;padding:16px 12px 12px;background:var(--parch);color:var(--ink);box-shadow:var(--pxb),inset -4px -4px 0 0 var(--parch-shade)}
-.note:before{content:"";position:absolute;left:84px;top:-8px;width:12px;height:12px;background:#ff4b3e;box-shadow:0 0 0 4px var(--ink)}
-.note h3{font:700 16px/16px 'Pixelify Sans';margin-bottom:8px;letter-spacing:.04em}
+.note{position:absolute;left:20px;top:16px;width:168px;padding:16px 12px 12px;background:var(--parch);color:var(--ink);box-shadow:var(--pxb),inset -4px -4px 0 0 var(--parch-shade)}
+.note:before{content:"";position:absolute;left:76px;top:-8px;width:12px;height:12px;background:var(--alarm);box-shadow:0 0 0 4px var(--ink)}
+.note h3{font:400 16px/16px 'Silkscreen';margin-bottom:8px}
 .note p{font:700 14px/18px 'Atkinson Hyperlegible';margin-top:4px}
 .rod{position:absolute;background:#5e676b;box-shadow:inset 4px 0 0 0 #8a9599}
-.abs{position:absolute}
-.daybtn{position:absolute;right:16px;top:12px;width:72px;height:44px;background:var(--clinic);color:var(--ink);font:700 16px/44px 'Pixelify Sans';text-align:center;box-shadow:var(--pxb),inset 0 -4px 0 0 var(--clinic-shade)}
+/* Day/Night toggle: icon + the state you'll GO TO. */
+.shift{position:absolute;right:16px;top:16px;width:84px;height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--clinic);color:var(--ink);box-shadow:var(--pxb),inset 0 -4px 0 0 var(--clinic-shade)}
+.shift b{font:400 16px/16px 'Silkscreen';text-align:center}
 
 /* tabs */
-.tabs{position:absolute;top:260px;left:16px;right:16px;display:flex;gap:12px}
-.tab{flex:1;height:44px;display:flex;align-items:center;justify-content:center;gap:8px;font:700 16px 'Pixelify Sans';box-shadow:var(--pxb)}
+.tabs{position:absolute;top:252px;left:16px;right:16px;display:flex;gap:12px}
+.tab{flex:1;height:44px;display:flex;align-items:center;justify-content:center;gap:8px;font:400 16px/16px 'Silkscreen';box-shadow:var(--pxb)}
+.tab .n{font-size:16px}
 .tab.on{background:var(--clinic);color:var(--ink)}
-.tab.off{background:var(--bench);color:var(--fog)}
+.tab.off{background:var(--bench);color:var(--clinic)}
 .phone.day .tab.off{background:#b0c3d0;color:var(--ink)}
 
-/* shelf */
-.shelf{position:absolute;top:312px;left:0;right:0}
+/* shelf: rows are 140px, so 3 rows end at 724, above the SCAN overhang. In the app this is the scroll container,
+   padded at the bottom by the SCAN overhang (32px) so the last row always rests fully visible. */
+.shelf{position:absolute;top:304px;left:0;right:0}
 .row{display:flex;justify-content:space-between;padding:0 20px}
 .cell{width:80px;display:flex;justify-content:center}
 .btl{--x:4px;position:relative;width:calc(var(--x)*16);height:calc(var(--x)*20);isolation:isolate}
 .btl>svg{position:relative;z-index:1}
-.sym{position:absolute;z-index:2;left:calc(var(--x)*4);top:calc(var(--x)*10);width:calc(var(--x)*8);height:calc(var(--x)*4);display:flex;align-items:center;justify-content:center;font:700 calc(var(--x)*4)/1 'Pixelify Sans';color:var(--ink)}
+.btl .sym{position:absolute;z-index:2;left:calc(var(--x)*4);top:calc(var(--x)*10);width:calc(var(--x)*8);height:calc(var(--x)*4);display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;color:var(--ink)}
 .btl.empty .sym{color:var(--moss)}
 .phone.day .btl.empty .sym{color:#6f8794}
-.halo-slot{position:absolute;z-index:0;left:calc(var(--x)*-4);top:calc(var(--x)*-2)}
+.halo-slot{position:absolute;z-index:0;left:-16px;top:-8px}
 .plank{height:12px;margin:0 8px;background:var(--plank);box-shadow:inset 0 4px 0 0 var(--plank-top),0 4px 0 0 var(--ink)}
-.plates{margin-top:8px;margin-bottom:12px}
+.plates{margin-top:4px;margin-bottom:8px}
 .plate{width:80px;height:36px;background:var(--clinic);color:var(--ink);box-shadow:var(--pxb);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .plate b{font:700 14px/16px 'Atkinson Hyperlegible';white-space:nowrap}
 .plate.ghost{background:transparent;color:var(--muted);box-shadow:0 -4px 0 0 var(--moss),0 4px 0 0 var(--moss),-4px 0 0 0 var(--moss),4px 0 0 0 var(--moss)}
@@ -67,76 +66,24 @@ body{background:#040c0b;font-family:'Atkinson Hyperlegible',system-ui,sans-serif
 .plate.ghost .pips i{background:var(--moss)}
 .pips.hz i{background:repeating-linear-gradient(90deg,var(--hazard) 0 4px,var(--ink) 4px 8px)}
 
-/* nav */
+/* nav: 4px ink top edge; SCAN overhangs by 28px */
 .nav{position:absolute;left:0;right:0;bottom:0;height:92px;background:var(--bench);box-shadow:0 -4px 0 0 var(--ink);display:flex;align-items:center;justify-content:space-around;padding:0 8px}
-.nav a{width:60px;height:56px;display:flex;align-items:center;justify-content:center;font:700 16px 'Pixelify Sans';color:var(--fog);text-decoration:none}
+.nav a{width:60px;height:56px;display:flex;align-items:center;justify-content:center;font:400 16px/16px 'Silkscreen';color:var(--fog);text-decoration:none}
 .nav a.on{background:var(--clinic);color:var(--ink);box-shadow:var(--pxb)}
-.scan{width:88px!important;height:88px!important;margin-top:-28px;flex-direction:column;gap:6px;background:var(--candle);color:var(--ink)!important;box-shadow:var(--pxb),inset 0 -8px 0 0 var(--candle-deep)}
-.scan span{font:700 16px 'Pixelify Sans';margin-bottom:6px}
-
-.bub{animation:bubble 1200ms steps(6,end) infinite}
-.spk{animation:sparkle 1600ms steps(1,end) infinite}
-.iso .c-L{animation:iso-flicker 1400ms steps(1,end) infinite}
-.f2{animation-delay:-150ms!important}.f3{animation-delay:-300ms!important}
-.f1,.f2,.f3{animation:frame3 450ms steps(1,end) infinite}
-@keyframes frame3{0%{opacity:1}33.333%{opacity:0}100%{opacity:0}}
-@keyframes bubble{0%{transform:translateY(0);opacity:1}83%{opacity:1}100%{transform:translateY(-6px);opacity:0}}
-@keyframes sparkle{0%,100%{opacity:0}20%{opacity:1}40%{opacity:0}70%{opacity:1}80%{opacity:0}}
-@keyframes iso-flicker{0%{fill:#d4ff2a}40%{fill:#f3ffb0}46%{fill:#d4ff2a}72%{fill:#f3ffb0}76%{fill:#d4ff2a}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+.scan{width:88px!important;height:88px!important;margin-top:-28px;flex-direction:column;gap:8px;background:var(--candle);color:var(--ink)!important;box-shadow:var(--pxb),inset 0 -8px 0 0 var(--candle-deep)}
+.scan span{font:400 16px/16px 'Silkscreen';margin-bottom:4px}
 </style>
-<script>
-/* ===== Secret Catalyst pixel sprite kit (shared by all mockups). 1 char = 1 art pixel. ===== */
-const P={k:'#071312',K:'#071312',g:'#183b36',G:'#2c5a52',w:'#e9fff9',l:'#dce7ee',m:'#a9bcc8',R:'#8a3b32',r:'#5a231e',c:'#9a7048',C:'#5e4026',Y:'#f7c61b',o:'#ff5a36',y:'#ffb547',W:'#fff4c2',A:'#c98a2a',a:'#ffb547',S:'#ffe14a',Z:'#d9a400',f:'#dce7ee',P:'#a57bff',E:'#4db2ff',N:'#4bf08b',n:'#b9ffd2',Q:'#ff5fae',q:'#b8306e',T:'#ffffff',t:'#9daec6',x:'#e9e2d0',z:'#071312',v:'#5e676b',V:'#8a9599'};
-const LIQ={common:{L:'#9fc2b8',D:'#6f9388',H:'#cfe6de'},uncommon:{L:'#3ff0e6',D:'#16b3b5',H:'#b5fff8'},rare:{L:'#e4ecf7',D:'#9daec6',H:'#ffffff'},isotope:{L:'#d4ff2a',D:'#8dc20a',H:'#f3ffb0'},legendary:{L:'#ffcb3d',D:'#d9851c',H:'#fff0b0',c:'#ffcb3d'},
- heat:{L:'#ff5a36',D:'#b8321c',H:'#ffb09a'},pressure:{L:'#a57bff',D:'#6c46c9',H:'#d9c7ff'},light:{L:'#ffe14a',D:'#c9a400',H:'#fff4b0'},electricity:{L:'#4db2ff',D:'#1f6fc2',H:'#b8e0ff'},enzyme:{L:'#4bf08b',D:'#1fa85a',H:'#b9ffd2'},acid:{L:'#ff5fae',D:'#b8306e',H:'#ffc2e0'},
- sludge:{L:'#6b5a2e',D:'#463a1c',H:'#8c7a44'},frozen:{L:'#bdf4ff',D:'#6cc9e6',H:'#ffffff'},empty:{L:'#183b36',D:'#183b36',H:'#2c5a52'}};
-const SPR={
-jar:["................","................","................","....kkkkkkkk....","....kRRRRRRk....","....krrrrrrk....","...kkkkkkkkkk...","..kwggggggggGk..","..kwggggggggGk..","..kHHHHHHHHHHk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","..kDLLLLLLLLDk..","..kDDDDDDDDDDk..","...kkkkkkkkkk..."],
-flask:["................","......kkkk......","......kcck......","......kCCk......",".....kkkkkk.....","......kwgk......","......kwgk......",".....kkwgkk.....","....kgwgggGk....","...kHHHHHHHHk...","..kLllllllllLk..","..kLllllllllLk..",".kLLllllllllLLk.",".kLLllllllllLLk.",".kwLmmmmmmmmLLk.",".kwLLLLLLLLLLLk.",".kLLLLLLLLLLLDk.","..kDLLLLLLLLDk..","...kDDDDDDDDk...","....kkkkkkkk...."],
-decanter:[".......kk.......","......kTTk......",".....kTttTk.....","......kttk......",".....kkkkkk.....","......kwgk......",".....kkwgkk.....","...kkgwgggGkk...","..kHHHHHHHHHHk..","..kwLLLLLLLLLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","..kDDDDDDDDDDk..","...kkkkkkkkkk..."],
-ampoule:[".......kk.......","......kwgk......","......kwgk......",".....kkwgkk.....","....kYKYKYKk....","....kKYKYKYk....","....kwggggGk....","...kkHHHHHHkk...","..kwLLLLLLLLLk..","..kwLLLLLLLLLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","...kDLLLLLLDk...","....kDDDDDDk....",".....kkkkkk....."],
-erlen:["................",".....kkkkkk.....",".....kcccck.....","......kkkk......","......kwgk......","......kwgk......","......kwgk......",".....kwgggk.....",".....kwgggk.....","....kHHHHHHk....","....kwLLLLLk....","...kwLLLLLLLk...","...kLLLLLLLLk...","..kLLLLLLLLLLk..","..kLLLLLLLLLLk..",".kLLLLLLLLLLLLk.",".kLLLLLLLLLLLLk.","kDLLLLLLLLLLLLDk","kDDDDDDDDDDDDDDk","kkkkkkkkkkkkkkkk"],
-lampBase:[".....kk.....","...kkkkkk...","..kAaaaaAk..",".kAaaaaaaAk.",".kAaaaaaaAk.","..kkkkkkkk.."],
-fA:["......o.....",".....oy.....",".....oyo....","....oyWyo...","....oyWyo...",".....oyo...."],
-fB:[".....o......",".....oyo....","....oyyo....","....oyWyo...","....oyWyo...",".....oyo...."],
-fC:["......o.....","......yo....",".....oyyo...","....oyWyo...","....oyWyo...",".....oyo...."],
-i_heat:["....kk....","...kok....","...kook...","..kooyok..","..koyyok..",".kooyWyok.",".koyWWyok.",".koyWWyok.","..koyyok..","...kkkk..."],
-i_pressure:["...kkkk...",".kkPPPPkk.",".kPffffPk.","kPffffkfPk","kPfffkffPk","kPffkkffPk","kPffffffPk",".kPffffPk.",".kkPPPPkk.","...kkkk..."],
-i_light:["....ZZ....",".Z.kkkk.Z.","..kSSSSk..",".kSWWSSSk.","ZkSWSSSSkZ","ZkSSSSSSkZ",".kSSSSSSk.","..kSSSSk..",".Z.kkkk.Z.","....ZZ...."],
-i_electricity:[".....kkkk.","....kEEk..","...kEEk...","..kEEkkkk.",".kEEEEEEk.",".kkkkEEk..","....kEk...","...kEk....","..kEk.....","..kk......"],
-i_enzyme:[".kk....kk.",".kNk..knk.","..kNkknk..","...kNnk...","...knNk...","..knkkNk..",".knk..kNk.",".knk..kNk.","..knkkNk..","...kNnk..."],
-i_acid:["....kk....","....kk....","...kQQk...","...kQQk...","..kQWQQk..",".kQWQQQQk.",".kQQQQQQk.",".kQQQQqQk.","..kQqqQk..","...kkkk..."],
-cat:[".k.k..........",".kkkk.........","kxxxxk.kkkkk..","kxzxxkkxxxxxk.","kxxxxxxxxxxxxk","kxxxxxxxxxxxxk",".kxxxxxxxxxxkk","..kkkkkkkkkkk."],
-qr:["kkk.k.kkk","k.k...k.k","kkk.k.kkk","....k....","k.kk.kk.k","....k....","kkk..k.k.","k.k.kk..k","kkk.k.kk."]
-};
-const TSPR={common:'jar',uncommon:'flask',rare:'decanter',isotope:'ampoule'};
-function rects(rows,pal={},ox=0,oy=0){let s='';rows.forEach((row,y)=>{let x=0;while(x<row.length){const ch=row[x];if(ch==='.'){x++;continue}let e=x;while(e<row.length&&row[e]===ch)e++;const col=pal[ch]||P[ch];if(col)s+=`<rect x="${x+ox}" y="${y+oy}" width="${e-x}" height="1" fill="${col}" class="c-${ch}"/>`;x=e}});return s}
-function wrap(w,h,sc,inner,cls=''){return `<svg class="sprite ${cls}" width="${w*sc}" height="${h*sc}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`}
-function bubbles(list){return list.map(([x,y],i)=>`<rect class="bub" x="${x}" y="${y}" width="1" height="1" fill="#ffffff" style="animation-delay:${-i*400}ms"/>`).join('')}
-function sparkles(list){return list.map(([x,y],i)=>`<g class="spk" style="animation-delay:${-i*530}ms"><rect x="${x-1}" y="${y}" width="3" height="1" fill="#ffffff"/><rect x="${x}" y="${y-1}" width="1" height="3" fill="#ffffff"/></g>`).join('')}
-function bottle(tier,sc,o={}){const rows=SPR[TSPR[tier]];if(o.ghost)return wrap(16,20,sc,rects(rows.map(r=>r.replace(/[^k.]/g,'.')),{k:'#2a5c54'}),'ghost');
- let s=rects(rows,LIQ[o.liq||tier]);if(tier==='uncommon')s+=bubbles([[6,16],[9,15],[11,16]]);if(tier==='rare')s+=sparkles([[1,8],[14,12],[1,17]]);return wrap(16,20,sc,s,tier==='isotope'?'iso':'')}
-function flask(liq,sc,o={}){let s=rects(SPR.erlen,LIQ[liq]);if(!o.still)s+=bubbles([[5,16],[8,14],[10,17]]);return wrap(16,20,sc,s,liq==='legendary'?'prism':(liq==='isotope'?'iso':''))}
-function lamp(sc,o={}){let s=rects(SPR.lampBase,{},0,6);if(!o.out)s+=`<g class="f1">${rects(SPR.fA)}</g><g class="f2">${rects(SPR.fB)}</g><g class="f3">${rects(SPR.fC)}</g>`;return wrap(12,12,sc,s)}
-function halo(r,color,sc){let s='';const d=r*2;for(let y=0;y<d;y++){let x=0;while(x<d){const al=a=>{const t=Math.hypot(a+.5-r,y+.5-r);return t<r*.55?.38:t<r?.16:0};const v=al(x);let e=x;while(e<d&&al(e)===v)e++;if(v)s+=`<rect x="${x}" y="${y}" width="${e-x}" height="1" fill="${color}" fill-opacity="${v}"/>`;x=e}}return wrap(d,d,sc,s,'halo')}
-function mount(root=document){root.querySelectorAll('[data-s]').forEach(el=>{if(el.dataset.done)return;el.dataset.done=1;const d=el.dataset,x=+d.x||4;let h='';
- if(d.s==='bottle')h=bottle(d.t,x,{ghost:'g' in d,liq:d.liq});else if(d.s==='flask')h=flask(d.t,x,{still:'still' in d});else if(d.s==='lamp')h=lamp(x,{out:'out' in d});
- else if(d.s==='icon')h=wrap(10,10,x,rects(SPR['i_'+d.t]));else if(d.s==='halo')h=halo(+d.r,d.c,x);else{const r=SPR[d.s];h=wrap(r[0].length,r.length,x,rects(r))}
- el.insertAdjacentHTML('afterbegin',h)})}
-</script>
 </head>
 <body>
 
 <div><p class="frame-label">01 · LAB SHELF · NIGHT SHIFT (default)</p><div class="phone" id="night"></div></div>
-<div><p class="frame-label">02 · LAB SHELF · DAY SHIFT (ref-3, one tap on DAY)</p><div class="phone day" id="day"></div></div>
+<div><p class="frame-label">02 · LAB SHELF · DAY SHIFT (ref-3, auto-offered 10:00-16:00)</p><div class="phone day" id="day"></div></div>
 
 <script>
 const SHELF=[
- [['H','Hydrogen','common'],['O','Oxygen','common'],['C','Carbon','common'],['Na','Sodium','common']],
+ [['H','Hydrogen','common'],['O','Oxygen','common'],['C','Carbon','common'],['Cl','Chlorine','common']],
  [['K','Potassium','uncommon'],['Fe','Iron','uncommon'],['Cu','Copper','uncommon',1],['Si','Silicon','uncommon']],
  [['Ag','Silver','rare'],['Li','Lithium','rare',1],['Au','Gold','rare',1],['U','U-235','isotope']]];
-const PIPN={common:1,uncommon:2,rare:3,isotope:4};
 function cell([sym,name,tier,ghost]){
   const glow=!ghost&&(tier==='rare'||tier==='isotope');
   const hc=tier==='rare'?'#e4ecf7':'#d4ff2a';
@@ -144,23 +91,22 @@ function cell([sym,name,tier,ghost]){
 function plate([sym,name,tier,ghost]){return `<div class="cell"><div class="plate${ghost?' ghost':''}"><b>${name}</b><span class="pips${tier==='isotope'?' hz':''}">${'<i></i>'.repeat(PIPN[tier])}</span></div></div>`}
 function lab(day){return `
 <header class="hud">
-  <div class="led">LAB 1137</div><div class="spacer"></div>
+  <div class="led">LAB <span class="n">1137</span></div><div class="spacer"></div>
   <div class="meter"><span class="k">SCORE</span><b>412</b></div>
   <div class="meter"><span class="k">RANK</span><b>#17</b></div>
 </header>
 <section class="scene">
   <div class="note"><h3>LAB NOTES</h3><p>3 new hints in the book.</p><p>Aditi made Ammonia first. 4 min ago.</p></div>
-  <div class="rod" style="left:236px;top:20px;width:8px;height:132px"></div>
-  <div class="rod" style="left:236px;top:36px;width:44px;height:8px"></div>
-  <div class="rod" style="left:224px;top:144px;width:36px;height:4px"></div>
-  <i class="abs lamp-halo" data-s="halo" data-r="10" data-c="#ffb547" data-x="4" style="left:244px;top:72px"></i>
-  <i class="abs" data-s="bottle" data-t="uncommon" data-x="4" style="left:252px;top:20px"></i>
-  <i class="abs" data-s="lamp" data-x="4" style="left:260px;top:100px"></i>
-  <i class="abs" data-s="bottle" data-t="common" data-x="4" style="left:316px;top:68px"></i>
-  <div class="daybtn">${day?'NIGHT':'DAY'}</div>
+  <i class="abs lamp-halo" data-s="halo" data-r="10" data-c="#ffb547" data-x="4" style="left:208px;top:76px"></i>
+  <div class="rod" style="left:200px;top:20px;width:8px;height:132px"></div>
+  <div class="rod" style="left:200px;top:36px;width:44px;height:8px"></div>
+  <div class="rod" style="left:188px;top:144px;width:36px;height:4px"></div>
+  <i class="abs" data-s="bottle" data-t="uncommon" data-x="4" style="left:216px;top:20px"></i>
+  <i class="abs" data-s="lamp" data-x="4" style="left:224px;top:100px"></i>
+  <div class="shift" aria-label="Switch to ${day?'Night':'Day'} Shift"><i data-s="${day?'moon':'sun'}" data-x="4"></i><b>${day?'NIGHT':'DAY'}<br>SHIFT</b></div>
   <div class="table"></div>
 </section>
-<nav class="tabs"><div class="tab on">ELEMENTS 14/25</div><div class="tab off">COMPOUNDS 6/52</div></nav>
+<nav class="tabs"><div class="tab on">ELEMENTS <span class="n">14/25</span></div><div class="tab off">COMPOUNDS <span class="n">6/52</span></div></nav>
 <section class="shelf">
 ${SHELF.map(r=>`<div class="row">${r.map(cell).join('')}</div><div class="plank"></div><div class="row plates">${r.map(plate).join('')}</div>`).join('')}
 </section>

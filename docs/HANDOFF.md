@@ -39,32 +39,25 @@ Read this first in a new session. Then `README.md` (how to run) and
 - Security fixes from the automated review: function grants, open redirects (backslash and dot-segment),
   CSV formula injection.
 
-## In progress: creative direction (the user's explicit process)
-The user asked for **two subagents, `creative-director` and `design-critic` (`.claude/agents/`), to iterate
-until BOTH are satisfied**, and only then show the final result.
+## Creative direction: APPROVED (round 2, 2026-11-27)
+The user's process was: `creative-director` ↔ `design-critic` (`.claude/agents/`) iterate until both are satisfied.
+Round 1 got REVISE, round 2 got APPROVE (see `design/critique.md`).
 
-- **References:** 4 videos in `design/references/ref-{1..4}.mp4`, plus extracted stills in
-  `design/references/frames/` and `contact-ref-*.jpg`. All four are **animated pixel-art chemistry labs**:
-  1. candlelit dark-green lab with a bubbling cyan flask and a "JUNE" note
-  2. industrial grey lab with teal holo screens and specimen tubes
-  3. light clinical lab with stasis tubes, heartbeat monitors and a "LAB" door
-  4. apparatus rack with coloured liquids flowing through coiled tubes
-- **Round 1 (creative-director) was cut off by a usage limit.** It produced:
-  - `design/tokens.css`
-  - `design/screens/lab.html`
-  - `design/screens/mix.html`. Its last note says this still needs fixes: the flask should be empty while
-    building, tube tags overlap the pipes, strike marks should be real X glyphs, and the stamp should sit
-    above the halo.
-  - rewritten riddles in `content/catalog.json` (validated)
-- **Round 1 resumed and finished (2026-11-27):** mix.html fixes are applied. `design/direction.md`, `scan-reveal.html`,
-  `frozen.html`, `screen.html` (1920x1080) and `story-card.html` (1080x1920) are written. Not yet committed or screenshotted.
-- **Next:** run `design-critic`, which writes `design/critique.md` and ends
-  with `VERDICT: APPROVE` or `VERDICT: REVISE`. Loop director ↔ critic until APPROVE.
-- After approval: apply the direction to the real app. Replace the `@theme` block in `src/app/globals.css`
-  with `design/tokens.css`, redo `src/components/Bottle.tsx` as pixel sprites, then restyle the screens,
-  story cards (`src/app/api/card/[kind]/route.tsx`) and placards.
-- Tip: screenshot each mockup (390×844) into `design/screens/shots/` so the critic judges what actually
-  renders.
+- **References:** `design/references/` (4 pixel-art lab videos + stills/contact sheets).
+- **Direction:** `design/direction.md` (includes the "Round 2 changes" section). Type is Silkscreen (multiples of 8px)
+  plus Atkinson Hyperlegible for symbols, formulas and small numbers. Pixelify Sans was rejected for C/O and 5/S confusion.
+  Public screens never reveal catalysts or recipes during play (they show a sealed "?" flask).
+- **Mockups:** `design/screens/*.html` share `kit.js`/`kit.css`; `type-test.html` is the glyph and tier test sheet.
+  Screenshots via `bash scripts/shoot-mockups.sh` → `design/screens/shots/`.
+- **Fix during implementation** (critic's round 2 should-fix list): the SYNTHESIZED caption overlaps the note;
+  the projector "CATALYZED ?" chip clips (and needs 24px); auto-fit hero names (64/48/40/32); solid-step candle glow;
+  give Legendary its own shape vs. the Light catalyst; the moon icon; whole-pixel text positions.
+  Hint Book, Lend Catalyst and Black Market have no mockups yet.
+- **Open questions for the user:** auto Day Shift 10–16h? (director assumed yes); names on public screens opt-out
+  vs. opt-in? (assumed opt-out); area hints in isotope Instagram posts?; "LAB 1137" number random vs. from ID?
+- **Next:** apply the direction to the real app. Replace the `@theme` block in `src/app/globals.css` with
+  `design/tokens.css`, redo `src/components/Bottle.tsx` as pixel sprites from `kit.js`, then restyle the screens,
+  story cards (`src/app/api/card/[kind]/route.tsx`, Silkscreen TTF for next/og) and placards.
 
 ## Other open items
 - Run `game-balancer` on the catalog. Catalyst demand is uneven (Heat gates 7 compounds, Acid 3).

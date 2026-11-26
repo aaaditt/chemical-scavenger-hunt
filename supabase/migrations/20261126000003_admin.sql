@@ -234,10 +234,22 @@ grant execute on function
   public.admin_open_market(int), public.admin_end_event(uuid)
 to authenticated;
 
--- Postgres grants EXECUTE to PUBLIC on new functions. Strip it from everything, so only the
--- explicit grants (player RPCs, admin RPCs, public read models) remain callable. Internal helpers
--- like _audit/_award/_require_admin end up callable by no client role.
-revoke execute on all functions in schema public from public, anon;
-grant execute on function public.leaderboard(text, int), public.finale(), public.recipe_key(jsonb) to anon;
-revoke execute on function public._audit(text, text, jsonb), public._require_admin() from authenticated;
+-- Postgres grants EXECUTE to PUBLIC on new functions. Revoke from EVERY client role, then grant an
+-- explicit allow-list. Internal helpers (_award, _audit, _gate, ...) are never in the list.
+revoke execute on all functions in schema public from public, anon, authenticated;
+grant execute on function
+  -- player RPCs
+  public.my_state(), public.hint_book(), public.claim_qr(text), public.create_catalyst_code(),
+  public.synthesize(jsonb, text), public.create_gift_link(text), public.redeem_gift(text),
+  public.my_alliance(), public.alliance_create(text), public.alliance_join(text), public.alliance_leave(),
+  public.market_play(text), public.set_display_name(text), public.my_recap(),
+  -- admin RPCs (each checks _require_admin internally)
+  public.admin_overview(), public.admin_players(text, int), public.admin_update_settings(jsonb),
+  public.admin_freeze(uuid, int), public.admin_adjust(uuid, int, text), public.admin_disqualify(uuid, boolean),
+  public.admin_rename(uuid, text), public.admin_grant_element(uuid, text),
+  public.admin_create_qr(text, text, text, int, text, int), public.admin_list_qr(),
+  public.admin_update_qr(uuid, boolean, text, int), public.admin_drop_isotope(uuid, int, text),
+  public.admin_open_market(int), public.admin_end_event(uuid)
+to authenticated;
+grant execute on function public.leaderboard(text, int), public.finale(), public.recipe_key(jsonb) to anon, authenticated;
 alter default privileges in schema public revoke execute on functions from public, anon, authenticated;

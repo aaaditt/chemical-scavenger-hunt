@@ -289,7 +289,12 @@ export default function ControlRoom() {
 
 function exportCsv(rows: PlayerRow[]) {
   const cols = ["display_name", "email", "student_id", "catalyst", "score", "compounds_count", "niche_points", "lends_count", "elements", "alliance", "verified", "is_test", "disqualified"] as const;
-  const esc = (v: unknown) => `"${String(v ?? "").replaceAll('"', '""')}"`;
+  // Display names are player-controlled: neutralize spreadsheet formulas (=, +, -, @, tab, CR) before quoting.
+  const esc = (v: unknown) => {
+    let s = String(v ?? "");
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+    return `"${s.replaceAll('"', '""')}"`;
+  };
   const csv = [cols.join(","), ...rows.map((r) => cols.map((c) => esc(r[c])).join(","))].join("\n");
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));

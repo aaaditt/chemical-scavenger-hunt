@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Secret Catalyst · Scan reveal (rare / isotope / duplicate)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<!-- Browsers skip Tailwind's @theme block, so the token values are mirrored below as short vars. -->
+<style>
+:root{--ink:#071312;--bench:#0b1a19;--wall:#12302c;--seam:#0d2521;--tile:#1e4640;--moss:#2a5c54;--fog:#8fb0a8;--clinic:#dce7ee;--clinic-shade:#a9bcc8;--parch:#eadf9e;--parch-shade:#c9b96a;--holo:#43e6c6;--holo-deep:#1fa88e;--led:#8df25f;--candle:#ffb547;--candle-deep:#d9851c;--alarm:#ff4b3e;--hazard:#f7c61b;
+--t-common:#9fc2b8;--t-uncommon:#3ff0e6;--t-rare:#e4ecf7;--t-iso:#d4ff2a;--t-legend:#ffcb3d;
+--pxb:0 -4px 0 0 var(--ink),0 4px 0 0 var(--ink),-4px 0 0 0 var(--ink),4px 0 0 0 var(--ink)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#040c0b;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;padding:48px;display:flex;gap:56px;align-items:flex-start;flex-wrap:wrap}
+.frame-label{font:700 16px 'Pixelify Sans';color:#8fb0a8;margin-bottom:16px}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;color:var(--clinic);background-color:var(--wall);
+  background-image:linear-gradient(var(--seam) 0 4px,transparent 4px),linear-gradient(90deg,var(--seam) 0 4px,transparent 4px);background-size:96px 64px}
+.sprite{display:block;image-rendering:pixelated}
+.abs{position:absolute}
+/* quantised spotlight: 3 hard rings, no blur (ref-1 candle pool) */
+.spot{position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,transparent 0 34%,rgba(4,12,11,.45) 34% 50%,rgba(4,12,11,.78) 50%)}
+.stamp{position:absolute;z-index:3;left:50%;top:20px;transform:translateX(-50%);background:var(--bench);color:var(--led);font:700 40px/1 'Pixelify Sans';padding:12px 16px;box-shadow:var(--pxb);white-space:nowrap;animation:stamp 240ms steps(3,end) both}
+.stamp.iso{color:var(--t-iso)}
+.stamp.dup{background:var(--clinic);color:var(--ink);font-size:32px}
+.hz{position:absolute;left:0;right:0;z-index:2}
+/* hero bottle: close-up at exactly 2x (art px = 8) */
+.btl{--x:8px;position:absolute;left:131px;top:176px;width:calc(var(--x)*16);height:calc(var(--x)*20);animation:drop-in 320ms steps(4,end) both}
+.btl>svg{position:relative;z-index:1}
+.sym{position:absolute;z-index:2;left:calc(var(--x)*4);top:calc(var(--x)*10);width:calc(var(--x)*8);height:calc(var(--x)*4);display:flex;align-items:center;justify-content:center;font:700 32px/1 'Pixelify Sans';color:var(--ink)}
+.plank{position:absolute;left:99px;top:336px;width:192px;height:12px;background:var(--bench);box-shadow:inset 0 4px 0 0 var(--tile),0 4px 0 0 var(--ink)}
+.big{position:absolute;left:0;right:0;text-align:center}
+.ename{top:372px;font:700 64px/64px 'Pixelify Sans';color:#fff;letter-spacing:.02em}
+.ename.long{font-size:48px;line-height:64px}
+.nick{top:440px;font:700 18px/24px 'Atkinson Hyperlegible';color:var(--clinic-shade)}
+.trow{top:480px;display:flex;justify-content:center;align-items:center;gap:16px}
+.tier{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;color:var(--ink);font:700 20px/1 'Pixelify Sans';box-shadow:var(--pxb)}
+.tier .pips{display:flex;gap:4px}
+.tier .pips i{width:8px;height:8px;background:var(--ink)}
+.tier .pips.hzp i{background:repeating-linear-gradient(90deg,var(--hazard) 0 4px,var(--ink) 4px 8px);box-shadow:0 0 0 2px var(--ink)}
+.pts{background:var(--holo);color:var(--ink);font:700 32px/1 'Pixelify Sans';padding:4px 10px;box-shadow:var(--pxb),inset 0 -4px 0 0 var(--holo-deep)}
+.pts.zero{background:var(--bench);color:var(--clinic)}
+.card{position:absolute;left:24px;right:24px;top:552px;background:var(--clinic);color:var(--ink);padding:12px 16px;box-shadow:var(--pxb),inset -4px -4px 0 0 var(--clinic-shade)}
+.card.parch{background:var(--parch);box-shadow:var(--pxb),inset -4px -4px 0 0 var(--parch-shade)}
+.card h4{font:700 20px/24px 'Pixelify Sans';margin-bottom:4px}
+.card p{font:700 16px/21px 'Atkinson Hyperlegible'}
+.card p+p{margin-top:6px}
+.card .meter{display:flex;gap:4px;margin:8px 0 4px}
+.card .meter i{width:28px;height:12px;background:var(--ink)}
+.card .meter.ten i{width:24px}
+.card .meter i.left{background:transparent;box-shadow:inset 0 0 0 4px var(--ink)}
+.actions{position:absolute;left:20px;right:20px;bottom:28px;display:flex;gap:16px}
+.btn{flex:1;display:flex;align-items:center;justify-content:center;height:64px;font:700 24px 'Pixelify Sans';color:var(--ink);background:var(--candle);box-shadow:var(--pxb),inset 0 -8px 0 0 var(--candle-deep);letter-spacing:.04em}
+.btn.alt{background:var(--clinic);box-shadow:var(--pxb),inset 0 -8px 0 0 var(--clinic-shade);flex:0 0 132px;font-size:20px}
+.foot{position:absolute;left:24px;right:24px;bottom:108px;text-align:center;font:700 16px/20px 'Atkinson Hyperlegible';color:var(--clinic)}
+.foot b{color:var(--t-iso)}
+
+.bub{animation:bubble 1200ms steps(6,end) infinite}
+.spk{animation:sparkle 1600ms steps(1,end) infinite}
+.iso .c-L{animation:iso-flicker 1400ms steps(1,end) infinite}
+.halo{animation:halo-step 1600ms steps(1,end) infinite}
+@keyframes bubble{0%{transform:translateY(0);opacity:1}83%{opacity:1}100%{transform:translateY(-6px);opacity:0}}
+@keyframes sparkle{0%,100%{opacity:0}20%{opacity:1}40%{opacity:0}70%{opacity:1}80%{opacity:0}}
+@keyframes iso-flicker{0%{fill:#d4ff2a}40%{fill:#f3ffb0}46%{fill:#d4ff2a}72%{fill:#f3ffb0}76%{fill:#d4ff2a}}
+@keyframes stamp{from{transform:translateX(-50%) scale(1.75);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+@keyframes drop-in{from{transform:translateY(-64px)}to{transform:translateY(0)}}
+@keyframes halo-step{0%,100%{opacity:1}50%{opacity:.7}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<script>
+/* ===== Secret Catalyst pixel sprite kit (shared by all mockups). 1 char = 1 art pixel. ===== */
+const P={k:'#071312',K:'#071312',g:'#183b36',G:'#2c5a52',w:'#e9fff9',l:'#dce7ee',m:'#a9bcc8',R:'#8a3b32',r:'#5a231e',c:'#9a7048',C:'#5e4026',Y:'#f7c61b',o:'#ff5a36',y:'#ffb547',W:'#fff4c2',A:'#c98a2a',a:'#ffb547',S:'#ffe14a',Z:'#d9a400',f:'#dce7ee',P:'#a57bff',E:'#4db2ff',N:'#4bf08b',n:'#b9ffd2',Q:'#ff5fae',q:'#b8306e',T:'#ffffff',t:'#9daec6',x:'#e9e2d0',z:'#071312',v:'#5e676b',V:'#8a9599',F:'#bdf4ff',j:'#6cc9e6',s:'#8a9a96'};
+const LIQ={common:{L:'#9fc2b8',D:'#6f9388',H:'#cfe6de'},uncommon:{L:'#3ff0e6',D:'#16b3b5',H:'#b5fff8'},rare:{L:'#e4ecf7',D:'#9daec6',H:'#ffffff'},isotope:{L:'#d4ff2a',D:'#8dc20a',H:'#f3ffb0'},legendary:{L:'#ffcb3d',D:'#d9851c',H:'#fff0b0',c:'#ffcb3d'},
+ heat:{L:'#ff5a36',D:'#b8321c',H:'#ffb09a'},pressure:{L:'#a57bff',D:'#6c46c9',H:'#d9c7ff'},light:{L:'#ffe14a',D:'#c9a400',H:'#fff4b0'},electricity:{L:'#4db2ff',D:'#1f6fc2',H:'#b8e0ff'},enzyme:{L:'#4bf08b',D:'#1fa85a',H:'#b9ffd2'},acid:{L:'#ff5fae',D:'#b8306e',H:'#ffc2e0'},
+ sludge:{L:'#6b5a2e',D:'#463a1c',H:'#8c7a44'},frozen:{L:'#bdf4ff',D:'#6cc9e6',H:'#ffffff',l:'#e9fbff',m:'#9fdcf0'},empty:{L:'#183b36',D:'#183b36',H:'#2c5a52'}};
+const SPR={
+jar:["................","................","................","....kkkkkkkk....","....kRRRRRRk....","....krrrrrrk....","...kkkkkkkkkk...","..kwggggggggGk..","..kwggggggggGk..","..kHHHHHHHHHHk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","..kDLLLLLLLLDk..","..kDDDDDDDDDDk..","...kkkkkkkkkk..."],
+flask:["................","......kkkk......","......kcck......","......kCCk......",".....kkkkkk.....","......kwgk......","......kwgk......",".....kkwgkk.....","....kgwgggGk....","...kHHHHHHHHk...","..kLllllllllLk..","..kLllllllllLk..",".kLLllllllllLLk.",".kLLllllllllLLk.",".kwLmmmmmmmmLLk.",".kwLLLLLLLLLLLk.",".kLLLLLLLLLLLDk.","..kDLLLLLLLLDk..","...kDDDDDDDDk...","....kkkkkkkk...."],
+decanter:[".......kk.......","......kTTk......",".....kTttTk.....","......kttk......",".....kkkkkk.....","......kwgk......",".....kkwgkk.....","...kkgwgggGkk...","..kHHHHHHHHHHk..","..kwLLLLLLLLLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","..kDDDDDDDDDDk..","...kkkkkkkkkk..."],
+ampoule:[".......kk.......","......kwgk......","......kwgk......",".....kkwgkk.....","....kYKYKYKk....","....kKYKYKYk....","....kwggggGk....","...kkHHHHHHkk...","..kwLLLLLLLLLk..","..kwLLLLLLLLLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","...kDLLLLLLDk...","....kDDDDDDk....",".....kkkkkk....."],
+erlen:["................",".....kkkkkk.....",".....kcccck.....","......kkkk......","......kwgk......","......kwgk......","......kwgk......",".....kwgggk.....",".....kwgggk.....","....kHHHHHHk....","....kwLLLLLk....","...kwLLLLLLLk...","...kLLLLLLLLk...","..kLLLLLLLLLLk..","..kLLLLLLLLLLk..",".kLLLLLLLLLLLLk.",".kLLLLLLLLLLLLk.","kDLLLLLLLLLLLLDk","kDDDDDDDDDDDDDDk","kkkkkkkkkkkkkkkk"],
+i_heat:["....kk....","...kok....","...kook...","..kooyok..","..koyyok..",".kooyWyok.",".koyWWyok.",".koyWWyok.","..koyyok..","...kkkk..."],
+i_pressure:["...kkkk...",".kkPPPPkk.",".kPffffPk.","kPffffkfPk","kPfffkffPk","kPffkkffPk","kPffffffPk",".kPffffPk.",".kkPPPPkk.","...kkkk..."],
+i_light:["....ZZ....",".Z.kkkk.Z.","..kSSSSk..",".kSWWSSSk.","ZkSWSSSSkZ","ZkSSSSSSkZ",".kSSSSSSk.","..kSSSSk..",".Z.kkkk.Z.","....ZZ...."],
+i_electricity:[".....kkkk.","....kEEk..","...kEEk...","..kEEkkkk.",".kEEEEEEk.",".kkkkEEk..","....kEk...","...kEk....","..kEk.....","..kk......"],
+i_enzyme:[".kk....kk.",".kNk..knk.","..kNkknk..","...kNnk...","...knNk...","..knkkNk..",".knk..kNk.",".knk..kNk.","..knkkNk..","...kNnk..."],
+i_acid:["....kk....","....kk....","...kQQk...","...kQQk...","..kQWQQk..",".kQWQQQQk.",".kQQQQQQk.",".kQQQQqQk.","..kQqqQk..","...kkkk..."],
+star:["...k...","..kSk..","kkSWSkk","kSSSSSk",".kSSSk.","kSSkSSk","kk...kk"],
+flake:["...F...",".F.F.F.","..FFF..","FFFjFFF","..FFF..",".F.F.F.","...F..."],
+up:["..k..",".kNk.","kNNNk"],
+dn:["kQQQk",".kQk.","..k.."],
+qr:["kkk.k.kkk","k.k...k.k","kkk.k.kkk","....k....","k.kk.kk.k","....k....","kkk..k.k.","k.k.kk..k","kkk.k.kk."]
+};
+const TSPR={common:'jar',uncommon:'flask',rare:'decanter',isotope:'ampoule'};
+function rects(rows,pal={},ox=0,oy=0){let s='';rows.forEach((row,y)=>{let x=0;while(x<row.length){const ch=row[x];if(ch==='.'){x++;continue}let e=x;while(e<row.length&&row[e]===ch)e++;const col=pal[ch]||P[ch];if(col)s+=`<rect x="${x+ox}" y="${y+oy}" width="${e-x}" height="1" fill="${col}" class="c-${ch}"/>`;x=e}});return s}
+function wrap(w,h,sc,inner,cls=''){return `<svg class="sprite ${cls}" width="${w*sc}" height="${h*sc}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`}
+function bubbles(list){return list.map(([x,y],i)=>`<rect class="bub" x="${x}" y="${y}" width="1" height="1" fill="#ffffff" style="animation-delay:${-i*400}ms"/>`).join('')}
+function sparkles(list){return list.map(([x,y],i)=>`<g class="spk" style="animation-delay:${-i*530}ms"><rect x="${x-1}" y="${y}" width="3" height="1" fill="#ffffff"/><rect x="${x}" y="${y-1}" width="1" height="3" fill="#ffffff"/></g>`).join('')}
+function bottle(tier,sc,o={}){const rows=SPR[TSPR[tier]];let s=rects(rows,LIQ[o.liq||tier]);if(!o.still&&tier==='uncommon')s+=bubbles([[6,16],[9,15],[11,16]]);if(!o.still&&tier==='rare')s+=sparkles([[1,8],[14,12],[1,17]]);return wrap(16,20,sc,s,tier==='isotope'&&!o.liq?'iso':'')}
+function flask(liq,sc,o={}){let s=rects(SPR.erlen,LIQ[liq]);if(!o.still)s+=bubbles([[5,16],[8,14],[10,17]]);return wrap(16,20,sc,s,liq==='legendary'?'prism':(liq==='isotope'?'iso':''))}
+function halo(r,color,sc){let s='';const d=r*2;for(let y=0;y<d;y++){let x=0;while(x<d){const al=a=>{const t=Math.hypot(a+.5-r,y+.5-r);return t<r*.55?.38:t<r?.16:0};const v=al(x);let e=x;while(e<d&&al(e)===v)e++;if(v)s+=`<rect x="${x}" y="${y}" width="${e-x}" height="1" fill="${color}" fill-opacity="${v}"/>`;x=e}}return wrap(d,d,sc,s,'halo')}
+/* ref-2 door stripes, drawn as a pixel staircase so the diagonal stays crisp. */
+function hazard(w,h,sc,band=4){let s='';for(let y=0;y<h;y++){let x=0;const v0=a=>Math.floor((a+y)/band)%2;while(x<w){const v=v0(x);let e=x;while(e<w&&v0(e)===v)e++;s+=`<rect x="${x}" y="${y}" width="${e-x}" height="1" fill="${v?'#071312':'#f7c61b'}"/>`;x=e}}return wrap(w,h,sc,s)}
+function mount(root=document){root.querySelectorAll('[data-s]').forEach(el=>{if(el.dataset.done)return;el.dataset.done=1;const d=el.dataset,x=+d.x||4;let h='';
+ if(d.s==='bottle')h=bottle(d.t,x,{liq:d.liq,still:'still' in d});else if(d.s==='flask')h=flask(d.t,x,{still:'still' in d});
+ else if(d.s==='icon')h=wrap(10,10,x,rects(SPR['i_'+d.t]));else if(d.s==='halo')h=halo(+d.r,d.c,x);else if(d.s==='hazard')h=hazard(+d.w,+d.h,x);else{const r=SPR[d.s];h=wrap(r[0].length,r.length,x,rects(r))}
+ el.insertAdjacentHTML('afterbegin',h)})}
+</script>
+</head>
+<body>
+
+<!-- 01 RARE: the post-worthy one -->
+<div><p class="frame-label">01 · SCAN REVEAL · rare element, first scan</p>
+<div class="phone">
+  <div class="spot"></div>
+  <div class="stamp">COLLECTED</div>
+  <i class="abs" data-s="halo" data-r="20" data-c="#e4ecf7" data-x="8" style="left:35px;top:96px"></i>
+  <div class="plank"></div>
+  <div class="btl" data-s="bottle" data-t="rare" data-x="8"><span class="sym">Ag</span></div>
+  <div class="big ename">SILVER</div>
+  <div class="big nick">the mirror metal</div>
+  <div class="big trow"><span class="tier" style="background:var(--t-rare)"><span class="pips"><i></i><i></i><i></i></span>RARE</span><span class="pts">+20</span></div>
+  <div class="card">
+    <h4>BOTTLE #3 OF 5</h4>
+    <div class="meter" aria-label="3 of 5 claimed"><i></i><i></i><i></i><i class="left"></i><i class="left"></i></div>
+    <p>Two Silvers left on campus. Whoever has them will not tell you where.</p>
+    <p>3 recipes in the Hint Book want this.</p>
+  </div>
+  <div class="actions"><div class="btn alt">SHELF</div><div class="btn">POST IT</div></div>
+</div></div>
+
+<!-- 02 ISOTOPE -->
+<div><p class="frame-label">02 · SCAN REVEAL · isotope drop (30-min window)</p>
+<div class="phone">
+  <div class="spot"></div>
+  <i class="hz" data-s="hazard" data-w="98" data-h="3" data-x="4" style="top:0"></i>
+  <div class="stamp iso" style="top:28px">UNSTABLE</div>
+  <i class="abs" data-s="halo" data-r="20" data-c="#d4ff2a" data-x="8" style="left:35px;top:96px"></i>
+  <div class="plank"></div>
+  <div class="btl" data-s="bottle" data-t="isotope" data-x="8"><span class="sym">U</span></div>
+  <div class="big ename long">URANIUM-235</div>
+  <div class="big nick">the heavyweight</div>
+  <div class="big trow"><span class="tier" style="background:var(--t-iso)"><span class="pips hzp"><i></i><i></i><i></i><i></i></span>ISOTOPE</span><span class="pts">+50</span></div>
+  <div class="card parch">
+    <h4>CLAIM 7 OF 10</h4>
+    <div class="meter ten" aria-label="7 of 10 claimed"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="left"></i><i class="left"></i><i class="left"></i></div>
+    <p>Goes dark at 16:30. Three people are still looking. Three.</p>
+  </div>
+  <p class="foot">Worth more inside a compound. <b>Someone out there holds the catalyst.</b></p>
+  <div class="actions"><div class="btn alt">SHELF</div><div class="btn">POST IT</div></div>
+</div></div>
+
+<!-- 03 DUPLICATE -->
+<div><p class="frame-label">03 · SCAN REVEAL · already on your shelf (no points)</p>
+<div class="phone">
+  <div class="stamp dup">ALREADY SHELVED</div>
+  <div class="plank"></div>
+  <div class="btl" data-s="bottle" data-t="common" data-x="8" style="animation:none"><span class="sym">H</span></div>
+  <div class="big ename">HYDROGEN</div>
+  <div class="big nick">still the tiny one</div>
+  <div class="big trow"><span class="tier" style="background:var(--t-common)"><span class="pips"><i></i></span>COMMON</span><span class="pts zero">+0</span></div>
+  <div class="card parch">
+    <h4>NO POINTS FOR TWINS</h4>
+    <p>You've had this one since 14:12. Your crew already shares your commons, so go find something rarer.</p>
+  </div>
+  <div class="actions"><div class="btn">KEEP HUNTING</div></div>
+</div></div>
+
+<script>mount();</script>
+</body>
+</html>

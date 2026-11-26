@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Secret Catalyst · Lab frozen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<!-- Browsers skip Tailwind's @theme block, so the token values are mirrored below as short vars. -->
+<style>
+:root{--ink:#071312;--bench:#0b1a19;--wall:#12302c;--seam:#0d2521;--tile:#1e4640;--moss:#2a5c54;--fog:#8fb0a8;--clinic:#dce7ee;--clinic-shade:#a9bcc8;--parch:#eadf9e;--parch-shade:#c9b96a;--holo:#43e6c6;--led:#8df25f;--candle:#ffb547;--candle-deep:#d9851c;--alarm:#ff4b3e;--frost:#bdf4ff;--frost-deep:#6cc9e6;--heat:#ff5a36;
+--pxb:0 -4px 0 0 var(--ink),0 4px 0 0 var(--ink),-4px 0 0 0 var(--ink),4px 0 0 0 var(--ink)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#040c0b;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;padding:48px;display:flex;gap:56px;align-items:flex-start;flex-wrap:wrap}
+.frame-label{font:700 16px 'Pixelify Sans';color:#8fb0a8;margin-bottom:16px}
+/* Frozen lab: same room, seams go frost-deep, the wall gets a cold cast. Still the same tile grid. */
+.phone{width:390px;height:844px;position:relative;overflow:hidden;color:var(--clinic);background-color:#123540;
+  background-image:linear-gradient(#0c2630 0 4px,transparent 4px),linear-gradient(90deg,#0c2630 0 4px,transparent 4px);background-size:96px 64px}
+.sprite{display:block;image-rendering:pixelated}
+.abs{position:absolute}
+.ice{position:absolute;left:0;top:0;z-index:2;animation:frost-in 900ms steps(6,end) both}
+.stamp{position:absolute;z-index:3;left:50%;top:60px;transform:translateX(-50%);background:var(--frost);color:var(--ink);font:700 40px/1 'Pixelify Sans';padding:12px 16px;box-shadow:var(--pxb),inset 0 -4px 0 0 var(--frost-deep);white-space:nowrap}
+.timer{position:absolute;left:56px;right:56px;top:328px;background:var(--bench);box-shadow:var(--pxb);padding:12px 0 8px;text-align:center}
+.timer .k{font:700 16px/16px 'Pixelify Sans';color:var(--frost);letter-spacing:.08em}
+.timer b{display:block;font:700 80px/72px 'Pixelify Sans';color:var(--frost)}
+.timer b .colon{animation:blink 1000ms steps(1,end) infinite}
+.why{position:absolute;left:24px;right:24px;top:448px;text-align:center;font:700 17px/22px 'Atkinson Hyperlegible';color:var(--clinic)}
+.card{position:absolute;left:24px;right:24px;top:508px;background:var(--clinic);color:var(--ink);padding:12px 16px;box-shadow:var(--pxb),inset -4px -4px 0 0 var(--clinic-shade)}
+.card h4{font:700 20px/24px 'Pixelify Sans'}
+.card p{font:700 16px/21px 'Atkinson Hyperlegible'}
+.queue{display:flex;gap:16px;margin:8px 0}
+.q{position:relative;width:64px;height:80px}
+.q .sym{position:absolute;left:16px;top:40px;width:32px;height:16px;display:flex;align-items:center;justify-content:center;font:700 16px/1 'Pixelify Sans';color:var(--ink)}
+.q.slot{box-shadow:inset 0 0 0 4px var(--clinic-shade)}
+.lend{position:absolute;left:24px;right:24px;top:688px;text-align:center;font:700 16px/21px 'Atkinson Hyperlegible';color:var(--clinic)}
+/* Catalyst colors fail AA as small text on the cold wall, so the callout uses candle (7:1). */
+.lend em{font-style:normal;color:var(--candle)}
+.actions{position:absolute;left:20px;right:20px;bottom:28px;display:flex;gap:16px}
+.btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:64px;font:700 24px 'Pixelify Sans';color:var(--ink);background:var(--candle);box-shadow:var(--pxb),inset 0 -8px 0 0 var(--candle-deep);letter-spacing:.04em}
+.btn.alt{background:var(--clinic);box-shadow:var(--pxb),inset 0 -8px 0 0 var(--clinic-shade);font-size:20px;flex:0 0 148px}
+.spk{animation:sparkle 1600ms steps(1,end) infinite}
+@keyframes sparkle{0%,100%{opacity:0}20%{opacity:1}40%{opacity:0}70%{opacity:1}80%{opacity:0}}
+@keyframes frost-in{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<script>
+/* ===== Secret Catalyst pixel sprite kit (shared by all mockups). 1 char = 1 art pixel. ===== */
+const P={k:'#071312',K:'#071312',g:'#183b36',G:'#2c5a52',w:'#e9fff9',l:'#dce7ee',m:'#a9bcc8',R:'#8a3b32',r:'#5a231e',c:'#9a7048',C:'#5e4026',Y:'#f7c61b',o:'#ff5a36',y:'#ffb547',W:'#fff4c2',A:'#c98a2a',a:'#ffb547',S:'#ffe14a',Z:'#d9a400',f:'#dce7ee',P:'#a57bff',E:'#4db2ff',N:'#4bf08b',n:'#b9ffd2',Q:'#ff5fae',q:'#b8306e',T:'#ffffff',t:'#9daec6',x:'#e9e2d0',z:'#071312',v:'#5e676b',V:'#8a9599',F:'#bdf4ff',j:'#6cc9e6',s:'#8a9a96'};
+const LIQ={common:{L:'#9fc2b8',D:'#6f9388',H:'#cfe6de'},uncommon:{L:'#3ff0e6',D:'#16b3b5',H:'#b5fff8'},rare:{L:'#e4ecf7',D:'#9daec6',H:'#ffffff'},isotope:{L:'#d4ff2a',D:'#8dc20a',H:'#f3ffb0'},legendary:{L:'#ffcb3d',D:'#d9851c',H:'#fff0b0',c:'#ffcb3d'},
+ heat:{L:'#ff5a36',D:'#b8321c',H:'#ffb09a'},pressure:{L:'#a57bff',D:'#6c46c9',H:'#d9c7ff'},light:{L:'#ffe14a',D:'#c9a400',H:'#fff4b0'},electricity:{L:'#4db2ff',D:'#1f6fc2',H:'#b8e0ff'},enzyme:{L:'#4bf08b',D:'#1fa85a',H:'#b9ffd2'},acid:{L:'#ff5fae',D:'#b8306e',H:'#ffc2e0'},
+ sludge:{L:'#6b5a2e',D:'#463a1c',H:'#8c7a44'},frozen:{L:'#bdf4ff',D:'#6cc9e6',H:'#ffffff',l:'#e9fbff',m:'#9fdcf0',g:'#9fdcf0',G:'#bdf4ff'},empty:{L:'#183b36',D:'#183b36',H:'#2c5a52'}};
+const SPR={
+jar:["................","................","................","....kkkkkkkk....","....kRRRRRRk....","....krrrrrrk....","...kkkkkkkkkk...","..kwggggggggGk..","..kwggggggggGk..","..kHHHHHHHHHHk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","..kDLLLLLLLLDk..","..kDDDDDDDDDDk..","...kkkkkkkkkk..."],
+flask:["................","......kkkk......","......kcck......","......kCCk......",".....kkkkkk.....","......kwgk......","......kwgk......",".....kkwgkk.....","....kgwgggGk....","...kHHHHHHHHk...","..kLllllllllLk..","..kLllllllllLk..",".kLLllllllllLLk.",".kLLllllllllLLk.",".kwLmmmmmmmmLLk.",".kwLLLLLLLLLLLk.",".kLLLLLLLLLLLDk.","..kDLLLLLLLLDk..","...kDDDDDDDDk...","....kkkkkkkk...."],
+decanter:[".......kk.......","......kTTk......",".....kTttTk.....","......kttk......",".....kkkkkk.....","......kwgk......",".....kkwgkk.....","...kkgwgggGkk...","..kHHHHHHHHHHk..","..kwLLLLLLLLLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","..kDDDDDDDDDDk..","...kkkkkkkkkk..."],
+ampoule:[".......kk.......","......kwgk......","......kwgk......",".....kkwgkk.....","....kYKYKYKk....","....kKYKYKYk....","....kwggggGk....","...kkHHHHHHkk...","..kwLLLLLLLLLk..","..kwLLLLLLLLLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLllllllllLk..","..kLmmmmmmmmLk..","..kwLLLLLLLLLk..","..kLLLLLLLLLLk..","...kDLLLLLLDk...","....kDDDDDDk....",".....kkkkkk....."],
+erlen:["................",".....kkkkkk.....",".....kcccck.....","......kkkk......","......kwgk......","......kwgk......","......kwgk......",".....kwgggk.....",".....kwgggk.....","....kHHHHHHk....","....kwLLLLLk....","...kwLLLLLLLk...","...kLLLLLLLLk...","..kLLLLLLLLLLk..","..kLLLLLLLLLLk..",".kLLLLLLLLLLLLk.",".kLLLLLLLLLLLLk.","kDLLLLLLLLLLLLDk","kDDDDDDDDDDDDDDk","kkkkkkkkkkkkkkkk"],
+i_heat:["....kk....","...kok....","...kook...","..kooyok..","..koyyok..",".kooyWyok.",".koyWWyok.",".koyWWyok.","..koyyok..","...kkkk..."],
+flake:["...F...",".F.F.F.","..FFF..","FFFjFFF","..FFF..",".F.F.F.","...F..."]
+};
+const TSPR={common:'jar',uncommon:'flask',rare:'decanter',isotope:'ampoule'};
+function rects(rows,pal={},ox=0,oy=0){let s='';rows.forEach((row,y)=>{let x=0;while(x<row.length){const ch=row[x];if(ch==='.'){x++;continue}let e=x;while(e<row.length&&row[e]===ch)e++;const col=pal[ch]||P[ch];if(col)s+=`<rect x="${x+ox}" y="${y+oy}" width="${e-x}" height="1" fill="${col}" class="c-${ch}"/>`;x=e}});return s}
+function wrap(w,h,sc,inner,cls=''){return `<svg class="sprite ${cls}" width="${w*sc}" height="${h*sc}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`}
+function bottle(tier,sc,o={}){return wrap(16,20,sc,rects(SPR[TSPR[tier]],LIQ[o.liq||tier]))}
+function halo(r,color,sc){let s='';const d=r*2;for(let y=0;y<d;y++){let x=0;while(x<d){const al=a=>{const t=Math.hypot(a+.5-r,y+.5-r);return t<r*.55?.38:t<r?.16:0};const v=al(x);let e=x;while(e<d&&al(e)===v)e++;if(v)s+=`<rect x="${x}" y="${y}" width="${e-x}" height="1" fill="${color}" fill-opacity="${v}"/>`;x=e}}return wrap(d,d,sc,s,'halo')}
+/* Icicles along the top edge: deterministic lengths, frost body + frost-deep right edge + white tip glint. */
+function icicles(w){const L=[3,6,2,9,4,2,7,3,5,11,4,2,6,3,8,2,5,3,10,4,2,6,3,7,2,4];let s=`<rect x="0" y="0" width="${w}" height="2" fill="#bdf4ff"/><rect x="0" y="2" width="${w}" height="1" fill="#6cc9e6"/>`;
+ for(let x=0,i=0;x<w;i++){const len=L[i%L.length],bw=len>6?3:2;s+=`<rect x="${x}" y="3" width="${bw}" height="${len}" fill="#bdf4ff"/><rect x="${x+bw-1}" y="3" width="1" height="${len}" fill="#6cc9e6"/><rect x="${x}" y="${3+len}" width="1" height="1" fill="#ffffff"/>`;x+=bw+(i%3)+1}
+ return wrap(w,16,4,s)}
+/* Ice block around the hero flask: a frost-deep frame with a 1px highlight, at the hero scale (8). */
+function iceFlask(){let s=`<rect x="0" y="0" width="18" height="22" fill="#bdf4ff" fill-opacity=".16"/>`+
+ `<rect x="0" y="0" width="18" height="1" fill="#bdf4ff"/><rect x="0" y="0" width="1" height="22" fill="#bdf4ff"/><rect x="17" y="0" width="1" height="22" fill="#6cc9e6"/><rect x="0" y="21" width="18" height="1" fill="#6cc9e6"/>`+
+ rects(SPR.erlen,LIQ.frozen,1,1)+`<rect x="2" y="2" width="3" height="1" fill="#ffffff"/><rect x="2" y="3" width="1" height="2" fill="#ffffff"/>`;
+ return wrap(18,22,8,s)}
+function mount(root=document){root.querySelectorAll('[data-s]').forEach(el=>{if(el.dataset.done)return;el.dataset.done=1;const d=el.dataset,x=+d.x||4;let h='';
+ if(d.s==='bottle')h=bottle(d.t,x,{liq:d.liq});else if(d.s==='icon')h=wrap(10,10,x,rects(SPR['i_'+d.t]));else if(d.s==='halo')h=halo(+d.r,d.c,x);else{const r=SPR[d.s];h=wrap(r[0].length,r.length,x,rects(r))}
+ el.insertAdjacentHTML('afterbegin',h)})}
+</script>
+</head>
+<body>
+
+<div><p class="frame-label">01 · LAB FROZEN · 3 bad mixes in a row</p>
+<div class="phone" role="main" aria-label="Your lab is frozen for 11 minutes 42 seconds">
+  <div class="ice" id="ice"></div>
+  <div class="stamp">LAB FROZEN</div>
+  <!-- No halo here on purpose: a frozen lab is the one place the candle is out. -->
+  <div class="abs" id="block" style="left:123px;top:136px"></div>
+  <i class="abs spk" data-s="flake" data-x="4" style="left:60px;top:172px"></i>
+  <i class="abs spk" data-s="flake" data-x="4" style="left:300px;top:212px;animation-delay:-530ms"></i>
+  <i class="abs spk" data-s="flake" data-x="4" style="left:80px;top:268px;animation-delay:-1060ms"></i>
+
+  <div class="timer"><span class="k">THAWS IN</span><b>11<span class="colon">:</span>42</b></div>
+  <p class="why">Three bad mixes in a row. The bench needs a minute. Twelve, actually.</p>
+
+  <div class="card">
+    <h4>2 SCANS ON ICE</h4>
+    <div class="queue">
+      <div class="q" data-s="bottle" data-t="uncommon" data-liq="frozen" data-x="4"><span class="sym">K</span></div>
+      <div class="q" data-s="bottle" data-t="rare" data-liq="frozen" data-x="4"><span class="sym">Zn</span></div>
+      <div class="q slot"></div>
+    </div>
+    <p>Points land the second you thaw.</p>
+  </div>
+  <p class="lend">Mixing is off. Lending isn't. <em>Your Heat</em> still earns 30% on every good mix.</p>
+
+  <div class="actions"><div class="btn alt">HINT BOOK</div><div class="btn"><i data-s="icon" data-t="heat" data-x="4"></i>LEND HEAT</div></div>
+</div></div>
+
+<script>
+document.getElementById('ice').innerHTML=icicles(98);
+document.getElementById('block').innerHTML=iceFlask();
+mount();
+</script>
+</body>
+</html>

@@ -56,8 +56,9 @@ until BOTH are satisfied**, and only then show the final result.
     building, tube tags overlap the pipes, strike marks should be real X glyphs, and the stamp should sit
     above the halo.
   - rewritten riddles in `content/catalog.json` (validated)
-- **Still to produce:** `design/direction.md`, `design/screens/scan-reveal.html`, `frozen.html`,
-  `screen.html` and `story-card.html`. Then run `design-critic`, which writes `design/critique.md` and ends
+- **Round 1 resumed and finished (2026-11-27):** mix.html fixes are applied. `design/direction.md`, `scan-reveal.html`,
+  `frozen.html`, `screen.html` (1920x1080) and `story-card.html` (1080x1920) are written. Not yet committed or screenshotted.
+- **Next:** run `design-critic`, which writes `design/critique.md` and ends
   with `VERDICT: APPROVE` or `VERDICT: REVISE`. Loop director ↔ critic until APPROVE.
 - After approval: apply the direction to the real app. Replace the `@theme` block in `src/app/globals.css`
   with `design/tokens.css`, redo `src/components/Bottle.tsx` as pixel sprites, then restyle the screens,

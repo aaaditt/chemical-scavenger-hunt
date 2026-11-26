@@ -111,6 +111,10 @@ function Banners() {
   if (!state) return null;
   const frozenMs = msUntil(state.player.frozen_until);
   const banners: ReactNode[] = [];
+  if (state.settings.test_mode)
+    banners.push(<p key="test" className="bg-uranium text-cobalt-950 font-semibold">Test server — progress may be wiped{state.player.is_test ? " · you're a test player" : ""}.</p>);
+  if (state.settings.require_verification && !state.player.verified && !state.player.is_admin)
+    banners.push(<p key="verify" className="bg-amber text-cobalt-950 font-semibold">Waiting for an organizer to verify your account. Show this screen at the info desk.</p>);
   if (!state.settings.game_open && !state.player.is_admin)
     banners.push(<p key="closed" className="bg-cobalt-950 text-label-dim">The lab is closed. Watch the Insta for opening time.</p>);
   if (frozenMs > 0)

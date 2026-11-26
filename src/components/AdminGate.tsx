@@ -7,7 +7,9 @@ import { Splash } from "./Shell";
 
 const NAV = [
   { href: "/admin", label: "Control room" },
+  { href: "/admin/access", label: "Access & testing" },
   { href: "/admin/qr", label: "QR codes" },
+  { href: "/admin/catalog", label: "Catalog" },
   { href: "/screen", label: "Big screen ↗", external: true },
   { href: "/screen/finale", label: "Finale ↗", external: true },
   { href: "/lab", label: "Player view" },

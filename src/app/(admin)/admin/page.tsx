@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useGame } from "@/components/GameProvider";
 import { FEED_ICON, useFeed } from "@/components/Leaderboard";
 import { useNow } from "@/components/Shell";
+import { PlayerManager } from "@/components/PlayerManager";
 import { clock, msUntil } from "@/lib/game";
 import { errorMessage } from "@/lib/messages";
 import { rpc } from "@/lib/supabase";
@@ -17,7 +18,7 @@ type Overview = {
   flags: { id: string; display_name: string; email: string; reason: string; n: number }[];
 };
 type PlayerRow = { id: string; email: string; student_id: string | null; display_name: string; catalyst: string; score: number;
-  compounds_count: number; niche_points: number; lends_count: number; frozen_until: string | null; disqualified: boolean; is_admin: boolean; elements: number };
+  compounds_count: number; niche_points: number; lends_count: number; frozen_until: string | null; disqualified: boolean; is_admin: boolean; elements: number; verified: boolean; is_test: boolean; alliance: string | null };
 type QrRow = { id: string; code: string; element: string | null; element_name: string | null; tier: string | null; cap: number | null; claimed_count: number; location_label: string; active_until: string | null };
 
 const NUM_SETTINGS: { key: string; label: string }[] = [
@@ -49,6 +50,7 @@ export default function ControlRoom() {
   const [drop, setDrop] = useState({ qr: "", minutes: 30, hint: "" });
   const [marketMin, setMarketMin] = useState(10);
   const feed = useFeed(25);
+  const [managing, setManaging] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const [o, p, qr] = await Promise.all([
@@ -203,6 +205,7 @@ export default function ControlRoom() {
           <div className="flex items-center gap-3">
             <h2 className="wide text-lg">Players</h2>
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, email, ID" className="ml-auto rounded-label bg-cobalt-900 px-3 py-2 text-sm w-64" />
+            <button onClick={() => exportCsv(players)} className="rounded-label border border-cobalt-300 px-3 py-2 text-sm">Export CSV</button>
           </div>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">
@@ -214,13 +217,14 @@ export default function ControlRoom() {
                   const frozen = msUntil(p.frozen_until) > 0;
                   return (
                     <tr key={p.id} className={`border-t border-cobalt-800 ${p.disqualified ? "opacity-40" : ""}`}>
-                      <td className="py-2">{p.display_name}{p.is_admin && " 🛡"}<span className="block text-xs text-label-dim">{p.student_id ?? p.email}</span></td>
+                      <td className="py-2">{p.display_name}{p.is_admin && " 🛡"}{p.is_test && <span className="ml-1 text-xs text-uranium">TEST</span>}{!p.verified && <span className="ml-1 text-xs text-amber">UNVERIFIED</span>}<span className="block text-xs text-label-dim">{p.is_test ? "username account" : p.student_id ?? p.email}{p.alliance && ` · ${p.alliance}`}</span></td>
                       <td>{p.catalyst}</td>
                       <td className="text-right tabular-nums">{p.score}</td>
                       <td className="text-right tabular-nums">{p.compounds_count}</td>
                       <td className="text-right tabular-nums">{p.elements}</td>
                       <td className="text-right tabular-nums">{p.lends_count}</td>
                       <td className="pl-4 whitespace-nowrap space-x-2">
+                        <button className="rounded-label bg-label text-cobalt-900 font-semibold px-2 py-0.5" onClick={() => setManaging(p.id)}>Manage</button>
                         <button className="underline" onClick={() => act("admin_freeze", { p_player: p.id, p_minutes: frozen ? 0 : 15 }, frozen ? "Unfrozen" : "Frozen 15 min")}>
                           {frozen ? `Unfreeze (${clock(msUntil(p.frozen_until))})` : "Freeze"}
                         </button>
@@ -264,6 +268,8 @@ export default function ControlRoom() {
         </section>
       </div>
 
+      {managing && <PlayerManager playerId={managing} onClose={() => setManaging(null)} onChanged={load} />}
+
       {/* Live feed */}
       <aside>
         <h2 className="wide text-lg">Live feed</h2>
@@ -279,4 +285,14 @@ export default function ControlRoom() {
       </aside>
     </div>
   );
+}
+
+function exportCsv(rows: PlayerRow[]) {
+  const cols = ["display_name", "email", "student_id", "catalyst", "score", "compounds_count", "niche_points", "lends_count", "elements", "alliance", "verified", "is_test", "disqualified"] as const;
+  const esc = (v: unknown) => `"${String(v ?? "").replaceAll('"', '""')}"`;
+  const csv = [cols.join(","), ...rows.map((r) => cols.map((c) => esc(r[c])).join(","))].join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  a.download = `secret-catalyst-players-${new Date().toISOString().slice(0, 16)}.csv`;
+  a.click();
 }

@@ -31,6 +31,13 @@ const MESSAGES: Record<string, string> = {
   market_closed: "The black market is closed.",
   already_played: "You've already made your deal at this market.",
   admin_only: "Organizers only.",
+  pending_verification: "Your account is waiting for an organizer to verify it. Find a volunteer at the info desk.",
+  unknown_compound: "That compound doesn't exist.",
+  cannot_delete_self: "You can't delete your own account.",
+  cannot_demote_self: "You can't remove your own admin access.",
+  bad_email: "That doesn't look like an email address.",
+  confirm_text: "Type the confirmation text exactly.",
+  empty: "Write a message first.",
   network: "Can't reach the lab. Check your connection and try again.",
 };
 

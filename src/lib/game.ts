@@ -42,6 +42,8 @@ export type MyState = {
     wrong_streak: number;
     is_admin: boolean;
     disqualified: boolean;
+    verified: boolean;
+    is_test: boolean;
     catalyst: Catalyst;
   };
   settings: {
@@ -58,6 +60,8 @@ export type MyState = {
     market_big_points: number;
     market_freeze_minutes: number;
     finale_revealed: boolean;
+    test_mode: boolean;
+    require_verification: boolean;
   };
   elements: OwnedElement[];
   ally_elements: string[];

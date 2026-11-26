@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:sql": "docker exec -i supabase_db_chemical-scavenger-hunt psql -U postgres -q -v ON_ERROR_STOP=1 -f - < tests/sql/game.test.sql",
+    "test:sql": "bash -c \"for f in tests/sql/*.test.sql; do docker exec -i supabase_db_chemical-scavenger-hunt psql -U postgres -q -v ON_ERROR_STOP=1 < $f || exit 1; done\"",
     "test:race": "bash tests/sql/concurrency.sh",
     "db:seed": "node scripts/build-seed.mjs",
     "db:reset": "node scripts/build-seed.mjs && supabase db reset",

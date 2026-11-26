@@ -233,3 +233,11 @@ grant execute on function
   public.admin_update_qr(uuid, boolean, text, int), public.admin_drop_isotope(uuid, int, text),
   public.admin_open_market(int), public.admin_end_event(uuid)
 to authenticated;
+
+-- Postgres grants EXECUTE to PUBLIC on new functions. Strip it from everything, so only the
+-- explicit grants (player RPCs, admin RPCs, public read models) remain callable. Internal helpers
+-- like _audit/_award/_require_admin end up callable by no client role.
+revoke execute on all functions in schema public from public, anon;
+grant execute on function public.leaderboard(text, int), public.finale(), public.recipe_key(jsonb) to anon;
+revoke execute on function public._audit(text, text, jsonb), public._require_admin() from authenticated;
+alter default privileges in schema public revoke execute on functions from public, anon, authenticated;

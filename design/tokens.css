@@ -1,0 +1,180 @@
+/*
+ * Secret Catalyst: "NIGHT SHIFT" tokens (design/direction.md is the spec).
+ * Drop-in replacement for the @theme block + keyframes in src/app/globals.css (Tailwind v4).
+ *
+ * Fonts: load in src/app/layout.tsx with next/font/google and expose the CSS variables:
+ *   Pixelify_Sans({ subsets:["latin"], weight:["500","700"], variable:"--font-pixelify" })
+ *   Atkinson_Hyperlegible({ subsets:["latin"], weight:["400","700"], variable:"--font-atkinson" })
+ * Story cards (next/og) load the TTFs directly; both families ship TTF on Google Fonts.
+ *
+ * ONE PIXEL SCALE: 1 art pixel = 4 CSS px on phone (--px). Every border, offset, gap and
+ * sprite dimension in the player app is a multiple of 4. Hero moments use 8 (2 x --px).
+ */
+@theme {
+  /* --- Night lab (ref-1 walls, ref-4 slate) -------------------------------------------- */
+  --color-ink: #071312;          /* outlines, text on light surfaces */
+  --color-bench: #0b1a19;        /* shelves, table tops, deepest panels */
+  --color-wall: #12302c;         /* app background (ref-1 wall) */
+  --color-seam: #0d2521;         /* tile seams */
+  --color-tile: #1e4640;         /* raised tiles, dividers on dark */
+  --color-moss: #2a5c54;         /* empty-slot outlines, disabled */
+  --color-fog: #8fb0a8;          /* muted text on dark (6.0:1 on wall) */
+
+  /* --- Label stock: where information lives (sunlight-safe) ----------------------------- */
+  --color-clinic: #dce7ee;       /* data labels: bottle labels, score cards, captions (ref-3) */
+  --color-clinic-shade: #a9bcc8;
+  --color-parchment: #eadf9e;    /* secrets: hints, riddles, pinned notes (ref-1 "JUNE" note) */
+  --color-parchment-shade: #c9b96a;
+  --color-holo: #43e6c6;         /* HUD monitors: score, timers, leaderboard (ref-2) */
+  --color-holo-deep: #1fa88e;
+  --color-led: #8df25f;          /* LED sign lettering (ref-3 "LAB" sign) */
+
+  /* --- Light & signal --------------------------------------------------------------------- */
+  --color-candle: #ffb547;       /* PRIMARY ACTION. The warm light in the cold room (ref-1) */
+  --color-candle-deep: #d9851c;
+  --color-flame: #ff5a36;
+  --color-alarm: #ff4b3e;        /* failed mix, errors (ref-2 red alarm lamp) */
+  --color-hazard: #f7c61b;       /* hazard stripes, black market (ref-2 door stripes) */
+  --color-frost: #bdf4ff;        /* frozen lab */
+  --color-frost-deep: #6cc9e6;
+  --color-sludge: #6b5a2e;       /* failed-mix liquid */
+
+  /* --- Rarity (always paired with shape + pips + text tag, never color alone) ----------- */
+  --color-tier-common: #9fc2b8;      /* "Sage": dull, no glow, jar, 1 pip */
+  --color-tier-uncommon: #3ff0e6;    /* "Reagent Cyan": ref-1 flask, round flask, 2 pips */
+  --color-tier-rare: #e4ecf7;        /* "Quicksilver": gem-stopper decanter, sparkles, 3 pips */
+  --color-tier-rare-deep: #9daec6;
+  --color-tier-isotope: #d4ff2a;     /* "Uranium": hazard-banded ampoule, flicker, UNSTABLE tag */
+  --color-tier-isotope-deep: #8dc20a;
+  --color-tier-legendary: #ffcb3d;   /* "Prism": gold anchor; liquid cycles all 6 catalyst colors */
+  /* compound tier "basic" = common; "catalyzed" = the catalyst's own color */
+
+  /* --- Catalysts --------------------------------------------------------------------------- */
+  --color-cat-heat: #ff5a36;
+  --color-cat-pressure: #a57bff;
+  --color-cat-light: #ffe14a;
+  --color-cat-electricity: #4db2ff;
+  --color-cat-enzyme: #4bf08b;
+  --color-cat-acid: #ff5fae;
+
+  /* --- Semantic (these are what components should use; Day Shift overrides them) ------- */
+  --color-bg: #12302c;
+  --color-bg-deep: #0b1a19;
+  --color-line: #0d2521;
+  --color-text: #dce7ee;
+  --color-text-muted: #8fb0a8;
+  --color-surface: #dce7ee;      /* label-stock panel */
+  --color-on-surface: #071312;
+
+  /* --- Legacy aliases: keep existing class names working until components migrate ----- */
+  --color-cobalt-950: #071312;
+  --color-cobalt-900: #0b1a19;
+  --color-cobalt-800: #12302c;
+  --color-cobalt-700: #1e4640;
+  --color-cobalt-600: #2a5c54;
+  --color-cobalt-300: #8fb0a8;
+  --color-label: #dce7ee;
+  --color-label-dim: #a9bcc8;
+  --color-amber: #ffb547;
+  --color-amber-deep: #d9851c;
+  --color-uranium: #d4ff2a;
+  --color-verdigris: #43e6c6;
+  --color-ice: #bdf4ff;
+  --color-legend: #ffcb3d;
+
+  /* --- Type -------------------------------------------------------------------------------- */
+  --font-pixel: var(--font-pixelify), "Pixelify Sans", ui-monospace, monospace;
+  --font-sans: var(--font-atkinson), "Atkinson Hyperlegible", system-ui, sans-serif;
+  /* Pixel face sizes: multiples of 8 only. Body: 16 min, 14 only for captions. */
+  --text-tag: 14px;      --text-tag--line-height: 16px;
+  --text-hud: 24px;      --text-hud--line-height: 24px;
+  --text-title: 32px;    --text-title--line-height: 32px;
+  --text-big: 48px;      --text-big--line-height: 48px;
+  --text-hero: 64px;     --text-hero--line-height: 64px;
+  --text-mega: 96px;     --text-mega--line-height: 88px;
+
+  /* --- Geometry: no rounded corners in this world (rounded-full kept for nothing but dots) - */
+  --radius-xs: 0; --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --radius-xl: 0; --radius-2xl: 0; --radius-3xl: 0; --radius-4xl: 0;
+  --radius-label: 0;
+  --radius-glass: 0;
+  --spacing: 4px;        /* Tailwind spacing unit = 1 art pixel. p-2 = 8px = 2 art px. */
+
+  /* Pixel border: 4 hard shadows, no corners, so you get the classic stepped corner (no clip-path). */
+  --shadow-px: 0 -4px 0 0 #071312, 0 4px 0 0 #071312, -4px 0 0 0 #071312, 4px 0 0 0 #071312;
+  --shadow-px-lift: 0 -4px 0 0 #071312, 0 4px 0 0 #071312, -4px 0 0 0 #071312, 4px 0 0 0 #071312, 0 8px 0 0 #071312;
+  /* Stepped glow: two hard rings, zero blur (ref-1 candle halo, quantised). Set --glow per element. */
+  --shadow-glow: 0 0 0 4px color-mix(in srgb, var(--glow, #3ff0e6) 45%, transparent), 0 0 0 12px color-mix(in srgb, var(--glow, #3ff0e6) 18%, transparent);
+
+  /* --- Motion: everything stepped. Sprites never ease. ------------------------------------- */
+  --animate-flame: frame3 450ms steps(1, end) infinite;
+  --animate-bubble: bubble 1200ms steps(6, end) infinite;
+  --animate-sparkle: sparkle 1600ms steps(1, end) infinite;
+  --animate-iso: iso-flicker 1400ms steps(1, end) infinite;
+  --animate-prism: prism 3000ms steps(1, end) infinite;
+  --animate-flow: flow 800ms steps(4, end) infinite;
+  --animate-drop: drop-in 320ms steps(4, end) both;
+  --animate-stamp: stamp 240ms steps(3, end) both;
+  --animate-shake: shake 320ms steps(1, end) both;
+  --animate-frost: frost-in 900ms steps(6, end) both;
+  --animate-blink: blink 1000ms steps(1, end) infinite;
+  --animate-alarm: alarm 1000ms steps(1, end) infinite;
+  --animate-pop: stamp 240ms steps(3, end) both;      /* legacy alias */
+  --animate-glow: sparkle 1600ms steps(1, end) infinite; /* legacy alias: no soft pulsing glows */
+}
+
+/* Day Shift (ref-3 clinical lab). Toggle with <html data-shift="day">. Same sprites, same layout. */
+[data-shift="day"] {
+  --color-bg: #c9d8e2;
+  --color-bg-deep: #8fa5b4;
+  --color-line: #b0c3d0;
+  --color-text: #071312;
+  --color-text-muted: #34505a;   /* 7.1:1 on #c9d8e2 */
+  --color-surface: #f4f8fa;
+  --color-on-surface: #071312;
+  --shadow-glow: 0 0 0 4px #071312;  /* glows can't read on light; becomes an ink ring */
+}
+
+/* 3-frame swap: give frames 2 and 3 animation-delay -150ms / -300ms. */
+@keyframes frame3 { 0% { opacity: 1; } 33.333% { opacity: 0; } 100% { opacity: 0; } }
+/* SVG rects: px = art pixels inside a viewBox sprite. */
+@keyframes bubble { 0% { transform: translateY(0); opacity: 1; } 83% { opacity: 1; } 100% { transform: translateY(-6px); opacity: 0; } }
+@keyframes sparkle { 0%, 100% { opacity: 0; } 20% { opacity: 1; } 40% { opacity: 0; } 70% { opacity: 1; } 80% { opacity: 0; } }
+@keyframes iso-flicker { 0% { fill: #d4ff2a; } 40% { fill: #f3ffb0; } 46% { fill: #d4ff2a; } 72% { fill: #f3ffb0; } 76% { fill: #d4ff2a; } }
+@keyframes prism {
+  0% { fill: #ff5a36; } 16.66% { fill: #ffe14a; } 33.33% { fill: #4bf08b; }
+  50% { fill: #4db2ff; } 66.66% { fill: #a57bff; } 83.33% { fill: #ff5fae; } 100% { fill: #ff5a36; }
+}
+@keyframes flow { to { stroke-dashoffset: -16; } }
+@keyframes drop-in { from { transform: translateY(-64px); } to { transform: translateY(0); } }
+@keyframes stamp { from { transform: scale(1.75); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-4px); } }
+@keyframes frost-in { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes alarm { 0%, 49% { background-color: #ff4b3e; } 50%, 100% { background-color: #7a1f19; } }
+
+/* ---- Base (replace the html/body rules in globals.css) ---------------------------------- */
+html {
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-tap-highlight-color: transparent;
+}
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 1;
+  min-height: 100dvh;
+  /* ref-1 stone tiles: 4px seams on a 96x64 grid. */
+  background-color: var(--color-bg);
+  background-image:
+    linear-gradient(var(--color-line) 0 4px, transparent 4px),
+    linear-gradient(90deg, var(--color-line) 0 4px, transparent 4px);
+  background-size: 96px 64px;
+}
+svg.sprite, img.sprite { image-rendering: pixelated; shape-rendering: crispEdges; display: block; }
+.font-pixel { font-family: var(--font-pixel); letter-spacing: 0.02em; }
+:focus-visible { outline: 4px solid var(--color-candle); outline-offset: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Every animation shows its first (or resting) frame. Glows and color stay, only motion stops. */
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

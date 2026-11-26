@@ -13,6 +13,9 @@ describe("safeNextPath", () => {
     String.raw`/\/evil.com`,
     String.raw`\\evil.com`,
     "https://evil.com",
+    "/.//evil.com", // dot-segment normalization → //evil.com
+    "/a/..//evil.com",
+    "/././/evil.com",
     "/\tx",
     "/\nx",
   ];

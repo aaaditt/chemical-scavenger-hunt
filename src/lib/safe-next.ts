@@ -8,7 +8,10 @@ export function safeNextPath(raw: string | null | undefined, fallback = "/lab"):
   try {
     const base = "https://same.origin.invalid";
     const u = new URL(raw, base);
-    return u.origin === base ? u.pathname + u.search + u.hash : fallback;
+    if (u.origin !== base) return fallback;
+    // Validate the NORMALIZED result too: "/.//evil.com" and "/a/..//evil.com" normalize to "//evil.com".
+    const out = u.pathname + u.search + u.hash;
+    return out.startsWith("/") && !out.startsWith("//") && !out.startsWith("/\\") ? out : fallback;
   } catch {
     return fallback;
   }

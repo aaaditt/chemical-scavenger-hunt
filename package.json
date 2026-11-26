@@ -1,0 +1,39 @@
+{
+  "name": "secret-catalyst",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:sql": "docker exec -i supabase_db_chemical-scavenger-hunt psql -U postgres -q -v ON_ERROR_STOP=1 -f - < tests/sql/game.test.sql",
+    "test:race": "bash tests/sql/concurrency.sh",
+    "db:seed": "node scripts/build-seed.mjs",
+    "db:reset": "node scripts/build-seed.mjs && supabase db reset",
+    "content": "node scripts/priority-list.mjs && node scripts/build-seed.mjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.119.2",
+    "@zxing/browser": "^0.2.1",
+    "next": "16.4.6",
+    "qrcode": "^1.5.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^24.19.4",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5",
+    "vitest": "^5.1.2"
+  }
+}

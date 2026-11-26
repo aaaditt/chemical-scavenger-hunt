@@ -9,3 +9,12 @@ out/
 Thumbs.db
 *.log
 .claude/settings.local.json
+
+# Next.js / TS
+/coverage
+/build
+*.tsbuildinfo
+*.pem
+# supabase local
+supabase/.branches
+supabase/.temp

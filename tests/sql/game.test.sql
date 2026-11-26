@@ -3,6 +3,14 @@
 \set ON_ERROR_STOP on
 begin;
 
+-- Start from a clean slate inside the transaction (everything is rolled back at the end).
+delete from auth.users;
+delete from game_events;
+delete from feed;
+update compounds set first_by = null, first_at = null;
+update qr_codes set claimed_count = 0;
+update game_settings set game_open = false;
+
 create or replace function pg_temp.as_user(u uuid) returns void language sql as $$
   select set_config('request.jwt.claims', json_build_object('sub', u, 'role', 'authenticated')::text, true);
 $$;

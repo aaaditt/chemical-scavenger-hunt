@@ -1,12 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
+import { safeNextPath } from "@/lib/safe-next";
 
 // OAuth return leg: exchange the code for a session cookie, then continue to the game.
 export async function GET(request: NextRequest) {
   const url = request.nextUrl;
-  const rawNext = url.searchParams.get("next") ?? "/lab";
-  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/lab";
+  const next = safeNextPath(url.searchParams.get("next"));
   const fail = (msg: string) => NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(msg)}&next=${encodeURIComponent(next)}`, url.origin));
 
   // Supabase sends the error here when our database domain gate rejects the account.

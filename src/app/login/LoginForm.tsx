@@ -2,17 +2,15 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeNextPath } from "@/lib/safe-next";
 
 const DOMAIN = "dubai.bits-pilani.ac.in";
 
-function safeNext(n: string | null) {
-  return n && n.startsWith("/") && !n.startsWith("//") ? n : "/lab";
-}
 
 export function LoginForm() {
   const params = useSearchParams();
   const router = useRouter();
-  const next = safeNext(params.get("next"));
+  const next = safeNextPath(params.get("next"));
   const [err, setErr] = useState<string | null>(params.get("error"));
   const [busy, setBusy] = useState(false);
 

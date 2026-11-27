@@ -21,6 +21,6 @@ export default function ScanLanding() {
     });
   }, [code, refresh]);
 
-  if (!result) return <p className="py-20 text-center text-label-dim">Analysing sample…</p>;
+  if (!result) return <p className="py-20 text-center text-fog">Analysing sample…</p>;
   return <ClaimResult result={result} />;
 }

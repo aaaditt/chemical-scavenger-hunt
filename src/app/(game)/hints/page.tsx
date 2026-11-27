@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useGame } from "@/components/GameProvider";
 import { TIER_STYLE, type CompoundTier, type HintCard } from "@/lib/game";
 import { rpc } from "@/lib/supabase";
+import { Pips, Sprite } from "@/components/Sprite";
+import { PIPS } from "@/lib/sprites";
 
 const FILTERS: { id: "all" | "todo" | "unlocked" | CompoundTier; label: string }[] = [
   { id: "todo", label: "Not made" },
@@ -28,42 +30,45 @@ export default function HintsPage() {
 
   return (
     <div>
-      <h1 className="wide text-2xl">Hint book</h1>
-      <p className="mt-1 text-sm text-label-dim">
+      <h1 className="pf-24">Hint book</h1>
+      <p className="mt-3 font-num text-[15px] leading-[20px] text-fog">
         Every compound has a riddle. Names appear once anyone on campus discovers them. Locked hints give the exact
         recipe — you start with two, find more on hint QRs, and share them with your alliance.
       </p>
       <div className="mt-4 flex gap-2" role="tablist">
         {FILTERS.map((f) => (
           <button key={f.id} role="tab" aria-selected={filter === f.id} onClick={() => setFilter(f.id)}
-            className={`rounded-full px-3 py-1.5 text-sm ${filter === f.id ? "bg-label text-cobalt-900 font-semibold" : "border border-cobalt-600"}`}>
+            className={`btn ${filter === f.id ? "btn-plain" : "btn-dark"}`}>
             {f.label}
           </button>
         ))}
       </div>
 
-      {!cards && <p className="mt-10 text-center text-label-dim">Loading hint book…</p>}
-      <ul className="mt-4 space-y-3">
+      {!cards && <p className="mt-10 text-center text-fog">Loading hint book…</p>}
+      <ul className="mt-6 flex flex-col gap-6">
         {shown.map((c) => {
           const t = TIER_STYLE[c.tier];
           return (
-            <li key={c.id} className={`rounded-label p-4 ${c.made ? "bg-cobalt-900/60" : "bg-label text-cobalt-900"}`}
-              style={{ borderLeft: `6px solid ${c.tier === "basic" ? "#9aa8e6" : t.color}` }}>
-              <div className="flex items-baseline justify-between gap-3">
-                <p className="wide text-base">{c.name ?? "Undiscovered"}{c.formula && <span className="ml-2 font-normal">{c.formula}</span>}</p>
-                <p className="wide text-sm tabular-nums shrink-0">{c.points} pts</p>
+            <li key={c.id} className={`p-4 ${c.made ? "panel-dark" : "panel-parch"}`}>
+              <div className="flex items-start justify-between gap-3">
+                <p className="pf-16">{c.name ?? "Undiscovered"}</p>
+                <span className="shrink-0 flex flex-col items-end gap-1">
+                  <span className="font-num text-[16px]">{c.points} pts</span>
+                  <Pips n={PIPS[c.tier] ?? 1} size={6} gap={3} />
+                </span>
               </div>
-              <p className={`mt-0.5 text-xs ${c.made ? "text-label-dim" : "text-cobalt-700"}`}>
+              {c.formula && <p className="mt-1 font-num text-[18px]">{c.formula}</p>}
+              <p className={`mt-2 font-num text-[14px] leading-[18px] ${c.made ? "text-fog" : "text-[#4a4420]"}`}>
                 {t.label} · {c.slots} {c.slots === 1 ? "element" : "elements"}{c.needs_catalyst ? " · needs a catalyst" : ""}
                 {c.first_by && ` · first made by ${c.first_by}`}
               </p>
-              <p className="mt-2 italic">{c.riddle}</p>
+              <p className="mt-3 font-num text-[16px] leading-[22px] italic">{c.riddle}</p>
               {c.locked_hint ? (
-                <p className="mt-2 rounded-label bg-uranium/90 text-cobalt-950 px-3 py-2 font-bold text-sm">🔓 {c.locked_hint}</p>
+                <p className="mt-3 bg-tier-isotope text-ink px-3 py-2 font-num text-[16px] leading-[22px]" style={{ boxShadow: "var(--shadow-px)" }}>{c.locked_hint}</p>
               ) : c.has_locked_hint && !c.made ? (
-                <p className="mt-2 text-xs opacity-70">🔒 Locked hint — find a hint QR or ask around.</p>
+                <p className="mt-3 flex items-center gap-2 font-num text-[14px] leading-[18px]"><Sprite name="lock" scale={2} /> Locked hint. Find a hint QR or ask around.</p>
               ) : null}
-              {c.made && <p className="mt-2 text-sm text-verdigris font-semibold">✓ In your lab</p>}
+              {c.made && <p className="mt-3 pf-16 text-holo">In your lab</p>}
             </li>
           );
         })}

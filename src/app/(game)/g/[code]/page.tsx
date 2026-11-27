@@ -24,19 +24,19 @@ export default function GiftPage() {
     });
   }, [code, refresh]);
 
-  if (!res) return <p className="py-20 text-center text-label-dim">Unwrapping…</p>;
+  if (!res) return <p className="py-20 text-center text-fog">Unwrapping…</p>;
   return (
     <div className="text-center py-10">
       {res.ok ? (
         <>
-          <p className="text-label-dim">{res.gift.from} sent you</p>
+          <p className="text-fog">{res.gift.from} sent you</p>
           <div className="mt-4 animate-pop flex justify-center"><Bottle symbol={res.gift.element.symbol} name={res.gift.element.name} tier={res.gift.element.tier} size={140} /></div>
-          <p className="mt-3 wide text-4xl text-amber">+{res.gift.points}</p>
+          <p className="mt-3 wide text-4xl text-candle">+{res.gift.points}</p>
         </>
       ) : (
-        <p className="text-label-dim max-w-[28ch] mx-auto">{errorMessage(res.error)}</p>
+        <p className="text-fog max-w-[28ch] mx-auto">{errorMessage(res.error)}</p>
       )}
-      <Link href="/lab" className="mt-8 inline-block rounded-label bg-amber text-cobalt-950 font-bold px-6 py-3">My lab</Link>
+      <Link href="/lab" className="mt-8 inline-block btn btn-primary">My lab</Link>
     </div>
   );
 }

@@ -146,7 +146,7 @@ export function PlayerManager({ playerId, onClose, onChanged }: { playerId: stri
               </ul>
               <h3 className="font-semibold mt-4">Score history</h3>
               <ul className="text-xs text-label-dim mt-1 space-y-0.5">
-                {d.ledger.map((l, i) => <li key={i}>{l.delta > 0 ? "+" : ""}{l.delta} · {l.reason} {l.ref ?? ""} · {new Date(l.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</li>)}
+                {d.ledger.map((l, i) => <li key={i}>{l.delta > 0 ? "+" : ""}{l.delta} · {l.reason} {l.ref ?? ""} · {new Date(l.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}</li>)}
               </ul>
             </section>
           </>

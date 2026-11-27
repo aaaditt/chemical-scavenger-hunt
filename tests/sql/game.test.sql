@@ -172,5 +172,29 @@ set local role anon;
 select pg_temp.expect(jsonb_array_length(leaderboard('score', 10)) > 0, 'anon can read leaderboard');
 select pg_temp.expect(not (leaderboard('score', 10) -> 0 ? 'email'), 'leaderboard has no emails');
 
+-- 12. Lab number from college ID + public-name opt-out
+reset role;
+set local role authenticated;
+select pg_temp.as_user((select id from u where k='a'));
+select pg_temp.expect(my_state() -> 'player' ->> 'lab_no' = '0001', 'lab number = last 4 digits of college ID');
+select pg_temp.expect((my_state() -> 'player' ->> 'name_public')::boolean, 'names public by default');
+select pg_temp.expect(exists (select 1 from feed where player = (select id from u where k='a') and message like 'f20240001%'), 'feed shows name by default');
+select pg_temp.expect(set_name_public(false) ->> 'public_name' = 'Lab 0001', 'opt-out returns lab label');
+select pg_temp.expect(not exists (select 1 from feed where message like '%f20240001%'), 'opt-out scrubs name from existing feed');
+select pg_temp.expect(exists (select 1 from jsonb_array_elements(leaderboard('score', 50)) r where r ->> 'display_name' = 'Lab 0001'), 'leaderboard shows lab label when opted out');
+select pg_temp.expect(not exists (select 1 from jsonb_array_elements(leaderboard('score', 50)) r where r ->> 'display_name' = 'f20240001'), 'leaderboard hides opted-out name');
+select pg_temp.expect(market_play('safe') is not null and not exists (select 1 from feed where message like '%f20240001%'), 'new feed lines masked too');
+select pg_temp.expect((set_name_public(true) ->> 'name_public')::boolean, 'opt back in');
+select pg_temp.expect(exists (select 1 from feed where player = (select id from u where k='a') and message like 'f20240001%'), 'opting back in restores the name');
+reset role;
+set local role anon;
+do $$ begin
+  perform set_name_public(false);
+  raise exception 'FAIL: anon called set_name_public';
+exception when others then
+  if sqlerrm like 'FAIL%' then raise; end if;
+  raise notice 'ok  anon cannot call set_name_public';
+end $$;
+
 rollback;
 \echo ALL SQL TESTS PASSED

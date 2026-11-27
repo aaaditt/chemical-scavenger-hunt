@@ -278,7 +278,7 @@ export default function ControlRoom() {
             <li key={f.id} className="flex gap-2">
               <span aria-hidden className="w-5 text-center">{FEED_ICON[f.kind] ?? "•"}</span>
               <span className="flex-1">{f.message}</span>
-              <time className="text-label-dim text-xs tabular-nums">{new Date(f.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</time>
+              <time className="text-label-dim text-xs tabular-nums">{new Date(f.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}</time>
             </li>
           ))}
         </ul>

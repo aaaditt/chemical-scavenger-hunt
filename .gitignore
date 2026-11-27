@@ -21,3 +21,6 @@ supabase/.temp
 
 .vercel
 .env*
+
+# local browser-test screenshots
+.playwright-mcp/

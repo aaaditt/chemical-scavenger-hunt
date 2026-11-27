@@ -15,8 +15,8 @@ export default function JoinPage() {
   return (
     <div className="text-center py-14">
       <p className="text-5xl" aria-hidden>⚭</p>
-      <h1 className="wide text-2xl mt-3">Alliance invite</h1>
-      <p className="mt-2 text-label-dim">Code <span className="wide tracking-widest text-label">{code}</span>. Allies share common elements and hints. Leaving later costs points.</p>
+      <h1 className="pf-24 mt-3">Alliance invite</h1>
+      <p className="mt-2 text-fog">Code <span className="wide tracking-widest text-label">{code}</span>. Allies share common elements and hints. Leaving later costs points.</p>
       {msg ? (
         <p className="mt-6 font-semibold">{msg}</p>
       ) : (
@@ -25,9 +25,9 @@ export default function JoinPage() {
           const r = await rpc<{ alliance: string }>("alliance_join", { p_code: code });
           setMsg(r.ok ? `You joined ${(r as unknown as { alliance: string }).alliance}.` : errorMessage(r.error));
           void refresh();
-        }} className="mt-8 rounded-label bg-amber text-cobalt-950 font-bold px-8 py-3">Join alliance</button>
+        }} className="mt-8 btn btn-primary px-8 py-3">Join alliance</button>
       )}
-      <p className="mt-6"><Link href="/crew" className="underline text-label-dim">Go to crew</Link></p>
+      <p className="mt-6"><Link href="/crew" className="underline text-fog">Go to crew</Link></p>
     </div>
   );
 }

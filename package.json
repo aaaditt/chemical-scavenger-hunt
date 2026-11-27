@@ -12,7 +12,7 @@
     "test:race": "bash tests/sql/concurrency.sh",
     "db:seed": "node scripts/build-seed.mjs",
     "db:reset": "node scripts/build-seed.mjs && supabase db reset",
-    "content": "node scripts/priority-list.mjs && node scripts/build-seed.mjs"
+    "content": "node scripts/priority-list.mjs && node scripts/build-seed.mjs && node scripts/build-nicks.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

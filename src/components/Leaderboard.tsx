@@ -1,4 +1,6 @@
 "use client";
+import { Sprite } from "./Sprite";
+import type { SpriteName } from "@/lib/sprites";
 import { useEffect, useState } from "react";
 import { supabase, rpc } from "@/lib/supabase";
 
@@ -39,13 +41,13 @@ export function useLeaderboard(kind: BoardKind, limit = 50) {
   return rows;
 }
 
-export type FeedItem = { id: number; kind: string; message: string; created_at: string };
+export type FeedItem = { id: number; kind: string; message: string; created_at: string; payload?: { compound?: string; tier?: string } | null };
 
 export function useFeed(limit = 20) {
   const [items, setItems] = useState<FeedItem[]>([]);
   useEffect(() => {
     const sb = supabase();
-    sb.from("feed").select("id,kind,message,created_at").order("id", { ascending: false }).limit(limit)
+    sb.from("feed").select("id,kind,message,created_at,payload").order("id", { ascending: false }).limit(limit)
       .then(({ data }) => setItems((data as FeedItem[]) ?? []));
     const ch = sb.channel(`feed-${Math.random()}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "feed" }, (p) =>
@@ -60,3 +62,16 @@ export const FEED_ICON: Record<string, string> = {
   first_discovery: "★", synthesis: "⚗", rare: "◆", isotope: "☢", isotope_drop: "☢", black_market: "🕶", market: "🎲",
   freeze: "🧊", alliance: "⚭", betrayal: "🗡", system: "•",
 };
+
+const FEED_SPRITE: Record<string, SpriteName> = {
+  first_discovery: "star", synthesis: "mini", rare: "mini", isotope: "haz", isotope_drop: "haz", black_market: "haz",
+  market: "haz", freeze: "flake", alliance: "i_mystery", betrayal: "smoke", system: "mini",
+};
+/** Pixel icon for a feed line (no emoji in the lab). */
+export function FeedIcon({ kind, scale = 3 }: { kind: string; scale?: number }) {
+  return <Sprite name={FEED_SPRITE[kind] ?? "mini"} scale={scale} />;
+}
+/** SQL feed lines carry emoji from the old skin; strip them for the pixel UI. */
+export function cleanFeed(msg: string): string {
+  return msg.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}]/gu, "").replace(/\s{2,}/g, " ").trim();
+}

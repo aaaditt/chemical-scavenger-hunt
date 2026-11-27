@@ -44,6 +44,11 @@ export type MyState = {
     disqualified: boolean;
     verified: boolean;
     is_test: boolean;
+    /** Last 4 digits of the college ID ("LAB 0248"). */
+    lab_no: string;
+    /** Opt-out flag: false → public surfaces show "Lab 0248" instead of the name. */
+    name_public: boolean;
+    public_name: string;
     catalyst: Catalyst;
   };
   settings: {

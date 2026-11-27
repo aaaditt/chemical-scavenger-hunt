@@ -1,8 +1,12 @@
 "use client";
 import Link from "next/link";
-import { Bottle } from "./Bottle";
 import type { Tier } from "@/lib/game";
+import { TIER_STYLE, displaySymbol } from "@/lib/game";
 import { errorMessage } from "@/lib/messages";
+import { NICK } from "@/lib/nicks";
+import { LIQ, PIPS } from "@/lib/sprites";
+import { Chip, HeroName, HeroStage, Stamp } from "./Hero";
+import { Hazard, Pips, Sprite, TierVessel } from "./Sprite";
 
 export type ClaimResponse =
   | { ok: true; status: "new_element"; element: { symbol: string; name: string; tier: Tier; points: number }; points: number; remaining: number | null }
@@ -11,62 +15,110 @@ export type ClaimResponse =
   | { ok: true; status: "hint_unlocked"; compound: string; riddle: string; locked_hint: string }
   | { ok: false; error: string };
 
-const HEADLINE: Record<Tier, string> = {
-  common: "Collected",
-  uncommon: "Uncommon find",
-  rare: "Rare element secured",
-  isotope: "Isotope captured",
-};
+const STAMP: Record<Tier, string> = { common: "Collected", uncommon: "Collected", rare: "Collected", isotope: "Unstable" };
+const TIER_TAG: Record<Tier, string> = { common: "Common", uncommon: "Uncommon", rare: "Rare", isotope: "Isotope" };
 
-/** The full-screen moment after a scan. */
+function ElementHero({ symbol, name, tier, dim = false }: { symbol: string; name: string; tier: Tier; dim?: boolean }) {
+  const glow = dim || tier === "common" ? undefined : LIQ[tier].L;
+  return (
+    <>
+      <HeroStage glow={glow}>
+        <div className="relative">
+          <TierVessel tier={tier} scale={8} />
+          <span className="absolute left-1/2 -translate-x-1/2 bg-clinic text-ink font-num text-[28px] leading-none px-2 py-1" style={{ top: 80 }} aria-hidden>
+            {displaySymbol(symbol)}
+          </span>
+        </div>
+      </HeroStage>
+      <div className="mt-4"><HeroName text={name.replace(/\s*\(.*\)$/, "").replace(/-\d+$/, "")} /></div>
+      <p className="mt-2 font-num text-[16px] text-fog">
+        {NICK[symbol] ?? TIER_STYLE[tier].label}{tier === "isotope" && /\d+$/.test(name) ? ` · isotope ${name.match(/\d+$/)![0]}` : ""}
+      </p>
+    </>
+  );
+}
+
+function TierChip({ tier }: { tier: Tier }) {
+  const bg = tier === "isotope" ? "bg-tier-isotope" : tier === "common" ? "bg-tier-common" : "bg-clinic";
+  return <Chip className={`${bg} text-ink`}><Pips n={PIPS[tier]} size={8} /><span className="pf-16">{TIER_TAG[tier]}</span></Chip>;
+}
+
+/** The full-screen moment after a scan (design/screens/scan-reveal.html). */
 export function ClaimResult({ result, onClose }: { result: ClaimResponse; onClose?: () => void }) {
   let body;
+  let isotope = false;
   if (!result.ok) {
     body = (
       <>
-        <p className="wide text-2xl text-hazard">No luck</p>
-        <p className="mt-3 text-label-dim max-w-[28ch] mx-auto">{errorMessage(result.error)}</p>
+        <Stamp tone="plain">No luck</Stamp>
+        <div className="mt-8 flex justify-center"><Sprite name="smoke" scale={8} /></div>
+        <p className="mt-6 panel-parch p-4 text-left font-num text-[16px] leading-[22px]">{errorMessage(result.error)}</p>
       </>
     );
   } else if (result.status === "new_element") {
     const e = result.element;
+    isotope = e.tier === "isotope";
     body = (
       <>
-        <div className="animate-pop flex justify-center"><Bottle symbol={e.symbol} name={e.name} tier={e.tier} size={150} /></div>
-        <p className="mt-4 wide text-2xl">{HEADLINE[e.tier]}</p>
-        <p className="mt-1 wide text-4xl text-amber">+{result.points}</p>
-        {result.remaining !== null && <p className="mt-2 text-sm text-label-dim">{result.remaining} left on campus</p>}
+        <Stamp tone={isotope ? "iso" : "led"}>{STAMP[e.tier]}</Stamp>
+        <div className="mt-6"><ElementHero symbol={e.symbol} name={e.name} tier={e.tier} /></div>
+        <div className="mt-4 flex gap-3 justify-center">
+          <TierChip tier={e.tier} />
+          <Chip className="bg-holo text-ink"><span className="font-num text-[24px]">+{result.points}</span></Chip>
+        </div>
+        {result.remaining !== null && (
+          <div className="mt-6 panel-parch p-4 text-left">
+            <p className="pf-16">{isotope ? "Claims left" : "On campus"}</p>
+            <p className="mt-2 font-num text-[16px] leading-[22px]">
+              {result.remaining === 0 ? "You got the last one." : `${result.remaining} more out there. Whoever has them won't tell you where.`}
+            </p>
+          </div>
+        )}
+        {isotope && <p className="mt-4 font-num text-[16px] text-text">Worth more inside a compound. <span className="text-tier-isotope">Someone out there holds the catalyst.</span></p>}
       </>
     );
   } else if (result.status === "duplicate_element") {
     const e = result.element;
     body = (
       <>
-        <div className="opacity-70 flex justify-center"><Bottle symbol={e.symbol} name={e.name} tier={e.tier} size={120} /></div>
-        <p className="mt-4 wide text-xl">Already on your shelf</p>
-        <p className="mt-2 text-label-dim">Elements never run out once you have them. Hunt for something new.</p>
+        <Stamp tone="plain">Already shelved</Stamp>
+        <div className="mt-6"><ElementHero symbol={e.symbol} name={e.name} tier={e.tier} dim /></div>
+        <div className="mt-4 flex gap-3 justify-center">
+          <TierChip tier={e.tier} />
+          <Chip className="bg-bench text-holo"><span className="font-num text-[24px]">+0</span></Chip>
+        </div>
+        <div className="mt-6 panel-parch p-4 text-left">
+          <p className="pf-16">No points for twins</p>
+          <p className="mt-2 font-num text-[16px] leading-[22px]">Elements never run out once you have them. Go find something rarer.</p>
+        </div>
       </>
     );
   } else if (result.status === "already_claimed") {
-    body = <p className="wide text-xl">You&apos;ve already scanned this code.</p>;
+    body = (
+      <>
+        <Stamp tone="plain">Already scanned</Stamp>
+        <p className="mt-6 panel-parch p-4 font-num text-[16px]">You&apos;ve already used this code. Each QR works once per lab.</p>
+      </>
+    );
   } else {
     body = (
       <>
-        <p className="wide text-2xl text-uranium">Hint unlocked</p>
-        <blockquote className="mt-4 rounded-label bg-label text-cobalt-900 p-4 text-left">
-          <p className="italic">{result.riddle}</p>
-          <p className="mt-3 font-bold">{result.locked_hint}</p>
-        </blockquote>
-        <p className="mt-3 text-sm text-label-dim">It&apos;s saved in your hint book. Your allies can see it too.</p>
+        <Stamp tone="iso">Hint unlocked</Stamp>
+        <div className="mt-6 panel-parch p-4 text-left">
+          <p className="font-num text-[16px] leading-[22px] italic">{result.riddle}</p>
+          <p className="mt-4 font-num text-[18px] leading-[24px]">{result.locked_hint}</p>
+        </div>
+        <p className="mt-4 font-num text-[16px] text-fog">Saved in your hint book. Your crew can see it too.</p>
       </>
     );
   }
   return (
-    <div className="text-center py-8">
+    <div className="text-center pt-2 pb-6">
+      {isotope && <Hazard w={96} h={2} scale={4} className="w-full h-2 mb-4" />}
       {body}
-      <div className="mt-8 flex gap-3 justify-center">
-        {onClose && <button onClick={onClose} className="rounded-label bg-amber text-cobalt-950 font-bold px-6 py-3">Scan another</button>}
-        <Link href="/lab" className="rounded-label border border-cobalt-300 px-6 py-3">My lab</Link>
+      <div className="mt-8 grid grid-cols-[1fr_1.5fr] gap-4">
+        <Link href="/lab" className="btn btn-plain">Shelf</Link>
+        {onClose ? <button onClick={onClose} className="btn btn-primary">Keep hunting</button> : <Link href="/scan" className="btn btn-primary">Keep hunting</Link>}
       </div>
     </div>
   );

@@ -169,7 +169,7 @@ export default function AccessPage() {
         <ul className="mt-2 text-sm space-y-1 max-h-96 overflow-y-auto">
           {audit.map((a, i) => (
             <li key={i} className="flex gap-3">
-              <time className="text-label-dim tabular-nums w-20 shrink-0">{new Date(a.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</time>
+              <time className="text-label-dim tabular-nums w-20 shrink-0">{new Date(a.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}</time>
               <span className="w-28 shrink-0 text-label-dim truncate">{a.admin ?? "—"}</span>
               <span className="font-semibold w-44 shrink-0">{a.action}</span>
               <span className="text-label-dim truncate">{JSON.stringify(a.payload)}</span>

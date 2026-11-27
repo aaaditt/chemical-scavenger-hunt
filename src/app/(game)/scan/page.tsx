@@ -68,19 +68,19 @@ export default function ScanPage() {
 
   return (
     <div>
-      <h1 className="wide text-2xl">Scan</h1>
-      <div className="mt-4 relative aspect-square rounded-glass overflow-hidden bg-cobalt-950">
+      <h1 className="pf-24">Scan</h1>
+      <div className="mt-4 relative aspect-square  overflow-hidden bg-cobalt-950">
         <video ref={video} className="absolute inset-0 size-full object-cover" muted playsInline />
         {/* viewfinder */}
-        <div className="absolute inset-10 border-4 border-amber rounded-glass" aria-hidden />
-        {camError && <p className="absolute inset-x-4 bottom-4 rounded-label bg-cobalt-900/90 p-3 text-sm">{camError}</p>}
+        <div className="absolute inset-10 border-4 border-amber " aria-hidden />
+        {camError && <p className="absolute inset-x-4 bottom-4 panel-dark/90 p-3 text-sm">{camError}</p>}
       </div>
-      <p className="mt-3 text-sm text-label-dim">Point at any Secret Catalyst QR — elements, hints, gifts, catalyst codes and alliance invites all work here.</p>
+      <p className="mt-3 text-sm text-fog">Point at any Secret Catalyst QR — elements, hints, gifts, catalyst codes and alliance invites all work here.</p>
 
       <form className="mt-6 flex gap-2" onSubmit={(e) => { e.preventDefault(); if (manual.trim()) void handle(manual.trim()); }}>
         <input value={manual} onChange={(e) => setManual(e.target.value.toUpperCase())} placeholder="Or type the code"
-          aria-label="QR code" autoCapitalize="characters" className="flex-1 rounded-label bg-cobalt-900 px-3 py-3 wide tracking-wider" />
-        <button className="rounded-label bg-label text-cobalt-950 font-bold px-5">Claim</button>
+          aria-label="QR code" autoCapitalize="characters" className="flex-1 min-w-0 h-12 bg-bench text-text px-3 font-num text-[18px] tracking-wider shadow-px" />
+        <button className="btn btn-plain">Claim</button>
       </form>
     </div>
   );

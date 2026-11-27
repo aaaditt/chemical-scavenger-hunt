@@ -66,38 +66,38 @@ export function LoginForm() {
   return (
     <div className="mt-auto pt-10">
       {access?.test_mode && (
-        <p className="mb-4 rounded-label border border-uranium text-uranium px-4 py-2 text-sm font-semibold">Test server — progress may be wiped.</p>
+        <p className="mb-4  border border-uranium text-tier-isotope px-4 py-2 text-sm font-semibold">Test server — progress may be wiped.</p>
       )}
       {err && (
-        <p role="alert" className="mb-4 rounded-label bg-hazard/90 px-4 py-3 text-sm font-semibold">
+        <p role="alert" className="mb-4  bg-hazard/90 px-4 py-3 text-sm font-semibold">
           {/only @|domain/i.test(err) ? `Only @${domain} accounts can play. Switch Google accounts and try again.` : /database error/i.test(err) ? "That account can't sign in right now." : err}
         </p>
       )}
       <button onClick={google} disabled={busy}
-        className="w-full flex items-center justify-center gap-3 rounded-label bg-label text-cobalt-950 font-bold text-lg py-4 disabled:opacity-60">
+        className="w-full flex items-center justify-center gap-3  bg-label text-cobalt-950 font-bold text-lg py-4 disabled:opacity-60">
         <GoogleG /> Continue with Google
       </button>
-      <p className="mt-3 text-center text-sm text-label-dim">
+      <p className="mt-3 text-center text-sm text-fog">
         {restricted ? `Only @${domain} accounts can play.` : "Any Google account can play."}
       </p>
 
       {access?.username_login && (
         <form onSubmit={usernameLogin} className="mt-8 border-t border-cobalt-600 pt-6 space-y-3">
-          <p className="text-sm text-label-dim">Or play with just a username (test accounts — not kept after testing).</p>
+          <p className="text-sm text-fog">Or play with just a username (test accounts — not kept after testing).</p>
           <input value={username} onChange={(e) => setUsername(e.target.value)} maxLength={24} placeholder="Username" aria-label="Username"
-            className="w-full rounded-label bg-cobalt-900 px-3 py-3" />
-          <button disabled={busy} className="w-full rounded-label border border-label py-3 font-semibold">Play as {username.trim() || "…"}</button>
+            className="w-full panel-dark px-3 py-3" />
+          <button disabled={busy} className="w-full  border border-label py-3 font-semibold">Play as {username.trim() || "…"}</button>
         </form>
       )}
 
       {process.env.NEXT_PUBLIC_DEV_LOGIN === "true" && (
         <form action={devLogin} className="mt-10 border-t border-cobalt-600 pt-6 space-y-3">
-          <p className="text-sm text-amber">Dev login (local only)</p>
+          <p className="text-sm text-candle">Dev login (local only)</p>
           <input name="email" type="email" defaultValue="player1@dubai.bits-pilani.ac.in" aria-label="Email"
-            className="w-full rounded-label bg-cobalt-900 px-3 py-3" />
+            className="w-full panel-dark px-3 py-3" />
           <input name="password" type="password" defaultValue="devpassword" aria-label="Password"
-            className="w-full rounded-label bg-cobalt-900 px-3 py-3" />
-          <button disabled={busy} className="w-full rounded-label border border-amber text-amber py-3 font-semibold">Dev sign in</button>
+            className="w-full panel-dark px-3 py-3" />
+          <button disabled={busy} className="w-full panel-dark text-candle py-3 font-semibold">Dev sign in</button>
         </form>
       )}
     </div>

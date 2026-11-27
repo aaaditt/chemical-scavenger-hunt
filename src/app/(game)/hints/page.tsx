@@ -5,6 +5,13 @@ import { TIER_STYLE, type CompoundTier, type HintCard } from "@/lib/game";
 import { rpc } from "@/lib/supabase";
 import { Pips, Sprite } from "@/components/Sprite";
 import { PIPS } from "@/lib/sprites";
+import { NICK } from "@/lib/nicks";
+
+/** "the tiny one" → "tin" (matches tiny/tinies); "the breath" → "breat". */
+function nickStem(nick: string): string {
+  const w = nick.replace(/^the\s+/i, "").split(/\s+/)[0].toLowerCase();
+  return w.length > 4 ? w.slice(0, w.length - 1) : w.slice(0, 3);
+}
 
 const FILTERS: { id: "all" | "todo" | "unlocked" | CompoundTier; label: string }[] = [
   { id: "todo", label: "To make" },
@@ -24,9 +31,17 @@ export default function HintsPage() {
     });
   }, [compoundCount]);
 
-  const shown = (cards ?? []).filter((c) =>
-    filter === "all" ? true : filter === "todo" ? !c.made : filter === "unlocked" ? !!c.locked_hint : c.tier === filter
-  );
+  // Riddles talk in nicknames ("two tinies, one breath"). Rank the to-make list so riddles that mention
+  // nicknames of elements you already hold come first; for a new lab that puts water on top.
+  const mine = (state?.elements ?? []).map((e) => ({ symbol: e.symbol, nick: NICK[e.symbol] })).filter((e) => e.nick);
+  const stems = mine.map((e) => nickStem(e.nick!)).filter(Boolean);
+  const relevance = (c: HintCard) => stems.filter((st) => c.riddle.toLowerCase().includes(st)).length;
+  const shown = (cards ?? [])
+    .filter((c) => filter === "all" ? true : filter === "todo" ? !c.made : filter === "unlocked" ? !!c.locked_hint : c.tier === filter)
+    .map((c, i) => ({ c, i, r: filter === "todo" ? relevance(c) : 0 }))
+    .sort((a, b) => b.r - a.r || a.i - b.i)
+    .map((x) => x.c);
+  const legend = mine.length ? mine : [{ symbol: "H", nick: NICK.H }, { symbol: "O", nick: NICK.O }, { symbol: "C", nick: NICK.C }];
 
   return (
     <div>
@@ -37,6 +52,16 @@ export default function HintsPage() {
       <p className="mt-2 font-num text-[16px] leading-[22px] text-fog" style={{ fontWeight: 400 }}>
         Stuck? <b className="text-text">Recipes</b> spell out the exact ingredients. You start with two, hint QRs give more, and your alliance shares theirs.
       </p>
+      <section aria-label="Nicknames used in riddles" className="mt-4 panel-dark p-3">
+        <p className="font-num text-[15px] text-text">{mine.length ? "Your elements' nicknames" : "Riddles use nicknames, for example"}</p>
+        <ul className="mt-2 flex flex-wrap gap-2">
+          {legend.map((e) => (
+            <li key={e.symbol} className="bg-clinic text-ink px-2 py-1 font-num text-[14px] leading-[18px]" style={{ boxShadow: "var(--shadow-px)" }}>
+              {e.symbol} <span style={{ fontWeight: 400 }}>= {e.nick}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
       <div className="mt-4 flex gap-2" role="tablist">
         {FILTERS.map((f) => (
           <button key={f.id} role="tab" aria-selected={filter === f.id} onClick={() => setFilter(f.id)}

@@ -7,6 +7,14 @@ import { parseScan } from "@/lib/game";
 import { rpc } from "@/lib/supabase";
 import { Sprite } from "@/components/Sprite";
 
+/** Organizer: edit these to match where the QR codes are actually placed on campus. */
+const WHERE_TO_LOOK = [
+  "Noticeboards and doors on every floor",
+  "Stairwells, corridors and lift lobbies",
+  "Anywhere people queue or wait",
+  "Look high and low. Some are hidden on purpose.",
+];
+
 export default function ScanPage() {
   const { refresh, toast } = useGame();
   const router = useRouter();
@@ -15,6 +23,7 @@ export default function ScanPage() {
   const [result, setResult] = useState<ClaimResponse | null>(null);
   const [camError, setCamError] = useState<string | null>(null);
   const [manual, setManual] = useState("");
+  const [camTry, setCamTry] = useState(0);
 
   const handle = useCallback(
     async (text: string) => {
@@ -63,7 +72,7 @@ export default function ScanPage() {
       cancelled = true;
       stop?.();
     };
-  }, [result, handle]);
+  }, [result, handle, camTry]);
 
   if (result) return <ClaimResult result={result} onClose={() => setResult(null)} />;
 
@@ -85,7 +94,11 @@ export default function ScanPage() {
             <div>
               <div className="flex justify-center"><Sprite name="qr" scale={6} pal={{ k: "#2c5a52" }} /></div>
               <p className="mt-4 font-num text-[18px] text-text">Camera is off</p>
-              <p className="mt-2 font-num text-[15px] leading-[20px] text-fog" style={{ fontWeight: 400 }}>Allow camera access in your browser, or type the code printed under the QR below.</p>
+              <p className="mt-2 font-num text-[15px] leading-[20px] text-fog" style={{ fontWeight: 400 }}>
+                iPhone: Settings, Safari, Camera, Allow. Android: tap the icon left of the web address, then allow Camera.
+              </p>
+              <button onClick={() => { setCamError(null); setCamTry((n) => n + 1); }} className="btn btn-primary mt-4">Turn on camera</button>
+              <p className="mt-3 font-num text-[14px] text-fog" style={{ fontWeight: 400 }}>Or type the code printed under the QR.</p>
             </div>
           </div>
         )}
@@ -97,7 +110,14 @@ export default function ScanPage() {
         <button className="btn btn-primary">Claim</button>
       </form>
 
-      <ul className="mt-8 flex flex-col gap-3 font-num text-[15px] leading-[20px] text-fog" style={{ fontWeight: 400 }}>
+      <section className="mt-8 panel-parch p-4">
+        <h2 className="font-num text-[18px]">Where to look</h2>
+        <ul className="mt-2 font-num text-[16px] leading-[24px]" style={{ fontWeight: 400 }}>
+          {WHERE_TO_LOOK.map((w) => <li key={w}>· {w}</li>)}
+        </ul>
+      </section>
+
+      <ul className="mt-6 flex flex-col gap-3 font-num text-[15px] leading-[20px] text-fog" style={{ fontWeight: 400 }}>
         <li className="flex gap-3 items-center"><span className="shrink-0 w-8 grid place-items-center"><Sprite name="n_lab" scale={3} /></span>Element QRs put a bottle on your shelf.</li>
         <li className="flex gap-3 items-center"><span className="shrink-0 w-8 grid place-items-center"><Sprite name="lock" scale={3} /></span>Hint QRs unlock an exact recipe in your Hint Book.</li>
         <li className="flex gap-3 items-center"><span className="shrink-0 w-8 grid place-items-center"><Sprite name="n_crew" scale={3} /></span>Friends&apos; catalyst, gift and alliance codes work here too.</li>

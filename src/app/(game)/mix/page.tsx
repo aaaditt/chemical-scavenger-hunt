@@ -5,11 +5,11 @@ import { useSearchParams } from "next/navigation";
 import { useGame } from "@/components/GameProvider";
 import { Chip, HeroName, HeroStage, Stamp } from "@/components/Hero";
 import { useNow } from "@/components/Shell";
-import { CatalystIcon, CompoundVessel, Lamp, Pips, Sprite } from "@/components/Sprite";
+import { CatalystIcon, CompoundVessel, Lamp, Sprite } from "@/components/Sprite";
 import { TIER_STYLE, clock, displaySymbol, msUntil, type CompoundTier } from "@/lib/game";
 import { errorMessage } from "@/lib/messages";
 import { NICK } from "@/lib/nicks";
-import { CAT_COLOR, LIQ, PIPS, compoundLiquid, isCatalyst, type Liquid } from "@/lib/sprites";
+import { CAT_COLOR, LIQ, compoundLiquid, isCatalyst, type Liquid } from "@/lib/sprites";
 import { rpc } from "@/lib/supabase";
 
 type MixResult =
@@ -21,6 +21,11 @@ type MixResult =
 
 const RUN_MS = 1600; // design: RUNNING frame, input locked
 
+/** "H ×2 + O ×1" in display symbols. */
+function mixLabel(r: Record<string, number>): string {
+  return Object.entries(r).map(([k, q]) => `${displaySymbol(k)} ×${q}`).join(" + ");
+}
+
 export default function MixPage() {
   return (
     <Suspense>
@@ -30,7 +35,7 @@ export default function MixPage() {
 }
 
 /** The apparatus rack (ref-4): a test tube per reagent piped into the flask over the lamp. */
-function Rig({ symbols, liquid, failed }: { symbols: string[]; liquid: Liquid; failed: boolean }) {
+function Rig({ symbols, liquid, failed, count = 0 }: { symbols: string[]; liquid: Liquid; failed: boolean; count?: number }) {
   const tubes = symbols.slice(0, 5);
   const pipe = liquid === "empty" ? "var(--color-clinic)" : LIQ[liquid].L;
   return (
@@ -52,7 +57,16 @@ function Rig({ symbols, liquid, failed }: { symbols: string[]; liquid: Liquid; f
       <div className="absolute right-[108px] top-[60px] w-1 h-[52px]" style={{ background: tubes.length ? pipe : "var(--color-moss)" }} />
       <div className="absolute right-4 bottom-2 flex flex-col items-center">
         {failed && <div className="absolute -top-10 left-0 smoke-up"><Sprite name="smoke" scale={3} /></div>}
-        <CompoundVessel liquid={liquid} scale={4} still={liquid === "empty"} />
+        {liquid === "empty" ? (
+          <div className="relative">
+            <CompoundVessel liquid="empty" scale={4} still />
+            <div className="absolute inset-0" style={{ clipPath: `inset(${[100, 75, 62, 48, 40][Math.min(4, count)]}% 0 0 0)` }}>
+              <CompoundVessel liquid="common" scale={4} still />
+            </div>
+          </div>
+        ) : (
+          <CompoundVessel liquid={liquid} scale={4} still={false} />
+        )}
         <Lamp scale={3} />
       </div>
     </div>
@@ -68,6 +82,7 @@ function MixBench() {
   const [result, setResult] = useState<MixResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [running, setRunning] = useState<Liquid | null>(null);
+  const [lastMix, setLastMix] = useState("");
 
   const available = useMemo(() => {
     if (!state) return [];
@@ -97,6 +112,7 @@ function MixBench() {
     setBusy(true);
     setResult(null);
     const cat = catalyst.trim() || null;
+    setLastMix(mixLabel(recipe));
     setRunning(cat === "OWN" && isCatalyst(state!.player.catalyst.id) ? state!.player.catalyst.id : "uncommon");
     const [r] = await Promise.all([
       rpc("synthesize", { p_recipe: recipe, p_catalyst: cat }) as Promise<MixResult>,
@@ -221,7 +237,10 @@ function MixBench() {
       )}
 
       <div key={failed ? `f${strikes}` : "ok"} className={`mt-6 ${failed && !running ? "quake" : ""}`}>
-        <Rig symbols={Object.keys(recipe)} liquid={rigLiquid} failed={failed && !running} />
+        <Rig symbols={Object.keys(recipe)} liquid={rigLiquid} failed={failed && !running} count={total} />
+        <p className="mt-3 font-num text-[16px] text-text" aria-live="polite">
+          In the flask: {total === 0 ? <span className="text-fog">nothing yet</span> : mixLabel(recipe)}
+        </p>
       </div>
 
       {running ? (
@@ -234,7 +253,7 @@ function MixBench() {
         <div role="status" className={`mt-6 p-4 ${result.status === "already_made" ? "panel-parch" : result.status === "frozen" ? "bg-frost text-ink" : "bg-alarm text-ink"}`} style={{ boxShadow: "var(--shadow-px)" }}>
           <p className="pf-24">{result.status === "failed" ? "Nothing." : result.status === "frozen" ? "Cracked." : "Seen it."}</p>
           <p className="mt-2 font-num text-[16px] leading-[22px]">
-            {result.status === "failed" && `Brown sludge and a bad smell. That's ${strikes} of ${limit}. ${result.tries_left === 1 ? "One more bad mix and your lab freezes" : `${result.tries_left} more and your lab freezes`} for ${state.settings.freeze_minutes} minutes.`}
+            {result.status === "failed" && `You mixed ${lastMix}. Nothing has that recipe, so: brown sludge. Check the riddle in the Hint Book. That's ${strikes} of ${limit} bad mixes. ${result.tries_left === 1 ? "One more bad mix and your lab freezes" : `${result.tries_left} more and your lab freezes`} for ${state.settings.freeze_minutes} minutes.`}
             {result.status === "frozen" && `The flask cracked. Your lab is frozen for ${state.settings.freeze_minutes} minutes.`}
             {result.status === "already_made" && `You've already made ${result.name}. Try something new.`}
           </p>
@@ -272,7 +291,6 @@ function MixBench() {
                 className="relative h-14 bg-clinic text-ink flex flex-col items-center justify-center active:translate-y-1"
                 style={{ boxShadow: "var(--shadow-px)" }}>
                 <span className="font-num text-[20px] leading-none">{displaySymbol(e.symbol)}</span>
-                <span className="mt-1"><Pips n={PIPS[e.tier] ?? 1} size={4} gap={2} /></span>
                 {e.ally && <span className="absolute -bottom-2 bg-holo px-1 text-[11px] font-bold leading-[14px]">ALLY</span>}
                 {recipe[e.symbol] && (
                   <span className="absolute -top-3 -right-3 size-6 bg-candle text-ink font-num text-[14px] grid place-items-center" style={{ boxShadow: "var(--shadow-px)" }}>{recipe[e.symbol]}</span>
@@ -299,10 +317,14 @@ function MixBench() {
       </section>
 
       <p className="mt-6 font-num text-[15px] text-fog text-center">{strikes} of {limit} bad mixes. A good mix resets it.</p>
-      <button onClick={synthesize} disabled={busy || total === 0 || frozenMs > 0}
-        className="btn btn-primary w-full mt-4 h-16 pf-24">
-        {busy ? "Hold still" : "Synthesize"}
-      </button>
+      {/* Sticky above the nav so the main action is never below the fold. */}
+      <div className="sticky bottom-[96px] z-20 mt-4 pt-2 bg-[linear-gradient(transparent,var(--color-bg)_30%)]">
+        <button onClick={synthesize} disabled={busy || total === 0 || frozenMs > 0}
+          className="btn btn-primary w-full h-16 flex-col gap-1">
+          <span className="pf-24">{busy ? "Hold still" : "Synthesize"}</span>
+          {!busy && total > 0 && <span className="font-num normal-case text-[14px] leading-[16px]">{mixLabel(recipe)}</span>}
+        </button>
+      </div>
     </div>
   );
 }

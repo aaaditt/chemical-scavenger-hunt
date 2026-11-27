@@ -125,12 +125,13 @@ function TopBar() {
       </Link>
       <Link href="/board" className="relative ml-auto h-12 flex items-center gap-3 bg-holo text-ink px-3" style={{ boxShadow: "var(--shadow-px)" }}
         aria-label={`Score ${p.score}, rank ${p.rank}. Open leaderboard`}>
-        <span className="font-num text-[22px] leading-none">{score.shown}<span className="text-[14px] ml-1">pts</span></span>
-        <span className="font-num text-[16px] leading-none bg-ink text-holo px-2 py-1">#{p.rank}</span>
+        <span className="font-num text-[20px] leading-none">{score.shown}<span className="text-[13px] ml-1">pts</span></span>
+        <span className="font-num text-[14px] leading-none bg-ink text-holo px-2 py-1">Rank #{p.rank}</span>
         <FloatDelta delta={score.delta} className="right-2 -bottom-2" />
       </Link>
-      <button onClick={openInduction} className="h-12 w-12 grid place-items-center bg-clinic" style={{ boxShadow: "var(--shadow-px)" }} aria-label="How to play">
-        <Sprite name="n_help" scale={3} />
+      <button onClick={openInduction} className="h-12 px-2 flex flex-col items-center justify-center gap-[2px] bg-clinic text-ink" style={{ boxShadow: "var(--shadow-px)" }} aria-label="How to play">
+        <Sprite name="n_help" scale={2} />
+        <span className="font-num text-[11px] leading-[12px]">Help</span>
       </button>
       {p.is_admin && <Link href="/admin" className="btn btn-primary px-2">Admin</Link>}
     </header>

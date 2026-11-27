@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Bottle, Flask } from "@/components/Bottle";
 import { useGame } from "@/components/GameProvider";
 import { NextMove } from "@/components/NextMove";
+import { NICK } from "@/lib/nicks";
 import { supabase } from "@/lib/supabase";
 import type { Tier } from "@/lib/game";
 
@@ -91,6 +92,7 @@ export default function LabPage() {
                           <p key={e.symbol} className={`py-1 text-center font-num text-[14px] leading-[16px] truncate ${has || al ? "bg-clinic text-ink" : "text-fog"}`}
                             style={{ boxShadow: has || al ? "var(--shadow-px)" : "inset 0 0 0 4px var(--color-moss)" }}>
                             {e.name.replace(/\s*\(.*\)$/, "")}
+                            {has && NICK[e.symbol] && <span className="block text-[11px] leading-[13px] truncate" style={{ fontWeight: 400 }}>{NICK[e.symbol]}</span>}
                             {al && !has && <span className="block text-[12px]">ally</span>}
                           </p>
                         );

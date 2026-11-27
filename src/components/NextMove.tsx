@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useGame } from "./GameProvider";
 import { CatalystIcon, Sprite, TierVessel } from "./Sprite";
+import { Burst } from "./Motion";
 import { clock, msUntil, type MyState } from "@/lib/game";
 
 type Move = { icon: ReactNode; title: string; body: string; cta: string; href: string; tone?: "candle" | "frost" | "iso" };
@@ -39,8 +40,32 @@ export function nextMove(s: MyState): Move {
 
 export function NextMove() {
   const { state } = useGame();
-  if (!state) return null;
-  const m = nextMove(state);
+  const [done, setDone] = useState<string | null>(null);
+  const m = state ? nextMove(state) : null;
+  const title = m?.title.replace(/ for .*$/, "") ?? null;
+  // When the goal changes because you achieved it, stamp the old one DONE before the new one rises in.
+  useEffect(() => {
+    if (!title) return;
+    let prev: string | null = null;
+    try { prev = sessionStorage.getItem("sc-next-move"); sessionStorage.setItem("sc-next-move", title); } catch {}
+    if (prev && prev !== title && !prev.startsWith("Lab frozen") && !prev.startsWith("An isotope")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot celebration keyed to a state change
+      setDone(prev);
+      const t = setTimeout(() => setDone(null), 2200);
+      return () => clearTimeout(t);
+    }
+  }, [title]);
+  if (!state || !m) return null;
+  if (done) {
+    return (
+      <section aria-live="polite" className="relative bg-clinic text-ink p-4 overflow-hidden" style={{ boxShadow: "var(--shadow-px-lift)" }}>
+        <p className="font-num text-[14px]">Your next move</p>
+        <h2 className="mt-3 font-num text-[20px] leading-[24px] line-through decoration-4">{done}</h2>
+        <p className="slam absolute right-4 top-6 led px-3 py-2 pf-32">Done</p>
+        <Burst />
+      </section>
+    );
+  }
   const bg = { candle: "bg-candle", frost: "bg-frost", iso: "bg-tier-isotope" }[m.tone ?? "candle"];
   return (
     <section aria-label="Your next move" className={`${bg} text-ink p-4 rise`} style={{ boxShadow: "var(--shadow-px-lift)" }}>

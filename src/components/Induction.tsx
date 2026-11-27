@@ -53,7 +53,7 @@ function Induction({ onDone }: { onDone: () => void }) {
           {step === 1 && <FindElements onNext={next} />}
           {step === 2 && <MixWater onNext={next} />}
           {step === 3 && <YourCatalyst id={p.catalyst.id} name={p.catalyst.name} bonus={state.settings.catalysis_bonus_pct} onNext={next} />}
-          {step === 4 && <Rules strikes={state.settings.wrong_streak_limit} freeze={state.settings.freeze_minutes} onGo={() => finish("/scan")} onLab={() => finish()} />}
+          {step === 4 && <Rules strikes={state.settings.wrong_streak_limit} freeze={state.settings.freeze_minutes} endsAt={state.settings.game_ends_at} onGo={() => finish("/scan")} onLab={() => finish()} />}
         </div>
       </div>
     </div>
@@ -115,7 +115,7 @@ function FindElements({ onNext }: { onNext: () => void }) {
                 <span className="absolute left-1/2 -translate-x-1/2 bg-clinic text-ink font-num text-[28px] leading-none px-2 py-1" style={{ top: 80 }}>H</span>
                 <Burst />
               </div>
-              <p className="slam led px-4 py-2 pf-24">+5 Hydrogen</p>
+              <p className="slam led px-4 py-2 pf-24">Hydrogen +3</p>
             </>
           )}
           <div className="absolute bottom-0 inset-x-0 shelf" />
@@ -176,7 +176,7 @@ function MixWater({ onNext }: { onNext: () => void }) {
       action={<button onClick={onNext} disabled={!done} className="btn btn-primary w-full h-16 pf-24">{done ? "Next" : "Make water: H + H + O"}</button>}
     >
       <p>The <b className="text-text">Hint Book</b> gives you a riddle for every compound. Work out the ingredients, add them on the mix bench, and tap Synthesize.</p>
-      <p>Try it: water is two hydrogens and one oxygen.</p>
+      <p>Riddles use nicknames: hydrogen is <b className="text-text">&ldquo;the tiny one&rdquo;</b>, oxygen is <b className="text-text">&ldquo;the breath&rdquo;</b>. So &ldquo;two tinies, one breath&rdquo; is water. Try it.</p>
     </Step>
   );
 }
@@ -204,18 +204,19 @@ function YourCatalyst({ id, name, bonus, onNext }: { id: string; name: string; b
       }
       action={<button onClick={onNext} disabled={!open} className="btn btn-primary w-full h-16 pf-24">{open ? "Next" : "Open it"}</button>}
     >
-      <p>The best compounds need a catalyst: Heat, Pressure, Light, Electricity, Enzyme or Acid. Everyone holds exactly one.</p>
-      <p>Others will need yours. <b className="text-text">Lend it</b> from the Crew tab and earn {bonus}% of their points. You&apos;ll need theirs too, so ask around. Or keep it quiet.</p>
+      <p>The best compounds need a catalyst. Everyone secretly holds one of six.</p>
+      <p>Others will need yours, and you&apos;ll need theirs. Lending it earns you {bonus}% of their points.</p>
     </Step>
   );
 }
 
 /* 5 ─ Three rules, then straight to the scanner. */
-function Rules({ strikes, freeze, onGo, onLab }: { strikes: number; freeze: number; onGo: () => void; onLab: () => void }) {
+function Rules({ strikes, freeze, endsAt, onGo, onLab }: { strikes: number; freeze: number; endsAt: string | null; onGo: () => void; onLab: () => void }) {
+  const end = endsAt ? new Date(endsAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false }) : null;
   const rows: { icon: ReactNode; title: string; body: string }[] = [
     { icon: <Sprite name="alarmOn" scale={5} />, title: `${strikes} bad mixes freeze your lab`, body: `Guessing costs you. A frozen lab can't mix for ${freeze} minutes. A good mix resets the count.` },
     { icon: <TierVessel tier="isotope" scale={3} />, title: "Watch for isotope drops", body: "Unstable isotopes appear for a short time only. The big screen and the Insta announce them." },
-    { icon: <Sprite name="star" scale={6} />, title: "Be first", body: "The first lab to make a compound gets its name on the big screen. Recipes and catalysts stay secret until the finale." },
+    { icon: <Sprite name="star" scale={6} />, title: "How you win", body: `Highest score ${end ? `at ${end}` : "when the lab closes"} wins. There are also awards for Speed Chemist (most compounds) and Master of the Obscure (rarest finds). Make something first and your name goes on the big screen.` },
   ];
   return (
     <>

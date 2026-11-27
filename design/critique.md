@@ -117,3 +117,49 @@ None.
 - **Ref 2 (industrial lab):** now honored. The red alarm lamp with a stepped glow on failure, hazard stripes and holo chips are all present. The monitor-graph panel is still absent, and it would suit the projector.
 - **Ref 3 (clinical lab):** honored as Day Shift and in the LED-green sign lettering.
 - **Ref 4 (apparatus rack):** mostly honored. The RUNNING frame delivers coloured liquid moving vessel to vessel into a filling flask. Idle pipes still read pale (Should fix 11).
+
+## Round 3 (real app, new-player lens): VERDICT: REVISE
+
+Judged from `.playwright-mcp/induction.png`, `walk2.png`, `moments.png` and frames i0-i8, w-*, x1-x4, playing as a BITS Dubai student who has never heard of the game. Round 2's APPROVE covered the mockups. This round is about whether a stranger understands the game and wants to keep playing.
+
+### 1. Walkthrough: where a newcomer is still lost or bored
+- **Landing (w-home): fine.** The 1/2/3 Scan, Mix, Catalyst cards and "No chemistry knowledge needed" do their job.
+- **Induction 1-3 (i0-i4): good.** Tapping the QR, watching the bottle drop and pouring H+H+O is the right idea, and it is the best part of the app. There is one lie in it: the tutorial says **"+5 HYDROGEN"** but the real reveal (x1) gives **+3**.
+- **Induction 4, catalyst (i5-i6): the first glaze-over.** It is about 90 words on lending, the Crew tab and 30% of points before the player owns a single element. The envelope is fun, but the economy lecture comes too early.
+- **Induction 5, rules (i7): boring and incomplete.** Three dense cards. It never says **when the game ends or what you win**, so "Be first ... until the finale" means nothing.
+- **Scanner (w-scan): the most likely dead end.** "Camera is off" has no button, only passive advice to "allow camera access in your browser". A student who tapped Block once has no way back. "Find my first QR" also drops them on a viewfinder with no hint about where QRs are on campus.
+- **Hint Book (w-hints): the most confusing screen.** The first riddles shown are baking soda ("four different atoms, breath appears three times") and CaCl2 ("bone-builder meets two greens"). The riddles are written in element nicknames (tiny, breath, green gas), and **the nickname code is never taught**. Nicknames only appear on the reveal ("the tiny one") and in the mix stepper. The shelf shows plain "Hydrogen". The water riddle ("Two tinies, one breath"), which a newcomer can actually solve, is not at the top. The player concludes "I'm bad at chemistry", which is exactly what the landing promised wouldn't happen.
+- **Mix bench (x4): the tutorial doesn't transfer.** The tutorial used two big H/O buttons and a flask that fills. The real bench uses small "H ." tiles (what is the dot?), a separate stepper list above them, a flask scene that doesn't react to adding, and **Synthesize below the fold** behind the nav. The failed-mix panel never says what you actually mixed.
+- **Crew (w-crew): abstract.** "Make a one-use code, then show or send it" plus an Alliance form with two inputs. It can wait, as long as nothing points newcomers there in the first five minutes.
+- **HUD: "0 pts #3"** has no label for the rank. The "?" button does reopen the induction, but nothing says so.
+
+### 2. Motion: enough to feel alive, but wrongly distributed
+The stamp slam, burst, drop-in and stepped flask fill in the induction and the COLLECTED reveal work. They are stepped, on-grid and restrained, so keep all of them. The problem is that the motion lives in the tutorial and the one-time reveals, while **the loop the player repeats (lab, mix bench) is still static**. The 3 highest-impact additions:
+1. **Mix bench feedback.** Each tap on an element tile drops a pixel droplet down the pipe into the flask, and the flask level steps up, reusing the induction's clip-path fill. This makes the real bench feel like the tutorial and teaches the player that tapping adds.
+2. **Shelf arrival.** On the first lab view after a scan, the new jar does `drop-in` into its slot, its ghost outline flips to filled, and the slot counter ticks ("2 of 8"). Right now the player returns to a static shelf and has to spot the change themselves.
+3. **Next-move completion.** When a Next Move goal is met, a "DONE" stamp slams on the old card and the next card rises in. This is the progression beat that makes people tap "one more". Keep the HUD score count-up synced to the same moment.
+All three must be skipped under `prefers-reduced-motion`, like the existing ones.
+
+### Must fix (blocking), ranked by impact on "a newcomer understands and keeps playing"
+1. **Hint Book: teach the nickname code and lead with a solvable riddle.** (a) Under each element name on the lab shelf, add its nickname in 14px fog ("Hydrogen / the tiny one"). (b) Add a one-line legend at the top of the Hint Book: "Riddles use nicknames. Your elements: H = the tiny one, O = the breath." Build it from the player's shelf with `NICK`. (c) Sort "To make" by fewest missing elements, so water ("Two tinies, one breath") is first for a new player, and add a chip such as "You have 2 of 2" or "Need 1 more". (d) Add one line to induction step 3: "Riddles use nicknames: H is *the tiny one*, O is *the breath*."
+2. **Scanner: never strand the player.** When the camera is unavailable, show a full-width primary button **"Turn on camera"** that re-runs the effect (bump a `retry` key), plus a one-line fix for iOS and Android ("Settings > Safari > Camera > Allow"). Below the viewfinder, add **"Where to look:"** with 3-4 real locations (Library entrance, Canteen, Block A/B noticeboards). Make the list admin-editable in settings.
+3. **Mix bench: match the tutorial and keep Synthesize reachable.** (a) Make the Synthesize button sticky above the bottom nav and show the recipe being built on it: "Synthesize H + H + O". (b) Replace the mystery dot in the ADD tiles with a count, or drop it. (c) Put the selected-recipe line directly under the flask scene: "In the flask: H x2, O x1". It is the same sentence as the tutorial, which ties the two together.
+4. **Failed mix: say what happened.** The NOTHING. panel should echo the input and name the next step: "You mixed: O x1. Nothing has that recipe. Check the riddle in the Hint Book." Keep the strike count line.
+5. **Induction step 5: tell them how it ends.** Replace the "Be first" card with **"How you win"**: end time (from settings, e.g. "Ends Thu 5:00 PM"), the two titles (Speed Chemist: most compounds, Master of the Obscure: rare and above), and "first discoverer gets their name on the big screen". Without an end and a prize, there is no reason to keep going.
+6. **Induction step 4: cut the catalyst lecture in half.** Keep the envelope and the reveal. Body copy becomes: "Some big recipes need a catalyst. You hold one: **Acid**. Others will need it, and you'll need theirs. More on this once you've made something." Move the lending and 30% explanation into the Next Move card that already fires after the first compound ("Someone needs your Acid").
+7. **Fix the tutorial's points.** "+5 Hydrogen" must use the real common-element value (+3, read from settings or catalog), or say "Hydrogen collected". A newcomer who notices the mismatch in the first minute stops trusting the numbers.
+8. **Make the HUD self-explaining.** Change "0 pts #3" to "0 pts · Rank #3" (or a 12px "RANK" label over the #3 chip). Give the "?" button the visible label "How to play" during the first session, or a one-time nudge after the induction closes, so they know the induction can be replayed.
+
+### Should fix (non-blocking)
+- **COLLECTED reveal (x2):** add one forward-looking line under the tier chips: "Hydrogen is in 9 recipes. Next: find Oxygen to make Water." This turns a collect into a goal. Put it on "Keep hunting".
+- **Lab after 2 elements (x3):** the Next Move card is correct ("Water is H + H + O. Try it."). When the player has an exact makeable recipe, deep-link `/mix?prefill=water`, so the first success takes one tap and the first compound arrives in under 2 minutes.
+- **Mix empty state (w-mix):** the dead flask scene under "Your bench is empty" is noise. Hide the scene until the player has at least 1 element.
+- **Crew (w-crew):** hide the Alliance form behind a "Team up (optional)" disclosure until the player has made at least 1 compound.
+- **Content under the nav:** the Scan FAB overlaps the last line on Scan, Mix and Crew (w-scan bullets, x4 "A friend's code wor..."). `pb-36` in Shell.tsx isn't enough with the raised FAB. Use `pb-44` or measure the nav height.
+- **Sunlight:** the induction body copy is fog on bottle-green at 18px. It passes AA, but outdoors it will wash out. Use the text colour, not fog, for the first paragraph on each step.
+
+### Reference check
+- **Ref 1 (candlelit lab):** honored. The wall, the lamp lighting on induction step 1, and the cyan flask are intact.
+- **Ref 2 (industrial lab):** partially honored. The red alarm and NOTHING. panel are there, but the real-bench failure as captured (x4) has no lamp flash or quake and is static.
+- **Ref 3 (clinical lab):** honored. The LED-green "LAB 4228", "WATER!" and "+5 HYDROGEN" signs fit well.
+- **Ref 4 (apparatus rack):** missed in the real loop. The tutorial flask fills, but the real bench's pipe and flask do nothing as you add reagents (motion addition 1).

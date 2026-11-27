@@ -2,7 +2,7 @@
 
 **Version control (user's standing request):** commit and push every change; record it under "Unreleased" in
 `CHANGELOG.md`; when a set of changes ships, give it a version, move it out of Unreleased, and tag it
-(`git tag -a vX.Y.Z -m ...` then `git push --tags`). Current version: v0.5.0.
+(`git tag -a vX.Y.Z -m ...` then `git push --tags`). Current version: v0.5.1.
 
 Read this first in a new session. Then `README.md` (how to run) and
 `docs/specs/2026-11-26-secret-catalyst-design.md` (full game design).
@@ -21,8 +21,8 @@ Read this first in a new session. Then `README.md` (how to run) and
 
 ## Production state
 - Migrations 1–5 applied, catalog seeded (25 elements, 58 compounds, 6 catalysts).
-  - **The catalog riddles were rewritten locally by the creative-director, but `supabase/catalog.sql` has
-    NOT been re-pushed to production.** To push: `npx supabase db query --remote --yes -f supabase/catalog.sql`
+  - The rewritten catalog riddles are live in production (pushed 2026-11-27, v0.5.1). After editing
+    `content/catalog.json`, run `npm run content`, then `npx supabase db query --remote --yes -f supabase/catalog.sql`.
 - 28 test QR codes with `location_label = 'TEST'` (one per element, plus hints for ammonia, glucose and
   caffeine). Disable or delete them before the real event.
 - Game is **closed**. Admins can play while it's closed. Settings: university-only ON, verification OFF,
@@ -69,7 +69,7 @@ Round 1 got REVISE, round 2 got APPROVE (see `design/critique.md`).
   renames using an anchored prefix swap. Names in private 1:1 exchanges (lender, code user, gift parties, alliance) stay real.
 - Tests: `npm run test:sql` (now including opt-out, rename and forgery cases), `npm test` (33, including `tests/unit/design.test.ts`).
 - Still to do: Hint Book, Lend Catalyst and Black Market got a re-skin but no dedicated mockup pass; crew page is re-skinned
-  only. Printed QR placards are not designed yet (promo-designer). The `catalog.sql` riddles are still not pushed (see below).
+  only. Printed QR placards are not designed yet (promo-designer).
 
 ## Other open items
 - Run `game-balancer` on the catalog. Catalyst demand is uneven (Heat gates 7 compounds, Acid 3).

@@ -34,8 +34,13 @@ export default function HintsPage() {
   // Riddles talk in nicknames ("two tinies, one breath"). Rank the to-make list so riddles that mention
   // nicknames of elements you already hold come first; for a new lab that puts water on top.
   const mine = (state?.elements ?? []).map((e) => ({ symbol: e.symbol, nick: NICK[e.symbol] })).filter((e) => e.nick);
-  const stems = mine.map((e) => nickStem(e.nick!)).filter(Boolean);
-  const relevance = (c: HintCard) => stems.filter((st) => c.riddle.toLowerCase().includes(st)).length;
+  const owned = new Set(mine.map((e) => e.symbol));
+  const stems = Object.entries(NICK).map(([sym, nick]) => ({ sym, st: nickStem(nick) })).filter((x) => x.st);
+  // +1 for each nickname of an element you hold, −1 for each one you're still missing.
+  const relevance = (c: HintCard) => {
+    const r = c.riddle.toLowerCase();
+    return stems.reduce((n, x) => (r.includes(x.st) ? n + (owned.has(x.sym) ? 1 : -1) : n), 0);
+  };
   const shown = (cards ?? [])
     .filter((c) => filter === "all" ? true : filter === "todo" ? !c.made : filter === "unlocked" ? !!c.locked_hint : c.tier === filter)
     .map((c, i) => ({ c, i, r: filter === "todo" ? relevance(c) : 0 }))

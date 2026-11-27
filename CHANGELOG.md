@@ -9,6 +9,18 @@ Newest first. Add to **Unreleased** as you go; when it ships, give it a version 
 
 ## Unreleased
 
+## v0.5.1: Riddles live, smarter Hint Book, shelf arrivals (2026-11-27)
+**Added**
+- Newly found bottles get their own arrival on the lab shelf (drop, pixel burst, "New" tag); bottles you've
+  already seen stay still.
+
+**Changed**
+- The rewritten riddles (round 1 creative direction) are now live in production, so the nicknames the
+  tutorial and Hint Book legend teach ("two tinies, one breath") actually appear in the riddles.
+- Hint Book ranks riddles by the nicknames you hold minus the ones you're missing, so water is first for a
+  new lab.
+- The scanner's "Camera is off" panel no longer overlaps the viewfinder corners.
+
 ## v0.5.0: New-player experience (2026-11-27)
 The organizer said the app was confusing and lifeless for a first-timer. This version is built around
 "someone who has never heard of the game opens it between classes".

@@ -5,6 +5,7 @@ import { Bottle, Flask } from "@/components/Bottle";
 import { useGame } from "@/components/GameProvider";
 import { NextMove } from "@/components/NextMove";
 import { NICK } from "@/lib/nicks";
+import { Burst } from "@/components/Motion";
 import { supabase } from "@/lib/supabase";
 import type { Tier } from "@/lib/game";
 
@@ -27,12 +28,22 @@ export default function LabPage() {
   const [all, setAll] = useState<El[]>([]);
   const [tab, setTab] = useState<"elements" | "compounds">("elements");
   const [openTier, setOpenTier] = useState<Tier | null>(null);
+  // Bottles you haven't seen on the shelf yet get their own arrival (drop + burst + "New"); the rest sit still.
+  const [seen] = useState<Set<string> | null>(() => {
+    try { return new Set(JSON.parse(localStorage.getItem("sc-seen-els") ?? "[]") as string[]); } catch { return new Set(); }
+  });
+  const ownedKey = state?.elements.map((e) => e.symbol).join(",") ?? "";
+  useEffect(() => {
+    if (!ownedKey) return;
+    try { localStorage.setItem("sc-seen-els", JSON.stringify(ownedKey.split(","))); } catch {}
+  }, [ownedKey]);
   useEffect(() => {
     supabase().from("elements").select("symbol,name,tier").order("points").then(({ data }) => setAll((data as El[]) ?? []));
   }, []);
   if (!state) return null;
 
   const owned = new Set(state.elements.map((e) => e.symbol));
+  const fresh = new Set([...owned].filter((sym) => seen !== null && !seen.has(sym)));
   const ally = new Set(state.ally_elements);
 
   return (
@@ -78,7 +89,8 @@ export default function LabPage() {
                   <div key={i} className="mb-6">
                     <div className="grid grid-cols-4 gap-x-2 items-end">
                       {row.map((e, j) => (
-                        <div key={e.symbol} className={`flex justify-center ${owned.has(e.symbol) ? "drop-in" : ""}`} style={{ animationDelay: `${(i * 4 + j) * 60}ms` }}>
+                        <div key={e.symbol} className={`relative flex justify-center ${fresh.has(e.symbol) ? "drop-in" : ""}`} style={{ animationDelay: `${300 + j * 120}ms` }}>
+                          {fresh.has(e.symbol) && <><Burst count={10} spread={60} size={6} /><span className="slam absolute -top-3 right-0 z-10 bg-candle text-ink font-num text-[12px] px-1" style={{ animationDelay: "600ms" }}>New</span></>}
                           <Bottle symbol={e.symbol} name={e.name} tier={e.tier} plate={false}
                             empty={!owned.has(e.symbol) && !ally.has(e.symbol)} borrowed={!owned.has(e.symbol) && ally.has(e.symbol)} />
                         </div>

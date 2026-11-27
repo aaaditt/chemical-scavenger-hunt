@@ -84,13 +84,13 @@ export default function ScanPage() {
         <video ref={video} className="absolute inset-0 size-full object-cover" muted playsInline />
         {/* Viewfinder: four hard pixel corners and a sweeping red scan line (ref-2 alarm red). */}
         <div className="absolute inset-10" aria-hidden>
-          {["left-0 top-0 border-l-8 border-t-8", "right-0 top-0 border-r-8 border-t-8", "left-0 bottom-0 border-l-8 border-b-8", "right-0 bottom-0 border-r-8 border-b-8"].map((c) => (
+          {!camError && ["left-0 top-0 border-l-8 border-t-8", "right-0 top-0 border-r-8 border-t-8", "left-0 bottom-0 border-l-8 border-b-8", "right-0 bottom-0 border-r-8 border-b-8"].map((c) => (
             <span key={c} className={`absolute size-12 border-candle ${c}`} />
           ))}
           {!camError && <span className="scanline absolute left-2 right-2 top-0 h-1 bg-alarm" style={{ ["--scan-h" as string]: "264px" }} />}
         </div>
         {camError && (
-          <div className="absolute inset-0 grid place-items-center p-8 text-center">
+          <div className="absolute inset-0 grid place-items-center p-6 text-center">
             <div>
               <div className="flex justify-center"><Sprite name="qr" scale={6} pal={{ k: "#2c5a52" }} /></div>
               <p className="mt-4 font-num text-[18px] text-text">Camera is off</p>

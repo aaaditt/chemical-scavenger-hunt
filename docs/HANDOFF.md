@@ -53,8 +53,8 @@ Round 1 got REVISE, round 2 got APPROVE (see `design/critique.md`).
   the projector "CATALYZED ?" chip clips (and needs 24px); auto-fit hero names (64/48/40/32); solid-step candle glow;
   give Legendary its own shape vs. the Light catalyst; the moon icon; whole-pixel text positions.
   Hint Book, Lend Catalyst and Black Market have no mockups yet.
-- **Open questions for the user:** auto Day Shift 10–16h? (director assumed yes); names on public screens opt-out
-  vs. opt-in? (assumed opt-out); area hints in isotope Instagram posts?; "LAB 1137" number random vs. from ID?
+- **Organizer decisions (see direction.md §11):** Day Shift manual only; names public unless the player opts out;
+  isotope posts may hint a rough area; lab number comes from the college ID digits.
 - **Next:** apply the direction to the real app. Replace the `@theme` block in `src/app/globals.css` with
   `design/tokens.css`, redo `src/components/Bottle.tsx` as pixel sprites from `kit.js`, then restyle the screens,
   story cards (`src/app/api/card/[kind]/route.tsx`, Silkscreen TTF for next/og) and placards.

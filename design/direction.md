@@ -179,7 +179,7 @@ Rules:
 | Primary action | Exactly one Candle button per screen, at the bottom, inside the thumb zone |
 | Body size | 16px minimum, 17 to 18px for the one sentence that matters on a reveal |
 | State | Never color alone: strikes are pixel **X glyphs**, rarity is **shape + pips + tag**, catalysts are **icon + word** |
-| Day Shift | A toggle in the lab scene that shows **a sun or moon icon plus the state it switches TO** ("DAY SHIFT" / "NIGHT SHIFT"). It's **auto-offered on first open between 10:00 and 16:00**, then remembered per device. Same layout. Halos are hidden. Text-muted becomes `#34505a` (7.1:1). |
+| Day Shift | A toggle in the lab scene that shows **a sun or moon icon plus the state it switches TO** ("DAY SHIFT" / "NIGHT SHIFT"). It's a **manual toggle only** (organizer decision: never switches on automatically); the choice is remembered per device. Same layout. Halos are hidden. Text-muted becomes `#34505a` (7.1:1). |
 | Motion | Everything in `steps()`. `prefers-reduced-motion` shows the resting frame. Glows and color stay, only motion stops. |
 
 ---
@@ -238,7 +238,7 @@ It sounds like a friend who has the keys to the building after hours.
 - The joke is on the lab or the situation, never on the player's intelligence.
 - Suggest social moves ("Be nice to Kabir", "Someone out there holds the catalyst") because the game needs people to talk.
 - No emoji in UI strings. Pixel icons replace them. (The `emoji` field in the catalog is for Instagram captions only.)
-- Never leak a QR location or a locked hint in shareable copy.
+- Never leak an exact QR spot or a locked hint in shareable copy. Isotope-drop announcements may name a rough area ("somewhere near the library") — organizer decision.
 
 ### Sample lines
 | Moment | Line |
@@ -322,14 +322,11 @@ Guidelines for any new ones:
 
 ---
 
-## 11. Open questions for the organizer
-1. ~~Day Shift default~~ **Decided in round 2:** auto-offer Day Shift on first open between 10:00 and 16:00. It's an afternoon outdoor game. The organizer can veto.
-2. **Names on shareables:** are display names on the projector and story cards fine, or should players opt in? (The mockups assume opt-out.)
-3. **Isotope announcements:** do Insta drops name a rough area ("near the library")? The in-app copy currently doesn't, to keep hunting fair.
-4. **Lab number:** the mockups show "LAB 1137" as a player handle. Is it derived from the student ID (with privacy implications) or random?
-5. **Join URL** for the story-card QR. The mockup uses a placeholder QR sprite.
-
----
+## 11. Organizer decisions (2026-11-27)
+1. **Day Shift:** manual toggle only; never switches on automatically.
+2. **Names on public screens and story cards:** shown by default; players can opt out.
+3. **Isotope announcements:** may hint at a rough area ("near the library"), never the exact QR spot.
+4. **Lab number:** derived from the player's college ID (the digits of the BITS ID, e.g. f2024**0248** → LAB 0248).
 
 ## 12. Round 2 changes (answers critique round 1)
 

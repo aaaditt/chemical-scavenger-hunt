@@ -1,5 +1,9 @@
 # Handoff — Secret Catalyst (state as of 2026-11-27)
 
+**Version control (user's standing request):** commit and push every change; record it under "Unreleased" in
+`CHANGELOG.md`; when a set of changes ships, give it a version, move it out of Unreleased, and tag it
+(`git tag -a vX.Y.Z -m ...` then `git push --tags`). Current version: v0.5.0.
+
 Read this first in a new session. Then `README.md` (how to run) and
 `docs/specs/2026-11-26-secret-catalyst-design.md` (full game design).
 

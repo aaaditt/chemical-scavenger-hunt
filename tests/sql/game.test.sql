@@ -200,6 +200,25 @@ select set_display_name('Zed');
 select pg_temp.expect(exists (select 1 from feed where player = (select id from u where k='a') and message like 'Zed %'), 'rename swaps the leading actor name');
 select pg_temp.expect(not exists (select 1 from feed where message like '%Zed%Zed%'), 'rename never rewrites words later in the line');
 select pg_temp.expect(set_display_name('Lab 0002') ->> 'error' = 'bad_name', 'cannot pose as an opted-out lab label');
+select pg_temp.expect(set_display_name('Ｌａｂ ０００２') ->> 'error' = 'bad_name', 'full-width look-alike rejected');
+select pg_temp.expect(set_display_name('L' || chr(8203) || 'ab 0002') ->> 'error' = 'bad_name', 'zero-width look-alike rejected');
+reset role;
+do $$ begin
+  update players set display_name = 'Lab 00AB' where id = (select id from u where k='b');
+  raise exception 'FAIL: direct/admin rename to a lab label allowed';
+exception when check_violation then raise notice 'ok  trigger blocks lab-label renames on every path';
+end $$;
+select pg_temp.mkuser('f20240777@dubai.bits-pilani.ac.in');
+select pg_temp.expect((select display_name from players where email = 'f20240777@dubai.bits-pilani.ac.in') = 'f20240777', 'normal signup name kept');
+do $$ declare v uuid := gen_random_uuid(); begin
+  insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data, created_at, updated_at)
+  values (v, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'f20240778@dubai.bits-pilani.ac.in',
+          jsonb_build_object('full_name', 'Lab 0001'), now(), now());
+  if (select display_name from players where id = v) like 'Player %' then raise notice 'ok  lab-label name at signup becomes Player xxxx';
+  else raise exception 'FAIL: signup kept a lab-label name'; end if;
+end $$;
+set local role authenticated;
+select pg_temp.as_user((select id from u where k='a'));
 select pg_temp.expect(set_display_name('Zed Zed') ->> 'ok' = 'true', 'rename to a name containing the old one');
 select set_name_public(true); select set_name_public(true); select set_name_public(true);
 select pg_temp.expect(not exists (select 1 from feed where message like 'Zed Zed Zed%'), 'repeated same-value calls do not grow feed lines');

@@ -17,7 +17,7 @@ export default function Home() {
         <span className="pf-32 text-fog pb-10">+</span>
         <Bottle symbol="H" name="Hydrogen" tier="common" size={84} />
         <span className="pf-32 text-fog pb-10">+</span>
-        <Bottle symbol="?" name="Their catalyst" tier="rare" size={84} empty />
+        <Bottle symbol="?" name="Catalyst" tier="rare" size={84} empty />
       </div>
 
       <p className="mt-8 panel-parch p-4 font-num text-[16px] leading-[22px]">

@@ -199,6 +199,10 @@ select set_display_name('Water');
 select set_display_name('Zed');
 select pg_temp.expect(exists (select 1 from feed where player = (select id from u where k='a') and message like 'Zed %'), 'rename swaps the leading actor name');
 select pg_temp.expect(not exists (select 1 from feed where message like '%Zed%Zed%'), 'rename never rewrites words later in the line');
+select pg_temp.expect(set_display_name('Lab 0002') ->> 'error' = 'bad_name', 'cannot pose as an opted-out lab label');
+select pg_temp.expect(set_display_name('Zed Zed') ->> 'ok' = 'true', 'rename to a name containing the old one');
+select set_name_public(true); select set_name_public(true); select set_name_public(true);
+select pg_temp.expect(not exists (select 1 from feed where message like 'Zed Zed Zed%'), 'repeated same-value calls do not grow feed lines');
 reset role;
 set local role anon;
 do $$ begin

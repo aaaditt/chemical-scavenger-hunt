@@ -186,6 +186,13 @@ select pg_temp.expect(not exists (select 1 from jsonb_array_elements(leaderboard
 select pg_temp.expect(market_play('safe') is not null and not exists (select 1 from feed where message like '%f20240001%'), 'new feed lines masked too');
 select pg_temp.expect((set_name_public(true) ->> 'name_public')::boolean, 'opt back in');
 select pg_temp.expect(exists (select 1 from feed where player = (select id from u where k='a') and message like 'f20240001%'), 'opting back in restores the name');
+-- Rename, then opt out: the EARLIER name must not survive in old feed lines.
+select pg_temp.expect(set_display_name('Renamed Ruby') ->> 'ok' = 'true', 'rename while public');
+select pg_temp.expect(not exists (select 1 from feed where message like '%f20240001%'), 'rename rewrites own feed lines');
+select pg_temp.expect(set_name_public(false) ->> 'public_name' = 'Lab 0001', 'opt out after rename');
+select pg_temp.expect(not exists (select 1 from feed where message like '%Renamed Ruby%' or message like '%f20240001%'), 'no old or new name left after opt-out');
+select pg_temp.expect(set_display_name('Secret Sam') ->> 'ok' = 'true', 'rename while opted out');
+select pg_temp.expect(not exists (select 1 from feed where message like '%Secret Sam%'), 'rename while opted out stays masked');
 reset role;
 set local role anon;
 do $$ begin

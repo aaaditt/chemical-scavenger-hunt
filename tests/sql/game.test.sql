@@ -193,6 +193,12 @@ select pg_temp.expect(set_name_public(false) ->> 'public_name' = 'Lab 0001', 'op
 select pg_temp.expect(not exists (select 1 from feed where message like '%Renamed Ruby%' or message like '%f20240001%'), 'no old or new name left after opt-out');
 select pg_temp.expect(set_display_name('Secret Sam') ->> 'ok' = 'true', 'rename while opted out');
 select pg_temp.expect(not exists (select 1 from feed where message like '%Secret Sam%'), 'rename while opted out stays masked');
+-- Forgery guard: only the leading actor name is ever swapped, never words later in the line.
+select set_name_public(true);
+select set_display_name('Water');
+select set_display_name('Zed');
+select pg_temp.expect(exists (select 1 from feed where player = (select id from u where k='a') and message like 'Zed %'), 'rename swaps the leading actor name');
+select pg_temp.expect(not exists (select 1 from feed where message like '%Zed%Zed%'), 'rename never rewrites words later in the line');
 reset role;
 set local role anon;
 do $$ begin

@@ -202,6 +202,11 @@ select pg_temp.expect(not exists (select 1 from feed where message like '%Zed%Ze
 select pg_temp.expect(set_display_name('Lab 0002') ->> 'error' = 'bad_name', 'cannot pose as an opted-out lab label');
 select pg_temp.expect(set_display_name('Ｌａｂ ０００２') ->> 'error' = 'bad_name', 'full-width look-alike rejected');
 select pg_temp.expect(set_display_name('L' || chr(8203) || 'ab 0002') ->> 'error' = 'bad_name', 'zero-width look-alike rejected');
+select pg_temp.expect(set_display_name('L' || chr(1072) || 'b 0002') ->> 'error' = 'bad_name', 'Cyrillic a look-alike rejected');
+select pg_temp.expect(set_display_name('Lab ' || chr(1054) || chr(1054) || '02') ->> 'error' = 'bad_name', 'Cyrillic O-for-zero rejected');
+select pg_temp.expect(set_display_name('La' || chr(769) || 'b 0002') ->> 'error' = 'bad_name', 'combining-mark look-alike rejected');
+select pg_temp.expect(set_display_name('Labrador Team') ->> 'ok' = 'true', 'ordinary names starting with Lab still allowed');
+select pg_temp.expect(set_display_name('Zed Zed') ->> 'ok' = 'true', 'restore name for later checks');
 reset role;
 do $$ begin
   update players set display_name = 'Lab 00AB' where id = (select id from u where k='b');

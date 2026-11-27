@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useGame } from "@/components/GameProvider";
 import { useNow } from "@/components/Shell";
 import { QrCode } from "@/components/QrCode";
+import { CatalystIcon } from "@/components/Sprite";
 import { clock, displaySymbol, msUntil } from "@/lib/game";
 import { errorMessage } from "@/lib/messages";
 import { rpc } from "@/lib/supabase";
@@ -62,12 +63,17 @@ export default function CrewPage() {
     <div className="space-y-9">
       {/* Secret catalyst */}
       <section>
-        <h1 className="pf-24">Your catalyst</h1>
+        <h1 className="font-num text-[24px] text-text">Your secret catalyst</h1>
         <div className="mt-3 panel p-5">
-          <p className="text-5xl" aria-hidden>{p.catalyst.emoji}</p>
-          <p className="pf-24 mt-2">{p.catalyst.name}</p>
-          <p className="mt-1">{p.catalyst.flavor} Other players need this for their best compounds. Only you know you have it — unless you tell them.</p>
-          <p className="mt-3 text-sm">Each successful lend earns you <b>{state.settings.catalysis_bonus_pct}%</b> of that compound&apos;s points. Lent so far: <b>{p.lends_count}</b></p>
+          <div className="flex items-center gap-4">
+            <CatalystIcon id={p.catalyst.id} scale={6} />
+            <div>
+              <p className="pf-32">{p.catalyst.name}</p>
+              <p className="mt-1 font-num text-[15px]" style={{ fontWeight: 400 }}>{p.catalyst.flavor}</p>
+            </div>
+          </div>
+          <p className="mt-4 font-num text-[16px] leading-[22px]" style={{ fontWeight: 400 }}>Other labs need this for their best compounds. Tap below to make a one-use code, then show or send it to a friend.</p>
+          <p className="mt-3 font-num text-[16px]">You earn {state.settings.catalysis_bonus_pct}% of their points each time it works. Lent so far: {p.lends_count}</p>
           <button disabled={busy} onClick={() => act("create_catalyst_code", undefined, (r) => setShowQr(String(r.code)))}
             className="btn btn-dark w-full mt-4">Lend my catalyst</button>
         </div>
@@ -100,7 +106,7 @@ export default function CrewPage() {
 
       {/* Alliance */}
       <section>
-        <h2 className="pf-24">Alliance</h2>
+        <h2 className="font-num text-[24px] text-text">Alliance</h2>
         {alliance ? (
           <div className="mt-3 panel-dark p-4">
             <p className="wide text-lg">{alliance.name}</p>
@@ -143,7 +149,7 @@ export default function CrewPage() {
 
       {/* Gifts */}
       <section>
-        <h2 className="pf-24">Gift an element</h2>
+        <h2 className="font-num text-[24px] text-text">Gift an element</h2>
         <p className="mt-1 text-sm text-fog">Some elements can be copied to a friend. You keep yours. {giftsLeft} of {state.settings.gift_links_per_player} gift links left.</p>
         {giftable.length === 0 ? (
           <p className="mt-3 text-sm text-fog">You don&apos;t have a giftable element yet (Na, Cl, S, Ca, K, Mg, Fe).</p>

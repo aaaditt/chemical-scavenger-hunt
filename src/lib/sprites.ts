@@ -73,6 +73,13 @@ export const SPR = {
   smoke: ["...kkk....", "..ksssk...", ".ksssssk..", "ksssssssk.", ".ksssssssk", "..kssssk..", "...kkkk..."],
   qr: ["kkk.k.kkk", "k.k...k.k", "kkk.k.kkk", "....k....", "k.kk.kk.k", "....k....", "kkk..k.k.", "k.k.kk..k", "kkk.k.kk."],
   lock: [".kkkk.", "k....k", "k....k", "kkkkkk", "kppppk", "kpkkpk", "kppppk", "kkkkkk"],
+  /* Nav icons (9×9, ink outline, filled at use with currentColor-like palettes). */
+  n_lab: ["...kkk...", "...kgk...", "..kkkkk..", ".kwLLLLk.", ".kLlllLk.", ".kLlllLk.", ".kLLLLLk.", ".kDDDDDk.", "..kkkkk.."],
+  n_mix: ["...kkk...", "...kgk...", "...kgk...", "..kwggk..", "..kLLLk..", ".kLLLLLk.", ".kLLLLLk.", "kDLLLLLDk", "kkkkkkkkk"],
+  n_book: ["kkkkkkkk.", "kppppppkk", "kpkkkkpkk", "kppppppkk", "kpkkkppkk", "kppppppkk", "kpkkkkpkk", "kppppppkk", "kkkkkkkk."],
+  n_crew: [".kk...kk.", "kppk.kppk", "kppk.kppk", ".kk...kk.", "...kkk...", ".kkpppkk.", "kpppppppk", "kpppppppk", "kkkkkkkkk"],
+  n_help: [".kkkkkkk.", "kpppppppk", "kppkkkppk", "kpppppkpk", "kppppkppk", "kpppkpppk", "kpppppppk", "kpppkpppk", ".kkkkkkk."],
+  envelope: ["kkkkkkkkkkkk", "kUpppppppppk", "kpUpppppppUk", "kppUpppppUpk", "kpppUkkkUppk", "kppppUUUpppk", "kppppppppppk", "kppppppppppk", "kkkkkkkkkkkk"],
 } as const;
 
 export type SpriteName = keyof typeof SPR;

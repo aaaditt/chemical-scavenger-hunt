@@ -3,17 +3,16 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Bottle, Flask } from "@/components/Bottle";
 import { useGame } from "@/components/GameProvider";
-import { useFeed } from "@/components/Leaderboard";
-import { Lamp } from "@/components/Sprite";
+import { NextMove } from "@/components/NextMove";
 import { supabase } from "@/lib/supabase";
 import type { Tier } from "@/lib/game";
 
 type El = { symbol: string; name: string; tier: Tier };
-const TIERS: { tier: Tier; title: string }[] = [
-  { tier: "common", title: "Common shelf" },
-  { tier: "uncommon", title: "Uncommon shelf" },
-  { tier: "rare", title: "Rare cabinet" },
-  { tier: "isotope", title: "Containment" },
+const TIERS: { tier: Tier; title: string; blurb: string }[] = [
+  { tier: "common", title: "Common shelf", blurb: "Easy to find. Every lab needs these." },
+  { tier: "uncommon", title: "Uncommon shelf", blurb: "Fewer QR codes, more points." },
+  { tier: "rare", title: "Rare cabinet", blurb: "Only a few bottles of each exist on campus. When they're gone, they're gone." },
+  { tier: "isotope", title: "Containment", blurb: "Unstable isotopes only appear during timed drops. Watch the big screen." },
 ];
 
 function chunk<T>(a: T[], n: number): T[][] {
@@ -26,7 +25,7 @@ export default function LabPage() {
   const { state } = useGame();
   const [all, setAll] = useState<El[]>([]);
   const [tab, setTab] = useState<"elements" | "compounds">("elements");
-  const feed = useFeed(1);
+  const [openTier, setOpenTier] = useState<Tier | null>(null);
   useEffect(() => {
     supabase().from("elements").select("symbol,name,tier").order("points").then(({ data }) => setAll((data as El[]) ?? []));
   }, []);
@@ -34,24 +33,10 @@ export default function LabPage() {
 
   const owned = new Set(state.elements.map((e) => e.symbol));
   const ally = new Set(state.ally_elements);
-  const latest = feed[0];
 
   return (
     <div>
-      {/* Lab bench scene (ref-1): pinned notes + the lamp. Notes = latest campus news. */}
-      <div className="flex items-end gap-4">
-        <div className="panel-parch relative flex-1 p-4 pt-5">
-          <span className="absolute left-1/2 -top-2 size-3 bg-alarm" style={{ boxShadow: "0 0 0 4px var(--color-ink)" }} aria-hidden />
-          <p className="pf-16">Lab notes</p>
-          <p className="mt-2 font-num text-[15px] leading-[20px]">
-            {owned.size === 0
-              ? "Shelves are empty. QR codes are hidden all over campus."
-              : latest ? latest.message : `${owned.size} elements on your shelf. Keep hunting.`}
-          </p>
-        </div>
-        <div className="shrink-0 pb-2"><Lamp scale={4} /></div>
-      </div>
-      <div className="shelf mt-2" />
+      <NextMove />
 
       <div className="mt-6 grid grid-cols-2 gap-4" role="tablist">
         {(["elements", "compounds"] as const).map((t) => (
@@ -65,24 +50,34 @@ export default function LabPage() {
 
       {tab === "elements" && (
         <>
-          {owned.size === 0 && (
-            <Link href="/scan" className="btn btn-primary w-full mt-6">Scan your first QR</Link>
-          )}
-          {TIERS.map(({ tier, title }) => {
+          {TIERS.map(({ tier, title, blurb }) => {
             const els = all.filter((e) => e.tier === tier);
             if (!els.length) return null;
             const have = els.filter((e) => owned.has(e.symbol)).length;
+            // Locked cabinets stay folded until you own one, so a new lab isn't a wall of empty bottles.
+            if (have === 0 && tier !== "common" && openTier !== tier) {
+              return (
+                <button key={tier} onClick={() => setOpenTier(tier)} className="mt-6 w-full panel-dark p-4 flex items-center gap-4 text-left">
+                  <span className="shrink-0 opacity-70"><Bottle symbol="?" name={title} tier={tier} plate={false} empty /></span>
+                  <span className="min-w-0">
+                    <span className="block font-num text-[18px] text-text">{title} <span className="text-fog font-normal">0 of {els.length}</span></span>
+                    <span className="block mt-1 font-num text-[15px] leading-[20px] text-fog" style={{ fontWeight: 400 }}>{blurb}</span>
+                  </span>
+                </button>
+              );
+            }
             return (
               <section key={tier} className="mt-8">
-                <h2 className="flex justify-between items-center mb-4 text-fog">
-                  <span className="pf-16">{title}</span>
-                  <span className="font-num text-[16px]">{have}/{els.length}</span>
+                <h2 className="flex justify-between items-baseline mb-1">
+                  <span className="font-num text-[18px] text-text">{title}</span>
+                  <span className="font-num text-[16px] text-fog">{have} of {els.length}</span>
                 </h2>
+                <p className="mb-4 font-num text-[15px] leading-[20px] text-fog" style={{ fontWeight: 400 }}>{blurb}</p>
                 {chunk(els, 4).map((row, i) => (
                   <div key={i} className="mb-6">
                     <div className="grid grid-cols-4 gap-x-2 items-end">
-                      {row.map((e) => (
-                        <div key={e.symbol} className="flex justify-center">
+                      {row.map((e, j) => (
+                        <div key={e.symbol} className={`flex justify-center ${owned.has(e.symbol) ? "drop-in" : ""}`} style={{ animationDelay: `${(i * 4 + j) * 60}ms` }}>
                           <Bottle symbol={e.symbol} name={e.name} tier={e.tier} plate={false}
                             empty={!owned.has(e.symbol) && !ally.has(e.symbol)} borrowed={!owned.has(e.symbol) && ally.has(e.symbol)} />
                         </div>

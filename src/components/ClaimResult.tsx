@@ -22,7 +22,7 @@ function ElementHero({ symbol, name, tier, dim = false }: { symbol: string; name
   const glow = dim || tier === "common" ? undefined : LIQ[tier].L;
   return (
     <>
-      <HeroStage glow={glow}>
+      <HeroStage glow={glow} burst={dim ? undefined : [LIQ[tier].L, LIQ[tier].H, "#ffb547", "#dce7ee"]}>
         <div className="relative">
           <TierVessel tier={tier} scale={8} />
           <span className="absolute left-1/2 -translate-x-1/2 bg-clinic text-ink font-num text-[28px] leading-none px-2 py-1" style={{ top: 80 }} aria-hidden>

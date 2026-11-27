@@ -7,8 +7,8 @@ import { Pips, Sprite } from "@/components/Sprite";
 import { PIPS } from "@/lib/sprites";
 
 const FILTERS: { id: "all" | "todo" | "unlocked" | CompoundTier; label: string }[] = [
-  { id: "todo", label: "Not made" },
-  { id: "unlocked", label: "Unlocked hints" },
+  { id: "todo", label: "To make" },
+  { id: "unlocked", label: "Recipes" },
   { id: "all", label: "All" },
 ];
 
@@ -30,10 +30,12 @@ export default function HintsPage() {
 
   return (
     <div>
-      <h1 className="pf-24">Hint book</h1>
-      <p className="mt-3 font-num text-[15px] leading-[20px] text-fog">
-        Every compound has a riddle. Names appear once anyone on campus discovers them. Locked hints give the exact
-        recipe — you start with two, find more on hint QRs, and share them with your alliance.
+      <h1 className="font-num text-[24px] text-text">Hint Book</h1>
+      <p className="mt-2 font-num text-[16px] leading-[22px] text-fog" style={{ fontWeight: 400 }}>
+        Each riddle describes one compound. Work out which elements it needs, then make it on the mix bench.
+      </p>
+      <p className="mt-2 font-num text-[16px] leading-[22px] text-fog" style={{ fontWeight: 400 }}>
+        Stuck? <b className="text-text">Recipes</b> spell out the exact ingredients. You start with two, hint QRs give more, and your alliance shares theirs.
       </p>
       <div className="mt-4 flex gap-2" role="tablist">
         {FILTERS.map((f) => (

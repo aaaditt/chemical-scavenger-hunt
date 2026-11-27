@@ -6,14 +6,17 @@ import { useGame } from "./GameProvider";
 import { clock, msUntil } from "@/lib/game";
 import { errorMessage } from "@/lib/messages";
 import { supabase } from "@/lib/supabase";
-import { CatalystIcon, Hazard, Sprite } from "./Sprite";
+import { Hazard, Sprite } from "./Sprite";
+import { InductionGate, openInduction } from "./Induction";
+import { FloatDelta, useCountUp } from "./Motion";
+import type { SpriteName } from "@/lib/sprites";
 
-const TABS = [
-  { href: "/lab", label: "Lab" },
-  { href: "/mix", label: "Mix" },
-  { href: "/scan", label: "Scan", primary: true },
-  { href: "/hints", label: "Hints" },
-  { href: "/crew", label: "Crew" },
+const TABS: { href: string; label: string; icon: SpriteName; primary?: boolean }[] = [
+  { href: "/lab", label: "Lab", icon: "n_lab" },
+  { href: "/mix", label: "Mix", icon: "n_mix" },
+  { href: "/scan", label: "Scan", icon: "qr", primary: true },
+  { href: "/hints", label: "Hints", icon: "n_book" },
+  { href: "/crew", label: "Crew", icon: "n_crew" },
 ];
 
 export function useNow(interval = 1000) {
@@ -68,6 +71,7 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="flex flex-col min-h-dvh max-w-md w-full mx-auto">
       <TopBar />
       <Banners />
+      <InductionGate />
       <main className="flex-1 px-4 pb-36 pt-4">{children}</main>
       <nav aria-label="Game" className="fixed bottom-0 inset-x-0 z-30 pb-[env(safe-area-inset-bottom)] bg-bench" style={{ boxShadow: "0 -4px 0 0 var(--color-ink)" }}>
         <ul className="max-w-md mx-auto grid grid-cols-5 items-end h-[72px]">
@@ -84,9 +88,10 @@ export function Shell({ children }: { children: ReactNode }) {
                   </Link>
                 ) : (
                   <Link href={t.href} aria-current={active ? "page" : undefined}
-                    className={`pf-16 h-14 min-w-[60px] px-1 flex items-center justify-center ${active ? "bg-clinic text-ink" : "text-fog"}`}
+                    className={`h-[60px] min-w-[64px] px-1 flex flex-col items-center justify-center gap-1 ${active ? "bg-clinic text-ink" : "text-fog"}`}
                     style={active ? { boxShadow: "var(--shadow-px)" } : undefined}>
-                    {t.label}
+                    <Sprite name={t.icon} scale={3} pal={active ? undefined : { k: "#8fb0a8", p: "#183b36", L: "#2c5a52", l: "#2c5a52", D: "#183b36", w: "#8fb0a8", g: "#183b36" }} />
+                    <span className="font-num text-[13px] leading-[14px]">{t.label}</span>
                   </Link>
                 )}
               </li>
@@ -109,43 +114,25 @@ export function Shell({ children }: { children: ReactNode }) {
 
 function TopBar() {
   const { state } = useGame();
-  const [reveal, setReveal] = useState(false);
-  const [shift, toggleShift] = useShift();
+  const score = useCountUp(state?.player.score ?? 0);
   if (!state) return null;
   const p = state.player;
   return (
-    <header className="px-4 pt-[max(env(safe-area-inset-top),12px)] pb-2">
-      <div className="flex items-stretch gap-3">
-        {/* LED sign (ref-3 "LAB" door): the player's lab number from their college ID. */}
-        <Link href="/settings" className="led px-3 flex items-center pf-24" aria-label={`Lab ${p.lab_no}. Open lab settings`}>
-          LAB&nbsp;<span className="font-num text-[24px] leading-[24px]">{p.lab_no}</span>
-        </Link>
-        <Link href="/board" className="ml-auto flex gap-3" aria-label={`Score ${p.score}, rank ${p.rank}. Open leaderboard`}>
-          <span className="bg-holo text-ink px-2 py-1 flex flex-col items-center justify-center min-w-[64px]" style={{ boxShadow: "var(--shadow-px)" }}>
-            <span className="pf-16">Score</span>
-            <span className="font-num text-[24px] leading-[24px]">{p.score}</span>
-          </span>
-          <span className="bg-holo text-ink px-2 py-1 flex flex-col items-center justify-center min-w-[56px]" style={{ boxShadow: "var(--shadow-px)" }}>
-            <span className="pf-16">Rank</span>
-            <span className="font-num text-[24px] leading-[24px]">#{p.rank}</span>
-          </span>
-        </Link>
-      </div>
-      <div className="mt-4 flex items-center gap-3">
-        <button
-          onClick={() => setReveal((r) => !r)}
-          className={`btn ${reveal ? "btn-plain" : "btn-dark"} gap-2 normal-case`}
-          aria-label={reveal ? `Your secret catalyst is ${p.catalyst.name}. Tap to hide` : "Tap to reveal your secret catalyst"}
-        >
-          <CatalystIcon id={p.catalyst.id} mystery={!reveal} scale={3} />
-          <span className="pf-16">{reveal ? p.catalyst.name : "Catalyst"}</span>
-        </button>
-        <button onClick={toggleShift} className="btn btn-plain ml-auto gap-2" aria-label={shift === "day" ? "Switch to night shift" : "Switch to day shift (brighter, for sunlight)"}>
-          <Sprite name={shift === "day" ? "moon" : "sun"} scale={3} />
-          <span className="pf-16">{shift === "day" ? "Night" : "Day"}</span>
-        </button>
-        {p.is_admin && <Link href="/admin" className="btn btn-primary">Admin</Link>}
-      </div>
+    <header className="px-4 pt-[max(env(safe-area-inset-top),12px)] pb-3 flex items-center gap-3">
+      {/* LED sign (ref-3 "LAB" door): the lab number from the college ID. Opens lab settings. */}
+      <Link href="/settings" className="led px-3 h-12 flex items-center gap-2 pf-16" aria-label={`Lab ${p.lab_no}. Open lab settings`}>
+        LAB <span className="font-num text-[20px] leading-none">{p.lab_no}</span>
+      </Link>
+      <Link href="/board" className="relative ml-auto h-12 flex items-center gap-3 bg-holo text-ink px-3" style={{ boxShadow: "var(--shadow-px)" }}
+        aria-label={`Score ${p.score}, rank ${p.rank}. Open leaderboard`}>
+        <span className="font-num text-[22px] leading-none">{score.shown}<span className="text-[14px] ml-1">pts</span></span>
+        <span className="font-num text-[16px] leading-none bg-ink text-holo px-2 py-1">#{p.rank}</span>
+        <FloatDelta delta={score.delta} className="right-2 -bottom-2" />
+      </Link>
+      <button onClick={openInduction} className="h-12 w-12 grid place-items-center bg-clinic" style={{ boxShadow: "var(--shadow-px)" }} aria-label="How to play">
+        <Sprite name="n_help" scale={3} />
+      </button>
+      {p.is_admin && <Link href="/admin" className="btn btn-primary px-2">Admin</Link>}
     </header>
   );
 }

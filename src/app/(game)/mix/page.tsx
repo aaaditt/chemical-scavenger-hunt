@@ -51,7 +51,7 @@ function Rig({ symbols, liquid, failed }: { symbols: string[]; liquid: Liquid; f
       <div className="absolute left-4 right-[112px] top-[108px] h-1" style={{ background: tubes.length ? pipe : "var(--color-moss)" }} />
       <div className="absolute right-[108px] top-[60px] w-1 h-[52px]" style={{ background: tubes.length ? pipe : "var(--color-moss)" }} />
       <div className="absolute right-4 bottom-2 flex flex-col items-center">
-        {failed && <div className="absolute -top-8 left-0"><Sprite name="smoke" scale={3} /></div>}
+        {failed && <div className="absolute -top-10 left-0 smoke-up"><Sprite name="smoke" scale={3} /></div>}
         <CompoundVessel liquid={liquid} scale={4} still={liquid === "empty"} />
         <Lamp scale={3} />
       </div>
@@ -127,7 +127,7 @@ function MixBench() {
       <div className="text-center pt-2 pb-6">
         <Stamp>Synthesized</Stamp>
         <div className="mt-6">
-          <HeroStage glow={c.tier === "basic" ? undefined : LIQ[liq].L}>
+          <HeroStage glow={c.tier === "basic" ? undefined : LIQ[liq].L} burst={[LIQ[liq].L, LIQ[liq].H, "#ffb547", "#8df25f"]}>
             <CompoundVessel liquid={liq} scale={8} legendary={c.tier === "legendary"} />
           </HeroStage>
         </div>
@@ -163,6 +163,23 @@ function MixBench() {
     );
   }
 
+  // A lab with nothing on the shelf gets one clear instruction instead of an empty rig.
+  if (available.length === 0) {
+    return (
+      <div>
+        <h1 className="led self-start inline-block px-3 py-2 pf-24">Mix bench</h1>
+        <div className="mt-6 panel-parch p-4">
+          <p className="font-num text-[20px] leading-[24px]">Your bench is empty</p>
+          <p className="mt-2 font-num text-[16px] leading-[22px]" style={{ fontWeight: 400 }}>
+            This is where you combine elements into compounds, but you don&apos;t have any elements yet. Scan a QR code around campus to get your first one.
+          </p>
+          <Link href="/scan" className="btn btn-primary w-full mt-4">Open the scanner</Link>
+        </div>
+        <div className="mt-8 flex justify-center opacity-60" aria-hidden><CompoundVessel liquid="empty" scale={8} still /></div>
+      </div>
+    );
+  }
+
   const failed = result?.ok === true && (result.status === "failed" || result.status === "frozen");
   const rigLiquid: Liquid = running ?? (failed ? "sludge" : "empty");
 
@@ -189,7 +206,23 @@ function MixBench() {
         </Link>
       )}
 
-      <div className="mt-6"><Rig symbols={Object.keys(recipe)} liquid={rigLiquid} failed={failed && !running} /></div>
+      {(
+        <details className="mt-4 panel-dark p-3 group">
+          <summary className="cursor-pointer font-num text-[16px] text-text list-none flex items-center justify-between">
+            How mixing works <span className="text-fog group-open:rotate-180">v</span>
+          </summary>
+          <ol className="mt-3 flex flex-col gap-2 font-num text-[15px] leading-[20px] text-fog list-decimal pl-5" style={{ fontWeight: 400 }}>
+            <li>Pick a riddle in the <Link href="/hints" className="text-candle underline">Hint Book</Link> and guess its ingredients.</li>
+            <li>Tap elements below to add them. Use − and + to set how many.</li>
+            <li>If the recipe needs a catalyst, add yours or a friend&apos;s code.</li>
+            <li>Tap Synthesize. {limit} wrong guesses in a row freeze your lab.</li>
+          </ol>
+        </details>
+      )}
+
+      <div key={failed ? `f${strikes}` : "ok"} className={`mt-6 ${failed && !running ? "quake" : ""}`}>
+        <Rig symbols={Object.keys(recipe)} liquid={rigLiquid} failed={failed && !running} />
+      </div>
 
       {running ? (
         <div className="mt-6 bg-holo text-ink p-4" style={{ boxShadow: "var(--shadow-px)" }} role="status">

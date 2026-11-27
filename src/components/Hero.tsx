@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Halo } from "./Sprite";
+import { Burst } from "./Motion";
 
 /** Silkscreen's average advance is ~0.74em (HYDROGEN at 64px = 380px); 0.78 leaves a safety margin. */
 const ADVANCE = 0.78;
@@ -34,15 +35,16 @@ export function HeroName({ text, width = 358, className = "" }: { text: string; 
 export function Stamp({ children, tone = "led" }: { children: ReactNode; tone?: "led" | "iso" | "plain" | "frost" }) {
   const cls = { led: "led", iso: "bg-bench text-tier-isotope", plain: "bg-clinic text-ink", frost: "bg-frost text-ink" }[tone];
   const long = typeof children === "string" && children.length > 12;
-  return <p className={`stamp inline-block px-4 py-3 ${long ? "pf-24" : "pf-32"} ${cls}`} style={{ boxShadow: "var(--shadow-px)" }}>{children}</p>;
+  return <p className={`slam inline-block px-4 py-3 ${long ? "pf-24" : "pf-32"} ${cls}`} style={{ boxShadow: "var(--shadow-px)" }}>{children}</p>;
 }
 
 /** Hero sprite on its stepped halo. The halo ends ≥16px above the name, so the name sits on plain wall. */
-export function HeroStage({ glow, children, r = 40 }: { glow?: string; children: ReactNode; r?: number }) {
+export function HeroStage({ glow, children, r = 40, burst }: { glow?: string; children: ReactNode; r?: number; burst?: string[] }) {
   return (
     <div className="relative grid place-items-center" style={{ height: r * 2 * 2 }}>
       {glow && <div className="absolute inset-0 grid place-items-center halo"><Halo r={r} color={glow} scale={2} q={4} /></div>}
       <div className="relative drop-in">{children}</div>
+      {burst && <Burst colors={burst} count={18} spread={150} />}
     </div>
   );
 }
